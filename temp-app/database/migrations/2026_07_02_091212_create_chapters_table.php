@@ -10,12 +10,16 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('chapters', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('chapters', function (Blueprint $table) {
+        $table->id();
+        // foreignId ini menghubungkan bab dengan part tertentu
+        $table->foreignId('part_id')->constrained('parts')->onDelete('cascade');
+        $table->string('title');
+        $table->string('slug')->unique();
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.
