@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
+// Rute untuk Halaman Admin (Nanti akan kita beri pelindung Login)
+Route::get('/admin', function () {
+    return view('admin.dashboard');
 });
