@@ -52,7 +52,7 @@
                 <a class="nav-link active" href="/admin"><i class="fa-solid fa-chart-pie me-2"></i> Dashboard</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="fa-solid fa-book-open me-2"></i> Kelola IMS</a>
+                <a class="nav-link" href="/admin/parts"><i class="fa-solid fa-book-open me-2"></i> Kelola IMS</a>
             </li>
             <li class="nav-item mt-5">
                 <a class="nav-link text-danger" href="/"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i> Keluar (Ke Publik)</a>
