@@ -25,6 +25,9 @@ Route::get('/admin', function () {
 Route::get('/admin/books', [BookController::class, 'index']);
 Route::post('/admin/books', [BookController::class, 'store']);
 
+Route::put('/admin/books/{book_id}', [BookController::class, 'update']);
+Route::delete('/admin/books/{book_id}', [BookController::class, 'destroy']);
+
 // 3. Kelola Bagian (Part)
 Route::get('/admin/books/{book_id}/parts', [PartController::class, 'index']);
 Route::post('/admin/books/{book_id}/parts', [PartController::class, 'store']);

@@ -8,12 +8,11 @@ class EbookController extends Controller
 {
     public function index(Request $request)
     {
-        // Mengambil semua Buku beserta Part dan Chapter-nya
         $books = Book::with('parts.chapters')->get();
-
         $activeChapter = null;
         $activeBook = null;
         $searchResults = null;
+        $recentUpdates = null; // Penampung aktivitas terbaru
 
         if ($request->has('search') && $request->search != '') {
             $keyword = $request->search;
@@ -21,13 +20,16 @@ class EbookController extends Controller
                                     ->orWhere('content', 'like', "%{$keyword}%")->get();
         }
         elseif ($request->has('read')) {
-            // Mengambil chapter beserta data buku induknya
             $activeChapter = Chapter::with('part.book')->find($request->read);
             if($activeChapter) {
                 $activeBook = $activeChapter->part->book;
             }
         }
+        else {
+            // Jika sedang di halaman utama, ambil 5 bab terbaru
+            $recentUpdates = Chapter::with('part.book')->latest()->take(5)->get();
+        }
 
-        return view('ebook.index', compact('books', 'activeChapter', 'activeBook', 'searchResults'));
+        return view('ebook.index', compact('books', 'activeChapter', 'activeBook', 'searchResults', 'recentUpdates'));
     }
 }
