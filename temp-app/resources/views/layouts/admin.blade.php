@@ -45,17 +45,23 @@
     <!-- Sidebar Samping -->
     <div class="sidebar d-flex flex-column">
         <div class="sidebar-brand text-center">
-            <i class="fa-solid fa-ship me-2"></i> IMS AMARIN
+            <i class="fa-solid fa-ship me-2"></i> E-BOOK AMARIN
         </div>
         <ul class="nav flex-column sidebar-nav mt-3">
             <li class="nav-item">
-                <a class="nav-link active" href="/admin"><i class="fa-solid fa-chart-pie me-2"></i> Dashboard</a>
+                <a class="nav-link {{ Request::is('admin') ? 'active' : '' }}" href="/admin">
+                    <i class="fa-solid fa-chart-pie me-2"></i> Dashboard
+                </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/admin/parts"><i class="fa-solid fa-book-open me-2"></i> Kelola IMS</a>
+                <a class="nav-link {{ Request::is('admin/book*') || Request::is('admin/part*') || Request::is('admin/chapter*') ? 'active' : '' }}" href="/admin/books">
+                    <i class="fa-solid fa-book-open me-2"></i> Kelola E-Book
+                </a>
             </li>
             <li class="nav-item mt-5">
-                <a class="nav-link text-danger" href="/"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i> Keluar (Ke Publik)</a>
+                <a class="nav-link text-danger" href="/">
+                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i> Keluar (Ke Publik)
+                </a>
             </li>
         </ul>
     </div>
@@ -77,6 +83,6 @@
         @yield('content')
 
     </div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

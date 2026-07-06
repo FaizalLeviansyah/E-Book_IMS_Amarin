@@ -16,4 +16,10 @@ class Part extends Model
     {
         return $this->hasMany(Chapter::class);
     }
+
+    // Satu Part itu milik satu Buku
+    public function book()
+    {
+        return $this->belongsTo(Book::class);
+    }
 }

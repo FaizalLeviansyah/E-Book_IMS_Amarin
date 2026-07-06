@@ -4,27 +4,31 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Part;
-use Illuminate\Support\Str; // Untuk membuat slug otomatis
+use App\Models\Book;
+use Illuminate\Support\Str;
 
 class PartController extends Controller
 {
-    // Menampilkan halaman daftar Part
-    public function index()
+    // Menampilkan daftar Part di dalam Buku tertentu
+    public function index($book_id)
     {
-        $parts = Part::all();
-        return view('admin.parts', compact('parts'));
+        $book = Book::findOrFail($book_id);
+        $parts = Part::where('book_id', $book_id)->get();
+
+        return view('admin.parts', compact('book', 'parts'));
     }
 
-    // Menyimpan data Part baru ke database
-    public function store(Request $request)
+    // Menyimpan Part baru ke Buku tertentu
+    public function store(Request $request, $book_id)
     {
         $request->validate([
             'title' => 'required|string|max:255'
         ]);
 
         Part::create([
-            'title' => $request->title,
-            'slug' => Str::slug($request->title) // otomatis mengubah "Part A" jadi "part-a"
+            'book_id' => $book_id,
+            'title' => $request->input('title'),
+            'slug' => Str::slug($request->input('title'))
         ]);
 
         return back()->with('success', 'Bagian (Part) baru berhasil ditambahkan!');
