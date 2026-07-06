@@ -13,10 +13,10 @@ return new class extends Migration
 {
     Schema::create('chapters', function (Blueprint $table) {
         $table->id();
-        // foreignId ini menghubungkan bab dengan part tertentu
         $table->foreignId('part_id')->constrained('parts')->onDelete('cascade');
         $table->string('title');
         $table->string('slug')->unique();
+        $table->longText('content')->nullable(); // <-- Ini tambahan barunya
         $table->timestamps();
     });
 }

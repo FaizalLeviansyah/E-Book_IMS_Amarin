@@ -213,36 +213,24 @@
                             Database dokumen masih kosong.
                         </div>
                     @else
-                        <div class="accordion" id="accordionBook">
-                            @if(isset($parts))
-                                @foreach($parts as $part)
-                                    <div class="mb-4">
-                                        <div class="fw-bold text-uppercase mb-2" style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 1px;">
-                                            {{ $part->title }}
-                                        </div>
-
+                        <div class="document-nav">
+                        @if(isset($parts))
+                            @foreach($parts as $part)
+                                <div class="mb-4">
+                                    <div class="fw-bold text-uppercase mb-2" style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 1px; border-bottom: 1px solid var(--glass-border); padding-bottom: 5px;">
+                                        {{ $part->title }}
+                                    </div>
+                                    <div class="d-flex flex-column ms-2">
                                         @foreach($part->chapters as $chapter)
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header">
-                                                <button class="accordion-button collapsed py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#chap-{{ $chapter->id }}">
-                                                    {{ $chapter->title }}
-                                                </button>
-                                            </h2>
-                                            <div id="chap-{{ $chapter->id }}" class="accordion-collapse collapse {{ (isset($activeSubChapter) && $activeSubChapter->chapter_id == $chapter->id) ? 'show' : '' }}">
-                                                <div class="accordion-body py-2 px-2">
-                                                    @foreach($chapter->subChapters as $sub)
-                                                        <a href="?read={{ $sub->id }}" class="subchapter-link {{ (isset($activeSubChapter) && $activeSubChapter->id == $sub->id) ? 'active' : '' }}">
-                                                            <i class="fa-solid fa-caret-right me-2" style="opacity: 0.5;"></i> {{ $sub->title }}
-                                                        </a>
-                                                    @endforeach
-                                                </div>
-                                            </div>
-                                        </div>
+                                            <a href="?read={{ $chapter->id }}" class="subchapter-link {{ (isset($activeChapter) && $activeChapter->id == $chapter->id) ? 'active' : '' }}">
+                                                <i class="fa-regular fa-file-lines me-2" style="opacity: 0.6;"></i> {{ $chapter->title }}
+                                            </a>
                                         @endforeach
                                     </div>
-                                @endforeach
-                            @endif
-                        </div>
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
                     @endif
                 </div>
             </div>
@@ -255,7 +243,15 @@
                                 {{ $activeSubChapter->title }}
                             </h3>
                             <div style="font-size: 1.05rem; line-height: 1.8; color: var(--text-main); text-align: justify;">
-                                {!! nl2br(e($activeSubChapter->content)) !!}
+                                @if(isset($activeChapter))
+                                <div class="px-md-4 py-2">
+                                    <h3 class="fw-bold mb-4" style="color: var(--brand-color); border-bottom: 2px solid var(--glass-border); padding-bottom: 15px;">
+                                        {{ $activeChapter->title }}
+                                    </h3>
+                                    <div style="font-size: 1.05rem; line-height: 1.8; color: var(--text-main); text-align: justify;">
+                                        {!! $activeChapter->content !!}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     @else

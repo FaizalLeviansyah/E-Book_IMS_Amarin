@@ -1,24 +1,19 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Models\Part;
-use App\Models\SubChapter; // Pastikan memanggil model SubChapter
+use App\Models\Chapter;
 
 class EbookController extends Controller
 {
     public function index(Request $request)
     {
-        // Mengambil semua data dokumen
-        $parts = Part::with('chapters.subChapters')->get();
+        $parts = Part::with('chapters')->get();
 
-        // Mengecek apakah ada instruksi untuk membaca sub-bab tertentu
-        $activeSubChapter = null;
+        $activeChapter = null;
         if ($request->has('read')) {
-            $activeSubChapter = SubChapter::find($request->read);
+            $activeChapter = Chapter::find($request->read);
         }
-
-        return view('ebook.index', compact('parts', 'activeSubChapter'));
+        return view('ebook.index', compact('parts', 'activeChapter'));
     }
 }

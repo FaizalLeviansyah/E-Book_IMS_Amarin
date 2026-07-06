@@ -22,15 +22,17 @@ class ChapterController extends Controller
     public function store(Request $request, $part_id)
     {
         $request->validate([
-            'title' => 'required|string|max:255'
+            'title' => 'required|string|max:255',
+            'content' => 'nullable' // Teks Word Editor
         ]);
 
         Chapter::create([
             'part_id' => $part_id,
-            'title' => $request->title,
-            'slug' => Str::slug($request->title)
+            'title' => $request->input('title'),
+            'slug' => \Illuminate\Support\Str::slug($request->input('title')),
+            'content' => $request->input('content')
         ]);
 
-        return back()->with('success', 'Bab (Chapter) baru berhasil ditambahkan!');
+        return back()->with('success', 'Bab dan materi berhasil disimpan!');
     }
 }
