@@ -1,34 +1,33 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
-use App\Models\Part;
+use App\Models\Book;
 use App\Models\Chapter;
 
 class EbookController extends Controller
 {
     public function index(Request $request)
     {
-        // Mengambil semua data untuk sidebar
-        $parts = Part::with('chapters')->get();
+        // Mengambil semua Buku beserta Part dan Chapter-nya
+        $books = Book::with('parts.chapters')->get();
 
         $activeChapter = null;
-        $searchResults = null; // Penampung hasil pencarian
+        $activeBook = null;
+        $searchResults = null;
 
-        // Jika user melakukan pencarian
         if ($request->has('search') && $request->search != '') {
             $keyword = $request->search;
-            // Mencari kata kunci di judul bab atau isi materi
             $searchResults = Chapter::where('title', 'like', "%{$keyword}%")
-                                    ->orWhere('content', 'like', "%{$keyword}%")
-                                    ->get();
+                                    ->orWhere('content', 'like', "%{$keyword}%")->get();
         }
-        // Jika user mengklik bab tertentu dari sidebar
         elseif ($request->has('read')) {
-            $activeChapter = Chapter::find($request->read);
+            // Mengambil chapter beserta data buku induknya
+            $activeChapter = Chapter::with('part.book')->find($request->read);
+            if($activeChapter) {
+                $activeBook = $activeChapter->part->book;
+            }
         }
 
-        return view('ebook.index', compact('parts', 'activeChapter', 'searchResults'));
+        return view('ebook.index', compact('books', 'activeChapter', 'activeBook', 'searchResults'));
     }
 }

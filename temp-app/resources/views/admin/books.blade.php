@@ -65,30 +65,38 @@
 <div class="modal fade" id="addBookModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="/admin/books" method="POST">
+            <form action="/admin/books" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">Tambah E-Book Baru</h5>
+                    <h5 class="modal-title">Buat E-Book Baru</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Judul Buku</label>
-                        <input type="text" class="form-control" name="title" placeholder="Contoh: Integrated Management System (IMS)" required>
+                        <input type="text" class="form-control" name="title" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Deskripsi Singkat</label>
-                        <textarea class="form-control" name="description" rows="2" placeholder="Contoh: Manual Keselamatan PT Amarin Ship Management"></textarea>
+                        <textarea class="form-control" name="description" rows="2"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Warna Tema (Navbar & Sidebar)</label>
-                        <!-- Input color picker bawaan HTML5 -->
-                        <input type="color" class="form-control form-control-color w-100" name="theme_color" value="#0d47a1" title="Pilih Warna Tema Buku">
+                        <label class="form-label fw-bold">Cover Buku (JPG/PNG)</label>
+                        <input type="file" class="form-control" name="cover_image" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Mentahan Dokumen Asli (PDF)</label>
+                        <input type="file" class="form-control" name="pdf_file" accept="application/pdf">
+                        <small class="text-muted">Akan ditampilkan di tab 'Mentahan PDF' pada sisi pembaca.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Pilih Tema Warna Navbar</label>
+                        <input type="color" class="form-control form-control-color" name="theme_color" value="#0d47a1">
                     </div>
                 </div>
                 <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i> Simpan</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i> Simpan Buku</button>
                 </div>
             </form>
         </div>
