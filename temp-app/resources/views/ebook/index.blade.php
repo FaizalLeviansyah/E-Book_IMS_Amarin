@@ -10,21 +10,14 @@
     <style>
         /* === VARIABEL WARNA (MODE TERANG / DEFAULT) === */
         :root {
-            /* Background utama putih keabu-abuan agar tidak menyilaukan */
             --bg-body: #f4f7f9;
             --text-main: #2c3e50;
             --text-muted: #6c757d;
-
-            /* Kaca Terang (Clean Glassmorphism) */
             --glass-bg: rgba(255, 255, 255, 0.75);
             --glass-border: rgba(13, 71, 161, 0.1);
             --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
-
-            /* Aksen Biru Maritim (Navy) dengan pendaran sangat halus */
             --brand-color: #0d47a1;
             --brand-glow: 0 4px 15px rgba(13, 71, 161, 0.15);
-
-            /* Elemen Tombol/Accordion */
             --acc-btn-bg: rgba(255, 255, 255, 0.5);
             --acc-active-bg: rgba(13, 71, 161, 0.05);
             --icon-filter: invert(0);
@@ -32,21 +25,14 @@
 
         /* === VARIABEL WARNA (MODE GELAP / NIGHT MODE) === */
         [data-theme="dark"] {
-            /* Background laut dalam */
             --bg-body: #051124;
             --text-main: #e0e6ed;
             --text-muted: #8da4c0;
-
-            /* Kaca Gelap */
             --glass-bg: rgba(10, 25, 50, 0.6);
             --glass-border: rgba(0, 225, 255, 0.15);
             --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-
-            /* Aksen Neon Biru Cyan (Modern tapi tidak menyilaukan) */
             --brand-color: #00e1ff;
             --brand-glow: 0 0 15px rgba(0, 225, 255, 0.3);
-
-            /* Elemen Tombol/Accordion */
             --acc-btn-bg: rgba(255, 255, 255, 0.02);
             --acc-active-bg: rgba(0, 225, 255, 0.05);
             --icon-filter: invert(1) opacity(0.8);
@@ -66,10 +52,10 @@
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             background-color: rgba(255, 190, 90, var(--sepia-level, 0));
-            pointer-events: none; /* Agar tidak menghalangi klik */
+            pointer-events: none;
             z-index: 9999;
             transition: background-color 0.2s;
-            mix-blend-mode: multiply; /* Membuat efek kuningnya natural ke teks */
+            mix-blend-mode: multiply;
         }
 
         /* Panel Glassmorphism */
@@ -110,25 +96,7 @@
             margin-bottom: 20px;
         }
 
-        /* Accordion (Bab) */
-        .accordion-item { background: transparent; border: none; margin-bottom: 8px; }
-        .accordion-button {
-            background: var(--acc-btn-bg);
-            color: var(--text-main);
-            border-radius: 8px !important;
-            border: 1px solid var(--glass-border);
-            font-weight: 600;
-            box-shadow: none !important;
-        }
-        .accordion-button:not(.collapsed) {
-            background: var(--acc-active-bg);
-            color: var(--brand-color);
-            border-color: var(--brand-color);
-            box-shadow: var(--brand-glow) !important;
-        }
-        .accordion-button::after { filter: var(--icon-filter); }
-
-        /* Link Sub-bab */
+        /* Link Sub-bab / Navigasi */
         .subchapter-link {
             color: var(--text-muted);
             text-decoration: none;
@@ -166,12 +134,20 @@
             </a>
 
             <div class="d-flex align-items-center">
+                <form action="/" method="GET" class="d-flex me-4">
+                    <div class="input-group input-group-sm shadow-sm" style="width: 250px;">
+                        <input type="text" name="search" class="form-control bg-light border-0" placeholder="Cari prosedur atau aturan..." value="{{ request('search') }}">
+                        <button class="btn text-white" style="background-color: var(--brand-color);" type="submit">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </div>
+                </form>
+
                 <div class="dropdown me-3">
                     <button class="btn btn-sm glass-panel text-main fw-bold" style="color: var(--brand-color); border-color: var(--brand-color);" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="display-widget-btn">
                         <i class="fa-solid fa-sliders me-1"></i> Tampilan
                     </button>
                     <div class="dropdown-menu dropdown-menu-end p-3 glass-panel widget-dropdown border-0 shadow-lg">
-
                         <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom" style="border-color: var(--glass-border) !important;">
                             <label class="form-check-label fw-bold" for="themeSwitch" style="color: var(--text-main);">
                                 <i class="fa-solid fa-moon me-2"></i>Mode Malam
@@ -180,7 +156,6 @@
                                 <input class="form-check-input fs-5" type="checkbox" role="switch" id="themeSwitch">
                             </div>
                         </div>
-
                         <div class="mb-2">
                             <label for="readSlider" class="form-label fw-bold d-flex justify-content-between" style="color: var(--text-main);">
                                 <span><i class="fa-solid fa-glasses me-2"></i>Mode Baca (Filter)</span>
@@ -230,30 +205,47 @@
                                 </div>
                             @endforeach
                         @endif
-                    </div>
+                        </div>
                     @endif
                 </div>
             </div>
 
             <div class="col-md-9">
                 <div class="glass-panel content-glass">
-                    @if(isset($activeSubChapter))
+
+                    @if(isset($searchResults))
+                        <div class="px-md-4 py-2">
+                            <h4 class="fw-bold mb-4" style="color: var(--brand-color); border-bottom: 2px solid var(--glass-border); padding-bottom: 15px;">
+                                <i class="fa-solid fa-magnifying-glass me-2"></i> Hasil Pencarian: "{{ request('search') }}"
+                            </h4>
+
+                            @if($searchResults->isEmpty())
+                                <div class="alert alert-warning border-0 shadow-sm text-center py-4">
+                                    <i class="fa-solid fa-triangle-exclamation fa-2x mb-2 text-warning"></i><br>
+                                    Tidak ada dokumen yang cocok dengan kata kunci tersebut.
+                                </div>
+                            @else
+                                <div class="list-group">
+                                    @foreach($searchResults as $result)
+                                        <a href="?read={{ $result->id }}" class="list-group-item list-group-item-action mb-2 border-0 shadow-sm rounded glass-panel" style="background: var(--acc-btn-bg); color: var(--text-main);">
+                                            <h6 class="fw-bold mb-1" style="color: var(--brand-color);">{{ $result->title }}</h6>
+                                            <small class="text-muted">Terdapat kecocokan pada bab ini. Klik untuk membaca selengkapnya.</small>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+
+                    @elseif(isset($activeChapter))
                         <div class="px-md-4 py-2">
                             <h3 class="fw-bold mb-4" style="color: var(--brand-color); border-bottom: 2px solid var(--glass-border); padding-bottom: 15px;">
-                                {{ $activeSubChapter->title }}
+                                {{ $activeChapter->title }}
                             </h3>
-                            <div style="font-size: 1.05rem; line-height: 1.8; color: var(--text-main); text-align: justify;">
-                                @if(isset($activeChapter))
-                                <div class="px-md-4 py-2">
-                                    <h3 class="fw-bold mb-4" style="color: var(--brand-color); border-bottom: 2px solid var(--glass-border); padding-bottom: 15px;">
-                                        {{ $activeChapter->title }}
-                                    </h3>
-                                    <div style="font-size: 1.05rem; line-height: 1.8; color: var(--text-main); text-align: justify;">
-                                        {!! $activeChapter->content !!}
-                                    </div>
-                                </div>
+                            <div style="font-size: 1.05rem; line-height: 1.8; color: var(--text-main); text-align: justify; overflow-wrap: break-word;">
+                                {!! $activeChapter->content !!}
                             </div>
                         </div>
+
                     @else
                         <div class="d-flex h-100 flex-column align-items-center justify-content-center text-center">
                             <div class="mb-4">
@@ -261,10 +253,11 @@
                             </div>
                             <h3 class="fw-bold mb-3" style="color: var(--text-main);">Pusat Integrasi Data</h3>
                             <p style="color: var(--text-muted); max-width: 500px;">
-                                Silakan pilih sub-bab pada panel navigasi di sebelah kiri untuk memuat dan menampilkan panduan operasional.
+                                Gunakan kolom pencarian di atas atau pilih navigasi di sebelah kiri untuk memuat panduan operasional.
                             </p>
                         </div>
                     @endif
+
                 </div>
             </div>
 
@@ -274,19 +267,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Deklarasi Elemen
             const themeSwitch = document.getElementById('themeSwitch');
             const readSlider = document.getElementById('readSlider');
             const sliderValueText = document.getElementById('sliderValue');
             const htmlElement = document.documentElement;
 
-            // 1. Logika Mode Malam (Dark Mode)
+            // Logika Mode Malam
             const savedTheme = localStorage.getItem('amarin-theme') || 'light';
             if (savedTheme === 'dark') {
                 htmlElement.setAttribute('data-theme', 'dark');
                 themeSwitch.checked = true;
             }
-
             themeSwitch.addEventListener('change', (e) => {
                 if (e.target.checked) {
                     htmlElement.setAttribute('data-theme', 'dark');
@@ -297,7 +288,7 @@
                 }
             });
 
-            // 2. Logika Mode Baca (Filter Kuning)
+            // Logika Mode Baca
             const savedSepia = localStorage.getItem('amarin-sepia') || '0';
             readSlider.value = savedSepia;
             applySepia(savedSepia);
@@ -307,16 +298,13 @@
             });
 
             function applySepia(value) {
-                // Mengubah CSS Variable agar overlay menjadi semakin kuning
                 htmlElement.style.setProperty('--sepia-level', value);
                 localStorage.setItem('amarin-sepia', value);
-
-                // Update teks persentase (0% - 100% dari batas maksimal slider)
                 const percentage = Math.round((value / 0.4) * 100);
                 sliderValueText.textContent = percentage + '%';
             }
 
-            // Cegah dropdown tertutup saat menggeser slider
+            // Cegah dropdown tertutup saat geser slider
             document.querySelector('.widget-dropdown').addEventListener('click', function(e) {
                 e.stopPropagation();
             });
