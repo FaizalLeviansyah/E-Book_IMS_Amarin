@@ -1,360 +1,308 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Book System - PT Amarin Ship Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>E-Book System - PT Amarin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: { colors: { amarin: '#0d47a1', amarinDark: '#0a367a' } }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --bg-body: #f4f7f9;
-            --text-main: #2c3e50;
-            --text-muted: #6c757d;
-            --glass-bg: rgba(255, 255, 255, 0.75);
-            --glass-border: rgba(13, 71, 161, 0.1);
-            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
-            --brand-color: #0d47a1;
-            --brand-glow: 0 4px 15px rgba(13, 71, 161, 0.15);
-            --acc-active-bg: rgba(13, 71, 161, 0.05);
-        }
-        [data-theme="dark"] {
-            --bg-body: #051124;
-            --text-main: #e0e6ed;
-            --text-muted: #8da4c0;
-            --glass-bg: rgba(10, 25, 50, 0.6);
-            --glass-border: rgba(0, 225, 255, 0.15);
-            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            --brand-color: #00e1ff;
-            --brand-glow: 0 0 15px rgba(0, 225, 255, 0.3);
-            --acc-active-bg: rgba(0, 225, 255, 0.05);
-        }
+        #sepia-overlay { position: fixed; inset: 0; background-color: rgba(255, 190, 90, var(--sepia-level, 0)); pointer-events: none; z-index: 9999; mix-blend-mode: multiply; }
+        html { scroll-behavior: smooth; }
+        mark.search-highlight { background-color: #fde047; color: #000; padding: 0.1rem 0.2rem; border-radius: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
 
-        body { background: var(--bg-body); color: var(--text-main); font-family: 'Segoe UI', Tahoma, sans-serif; transition: 0.4s; overflow-x: hidden; }
-
-        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: var(--glass-shadow); }
-
-        /* Tinggi dinamis agar responsif di layar HP maupun PC */
-        .sidebar-glass, .content-glass { height: calc(100vh - 90px); overflow-y: auto; padding: 25px; transition: all 0.3s ease-in-out; }
-        @media (max-width: 768px) {
-            .sidebar-glass, .content-glass { height: auto; min-height: calc(100vh - 90px); }
-            .pdf-frame { height: 70vh !important; }
-        }
-
-        .sidebar-hidden { display: none !important; }
-
-        .subchapter-link { color: var(--text-muted); text-decoration: none; display: block; padding: 10px 15px; border-radius: 6px; border-left: 3px solid transparent; transition: 0.2s; font-size: 0.9rem; }
-        .subchapter-link:hover, .subchapter-link.active { color: var(--brand-color); background: var(--acc-active-bg); border-left: 3px solid var(--brand-color); }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: rgba(13, 71, 161, 0.2); border-radius: 10px; }
-        .nav-tabs .nav-link { color: var(--text-muted); border-radius: 10px 10px 0 0; font-weight: bold; border: none; }
-        .nav-tabs .nav-link.active { color: var(--brand-color); background-color: var(--glass-bg); border-color: var(--glass-border) var(--glass-border) transparent; border-bottom: 2px solid var(--glass-bg); }
-
-        .widget-dropdown { min-width: 280px; }
-        #eye-care-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255, 190, 90, var(--sepia-level, 0)); pointer-events: none; z-index: 9999; mix-blend-mode: multiply; }
-
-        .book-card { transition: all 0.3s ease; }
-        .book-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; cursor: pointer; }
-        .book-item-sidebar:hover { background: var(--acc-active-bg); cursor: pointer; }
+        /* Tembok Pelindung Teks Word agar tidak dihancurkan Tailwind */
+        #reader-content { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 1.05rem; line-height: 1.6; color: #374151; }
+        .dark #reader-content { color: #d1d5db; }
+        #reader-content p { margin-bottom: 1rem; text-align: justify; }
+        #reader-content strong, #reader-content b { font-weight: 700 !important; color: #111827; }
+        .dark #reader-content strong, .dark #reader-content b { color: #f9fafb; }
+        #reader-content ul { list-style-type: disc !important; padding-left: 2rem !important; margin-bottom: 1rem; }
+        #reader-content ol { list-style-type: decimal !important; padding-left: 2rem !important; margin-bottom: 1rem; }
+        #reader-content table { width: 100% !important; border-collapse: collapse !important; margin-top: 1.5rem; margin-bottom: 1.5rem; }
+        #reader-content th, #reader-content td { border: 1px solid #9ca3af !important; padding: 0.75rem !important; }
+        #reader-content th { background-color: #e5e7eb; font-weight: bold !important; text-align: left; }
+        .dark #reader-content th { background-color: #374151; border-color: #4b5563 !important; }
+        .dark #reader-content td { border-color: #4b5563 !important; }
+        #reader-content h1, #reader-content h2, #reader-content h3, #reader-content h4 { font-weight: bold !important; margin-top: 1.5rem; margin-bottom: 0.75rem; color: #1e3a8a; }
+        .dark #reader-content h1, .dark #reader-content h2, .dark #reader-content h3, .dark #reader-content h4 { color: #60a5fa; }
     </style>
 </head>
-<body>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300 antialiased overflow-x-hidden">
 
-    <div id="eye-care-overlay"></div>
+    <div id="sepia-overlay"></div>
 
-    <nav class="navbar navbar-expand-lg glass-panel sticky-top" style="border-radius: 0; border-top: 0; border-left: 0; border-right: 0; z-index: 1040;">
-        <div class="container-fluid px-3 px-md-4">
-
-            <div class="d-flex align-items-center">
-                <button class="btn btn-sm d-md-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMobile" style="color: var(--brand-color);">
-                    <i class="fa-solid fa-bars fs-5"></i>
+    <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 shadow-sm">
+        <div class="px-2 py-3 lg:px-5 lg:pl-3 flex items-center justify-between">
+            <div class="flex items-center justify-start shrink-0">
+                <button id="sidebarToggleBtn" type="button" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                    <i class="fa-solid fa-bars text-xl"></i>
                 </button>
-
-                <button class="btn btn-sm glass-panel me-3 d-none d-md-block shadow-sm" id="desktopSidebarToggle" style="color: var(--brand-color);" title="Buka/Tutup Sidebar">
-                    <i class="fa-solid fa-bars-staggered" id="sidebarToggleIcon"></i>
-                </button>
-
-                <a class="navbar-brand fw-bold d-flex align-items-center m-0" href="/" style="color: var(--brand-color); text-shadow: var(--brand-glow);">
-                    <i class="fa-solid fa-ship me-2 d-none d-sm-block"></i> E-Book System
+                <a href="/" class="flex ms-1 sm:ms-2 md:me-24 items-center">
+                    <i class="fa-solid fa-ship text-amarin dark:text-blue-400 text-xl sm:text-2xl me-2"></i>
+                    <span class="self-center text-lg sm:text-xl md:text-2xl font-bold whitespace-nowrap text-amarin dark:text-blue-400 truncate">E-Book System</span>
                 </a>
             </div>
 
-            <div class="d-flex align-items-center ms-auto">
-                <form action="/" method="GET" class="d-flex me-2 me-md-4">
-                    <div class="input-group input-group-sm shadow-sm" style="max-width: 200px;">
-                        <input type="text" name="search" class="form-control bg-light border-0" placeholder="Cari..." value="{{ request('search') }}">
-                        <button class="btn text-white" style="background-color: var(--brand-color);" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <div class="flex items-center space-x-2 sm:space-x-3 ms-auto shrink-0">
+                <form action="/" method="GET" class="hidden md:flex">
+                    <div class="relative">
+                        <input type="text" name="search" value="{{ request('search') }}" class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-amarin focus:border-amarin dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" placeholder="Cari materi...">
+                        <button type="submit" class="absolute top-0 end-0 p-2 text-sm font-medium h-full text-white bg-amarin rounded-e-lg hover:bg-amarinDark">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
                     </div>
                 </form>
 
-                <div class="dropdown me-2 me-md-3">
-                    <button class="btn btn-sm glass-panel fw-bold shadow-sm" style="color: var(--brand-color); border-color: var(--glass-border);" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                        <i class="fa-solid fa-sliders"></i> <span class="d-none d-md-inline ms-1">Tampilan</span>
+                <div class="relative">
+                    <button id="dropdownDefaultButton" class="text-amarin dark:text-blue-400 bg-blue-50 dark:bg-gray-700 hover:bg-blue-100 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2.5 py-2 sm:px-4 sm:py-2 text-center inline-flex items-center" type="button">
+                        <i class="fa-solid fa-sliders"></i> <span class="hidden sm:inline ms-2">Tampilan</span>
                     </button>
-                    <div class="dropdown-menu dropdown-menu-end p-3 glass-panel widget-dropdown border-0 shadow-lg mt-2">
-                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom" style="border-color: var(--glass-border) !important;">
-                            <label class="form-check-label fw-bold" for="themeSwitch" style="color: var(--text-main);">
-                                <i class="fa-solid fa-moon me-2"></i>Mode Malam
-                            </label>
-                            <div class="form-check form-switch m-0">
-                                <input class="form-check-input fs-5" type="checkbox" role="switch" id="themeSwitch">
-                            </div>
-                        </div>
-                        <div class="mb-2">
-                            <label for="readSlider" class="form-label fw-bold d-flex justify-content-between" style="color: var(--text-main);">
-                                <span><i class="fa-solid fa-glasses me-2"></i>Proteksi Mata</span>
-                                <span id="sliderValue" class="text-muted small">0%</span>
-                            </label>
-                            <input type="range" class="form-range" id="readSlider" min="0" max="0.4" step="0.05" value="0">
-                        </div>
+
+                    <div id="dropdownMenu" class="absolute right-0 top-full mt-2 z-50 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-64 dark:bg-gray-700 dark:divide-gray-600">
+                        <ul class="p-4 space-y-4 text-sm text-gray-700 dark:text-gray-200">
+                            <li class="flex justify-between items-center">
+                                <span class="font-bold"><i class="fa-solid fa-moon me-2"></i> Mode Malam</span>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" value="" id="theme-toggle" class="sr-only peer">
+                                    <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-amarin"></div>
+                                </label>
+                            </li>
+                            <li class="pt-2 border-t border-gray-200 dark:border-gray-600">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-bold"><i class="fa-solid fa-glasses me-2"></i> Proteksi Mata</span>
+                                    <span id="sliderValue" class="text-xs text-gray-500">0%</span>
+                                </div>
+                                <input id="readSlider" type="range" min="0" max="0.4" step="0.05" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-600">
+                            </li>
+                        </ul>
                     </div>
                 </div>
 
-                <a href="/admin" class="btn btn-sm fw-bold text-white shadow-sm" style="background-color: var(--brand-color); border-radius: 20px; padding: 6px 15px;">
-                    <i class="fa-solid fa-shield-halved"></i> <span class="d-none d-md-inline ms-1">Admin</span>
+                <a href="/admin" class="text-white bg-amarin hover:bg-amarinDark focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 sm:px-4 sm:py-2 dark:bg-blue-600 dark:hover:bg-blue-700">
+                    <i class="fa-solid fa-shield-halved"></i> <span class="hidden sm:inline ms-1">Admin</span>
                 </a>
             </div>
         </div>
     </nav>
 
-    <div class="container-fluid mt-3 px-3 px-md-4 mb-4">
-        <div class="row g-3 g-md-4">
+    <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-[22rem] h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700">
+        <div class="h-full px-4 pb-4 overflow-y-auto custom-scrollbar bg-white dark:bg-gray-800">
+            <h5 class="text-lg font-bold text-amarin dark:text-blue-400 mb-4 pb-2 border-b dark:border-gray-700"><i class="fa-solid fa-book-journal-whills me-2"></i> Pustaka Dokumen</h5>
 
-            <div class="col-md-3 d-none d-md-block transition-all" id="sidebar-column">
-                <div class="offcanvas-md offcanvas-start glass-panel sidebar-glass" tabindex="-1" id="sidebarMobile" style="background: var(--glass-bg);">
+            @if($books->isEmpty())
+                <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-700 dark:text-blue-400">Pustaka masih kosong.</div>
+            @else
+                <div id="accordion-container">
+                    @foreach($books as $book)
+                    <div class="mb-3">
+                        <button type="button" class="accordion-btn flex items-center justify-between w-full p-3 font-medium text-left text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-600 dark:text-gray-300" data-target="accordion-body-{{ $book->id }}">
+                            <div class="flex items-center gap-3 overflow-hidden">
+                                @if($book->cover_image)
+                                    <img src="{{ asset('uploads/books/' . $book->cover_image) }}" class="w-10 h-14 object-cover rounded shadow-sm">
+                                @else
+                                    <div class="w-10 h-14 rounded bg-amarin flex items-center justify-center text-white shadow-sm"><i class="fa-solid fa-book"></i></div>
+                                @endif
+                                <div class="text-sm truncate">
+                                    <div class="font-bold truncate text-wrap leading-tight">{{ $book->title }}</div>
+                                    <div class="text-xs font-normal text-gray-500 dark:text-gray-400 mt-1">{{ $book->parts->count() }} Bagian</div>
+                                </div>
+                            </div>
+                            <svg class="w-3 h-3 transition-transform duration-200 {{ (isset($activeBook) && $activeBook->id == $book->id) ? 'rotate-180' : '' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/></svg>
+                        </button>
 
-                    <div class="offcanvas-header d-md-none border-bottom" style="border-color: var(--glass-border) !important;">
-                        <h5 class="offcanvas-title fw-bold" style="color: var(--brand-color);"><i class="fa-solid fa-book-journal-whills me-2"></i> Pustaka Dokumen</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" style="filter: var(--icon-filter);"></button>
-                    </div>
+                        <div id="accordion-body-{{ $book->id }}" class="{{ (isset($activeBook) && $activeBook->id == $book->id) ? 'block' : 'hidden' }} pt-2">
+                            @if($book->pdf_file)
+                                <a href="?read_book={{ $book->id }}" class="flex items-center p-2 text-sm text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-gray-700 dark:text-red-400 border border-red-200 dark:border-gray-600 mb-3 bg-red-50 dark:bg-gray-800 transition-colors shadow-sm">
+                                    <i class="fa-solid fa-file-pdf w-5 h-5 text-lg"></i>
+                                    <span class="ms-2 font-bold">Buka PDF Mentahan</span>
+                                </a>
+                            @endif
 
-                    <div class="offcanvas-body flex-column p-md-0">
-                        <h5 class="fw-bold mb-4 d-none d-md-block" style="color: var(--brand-color); border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">
-                            <i class="fa-solid fa-book-journal-whills me-2"></i> Pustaka Dokumen
-                        </h5>
+                            <div class="ps-2 ms-2 border-s-2 border-gray-200 dark:border-gray-600 space-y-4">
+                                @foreach($book->parts as $part)
+                                    <div>
+                                        <h6 class="text-xs font-bold text-gray-500 uppercase dark:text-gray-400 mb-2"><i class="fa-solid fa-layer-group me-1"></i> {{ $part->title }}</h6>
+                                        <ul class="space-y-1 ms-2 border-s border-gray-200 dark:border-gray-700">
+                                            @foreach($part->chapters as $chapter)
+                                                <li>
+                                                    <a href="?read={{ $chapter->id }}" class="flex items-center p-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group transition-colors {{ (isset($activeChapter) && $activeChapter->id == $chapter->id) ? 'text-amarin font-bold bg-blue-50 dark:bg-gray-700 dark:text-blue-400 border-l-2 border-amarin' : 'text-gray-600 dark:text-gray-300' }}">
+                                                        <i class="fa-regular fa-file-lines me-2"></i>
+                                                        <span class="truncate">{{ $chapter->title }}</span>
+                                                    </a>
 
-                        @if($books->isEmpty())
-                            <div class="alert alert-info bg-transparent border-info text-info small">Pustaka masih kosong.</div>
-                        @else
-                            <div class="accordion accordion-flush" id="bookAccordion">
-                                @foreach($books as $book)
-                                    <div class="accordion-item bg-transparent border-0 mb-3">
-
-                                        <div class="d-flex align-items-center shadow-sm rounded book-item-sidebar p-2" style="background: var(--glass-bg); border: 1px solid var(--glass-border);">
-                                            <a href="?read_book={{ $book->id }}" class="d-flex align-items-center flex-grow-1 text-decoration-none" style="color: var(--text-main);">
-                                                @if($book->cover_image)
-                                                    <img src="{{ asset('uploads/books/' . $book->cover_image) }}" alt="Cover" class="rounded me-3 shadow-sm" style="width: 45px; height: 60px; object-fit: cover;">
-                                                @else
-                                                    <div class="rounded me-3 d-flex justify-content-center align-items-center shadow-sm" style="width: 45px; height: 60px; background: {{ $book->theme_color ?? 'var(--brand-color)' }}; color: white;"><i class="fa-solid fa-book"></i></div>
-                                                @endif
-                                                <div>
-                                                    <div class="fw-bold mb-1" style="font-size: 0.95rem; line-height: 1.2;">{{ $book->title }}</div>
-                                                    @if($book->pdf_file)
-                                                        <div style="font-size: 0.75rem; color: var(--brand-color);"><i class="fa-solid fa-file-pdf"></i> Lihat PDF Asli</div>
-                                                    @else
-                                                        <div style="font-size: 0.75rem; color: var(--text-muted);"><i class="fa-solid fa-file-circle-xmark"></i> PDF Belum Tersedia</div>
+                                                    @if(isset($activeChapter) && $activeChapter->id == $chapter->id)
+                                                        <div id="dynamic-toc" class="ms-1 mt-2 mb-2 space-y-0.5 border-s-2 border-gray-200 dark:border-gray-700"></div>
                                                     @endif
-                                                </div>
-                                            </a>
-                                            <button class="btn btn-sm text-muted ms-2 p-2 border-start" type="button" data-bs-toggle="collapse" data-bs-target="#book-{{ $book->id }}" style="border-radius: 0; border-color: var(--glass-border) !important;">
-                                                <i class="fa-solid fa-chevron-down"></i>
-                                            </button>
-                                        </div>
-
-                                        <div id="book-{{ $book->id }}" class="accordion-collapse collapse {{ (isset($activeBook) && $activeBook->id == $book->id) ? 'show' : '' }}" data-bs-parent="#bookAccordion">
-                                            <div class="accordion-body p-2 mt-2">
-                                                @foreach($book->parts as $part)
-                                                    <div class="fw-bold text-uppercase mb-1 mt-3" style="color: var(--text-muted); font-size: 0.75rem;"><i class="fa-solid fa-layer-group me-1"></i> {{ $part->title }}</div>
-                                                    <div class="ms-1 mb-2 border-start border-2" style="border-color: var(--glass-border) !important;">
-                                                        @foreach($part->chapters as $chapter)
-                                                            <a href="?read={{ $chapter->id }}" class="subchapter-link {{ (isset($activeChapter) && $activeChapter->id == $chapter->id) ? 'active fw-bold' : '' }}">
-                                                                <i class="fa-regular fa-file-lines me-2"></i> {{ $chapter->title }}
-                                                            </a>
-                                                        @endforeach
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
+                                                </li>
+                                            @endforeach
+                                        </ul>
                                     </div>
                                 @endforeach
                             </div>
-                        @endif
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+    </aside>
+
+    <div class="p-4 sm:ml-[22rem] mt-16 min-h-screen">
+        <div class="p-4 md:p-8 border border-gray-200 rounded-xl dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm min-h-[85vh]">
+
+            @if(isset($searchResults))
+                <h4 class="text-2xl font-bold mb-6 text-amarin dark:text-blue-400 border-b pb-4 dark:border-gray-700"><i class="fa-solid fa-magnifying-glass me-2"></i> Hasil: "{{ request('search') }}"</h4>
+                @if($searchResults->isEmpty())
+                    <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 text-center"><i class="fa-solid fa-triangle-exclamation fa-2x mb-2"></i><br>Tidak ada dokumen yang cocok.</div>
+                @else
+                    <ul class="space-y-3">
+                        @foreach($searchResults as $result)
+                            <li>
+                                <a href="?read={{ $result->id }}&search={{ request('search') }}" class="block p-4 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                                    <h5 class="mb-1 text-lg font-bold tracking-tight text-amarin dark:text-blue-400">{{ $result->title }}</h5>
+                                    <p class="text-sm text-gray-700 dark:text-gray-400">Kata <span class="font-bold bg-yellow-200 text-black px-1 rounded">"{{ request('search') }}"</span> ditemukan di bab ini.</p>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+
+            @elseif(isset($activeChapter))
+                <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-amarin dark:text-blue-400">{{ $activeChapter->title }}</h2>
+                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 border border-blue-400 hidden sm:inline">Dokumen Interaktif</span>
+                </div>
+
+                <div id="reader-content">
+                    {!! $activeChapter->content !!}
+                </div>
+
+            @elseif(isset($activeBook) && $activeBook->pdf_file)
+                <div class="flex flex-col lg:flex-row justify-between items-center mb-4 bg-gray-100 dark:bg-gray-700 p-3 rounded-lg border border-gray-200 dark:border-gray-600 gap-3">
+                    <div class="flex items-center text-sm text-gray-700 dark:text-gray-300 text-center lg:text-left">
+                        <i class="fa-solid fa-file-pdf text-red-600 text-xl me-2"></i>
+                        <span>Dokumen Asli: <strong class="text-amarin dark:text-blue-400">{{ $activeBook->title }}</strong></span>
+                    </div>
+                    <div class="flex gap-2 w-full lg:w-auto justify-center">
+                        <a href="{{ asset('uploads/books/' . $activeBook->pdf_file) }}" target="_blank" class="text-white bg-amarin hover:bg-amarinDark focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 whitespace-nowrap">
+                            <i class="fa-solid fa-up-right-from-square me-1"></i> Buka Layar Penuh
+                        </a>
                     </div>
                 </div>
-            </div>
+                <iframe src="{{ asset('uploads/books/' . $activeBook->pdf_file) }}" class="w-full h-[75vh] rounded-lg border border-gray-200 dark:border-gray-700"></iframe>
 
-            <div class="col-md-9 transition-all" id="content-column">
-                <div class="glass-panel content-glass p-0">
-
-                    @if(isset($searchResults))
-                        <div class="p-3 p-md-4">
-                            <h4 class="fw-bold mb-4" style="color: var(--brand-color);"><i class="fa-solid fa-magnifying-glass me-2"></i> Hasil: "{{ request('search') }}"</h4>
-                            @if($searchResults->isEmpty())
-                                <div class="alert alert-warning border-0 shadow-sm text-center py-4">
-                                    <i class="fa-solid fa-triangle-exclamation fa-2x mb-2 text-warning"></i><br>Tidak ada dokumen yang cocok.
-                                </div>
-                            @else
-                                <div class="list-group">
-                                    @foreach($searchResults as $result)
-                                        <a href="?read={{ $result->id }}" class="list-group-item list-group-item-action mb-2 border-0 shadow-sm rounded glass-panel" style="background: var(--acc-active-bg); color: var(--text-main);">
-                                            <h6 class="fw-bold mb-1" style="color: var(--brand-color);">{{ $result->title }}</h6>
-                                            <small class="text-muted">Kecocokan ditemukan pada Bab ini.</small>
-                                        </a>
-                                    @endforeach
-                                </div>
-                            @endif
-                        </div>
-
-                    @elseif(isset($activeBook))
-
-                        @if($activeBook->pdf_file || isset($activeChapter))
-
-                            <div class="px-3 px-md-4 pt-3" style="background: var(--acc-active-bg); border-radius: 16px 16px 0 0;">
-                                <ul class="nav nav-tabs border-bottom-0" role="tablist">
-                                    @if(isset($activeChapter))
-                                    <li class="nav-item" role="presentation">
-                                        <a href="?read={{ $activeChapter->id }}" class="nav-link active">
-                                            <i class="fa-solid fa-file-code me-1"></i> Teks Interaktif
-                                        </a>
-                                    </li>
-                                    @endif
-
-                                    @if($activeBook->pdf_file)
-                                    <li class="nav-item" role="presentation">
-                                        <a href="?read_book={{ $activeBook->id }}" class="nav-link {{ !isset($activeChapter) ? 'active' : '' }}">
-                                            <i class="fa-solid fa-file-pdf {{ !isset($activeChapter) ? 'text-danger' : '' }} me-1"></i> File PDF Asli
-                                        </a>
-                                    </li>
-                                    @endif
-                                </ul>
-                            </div>
-
-                            <div class="border-top" style="border-color: var(--glass-border) !important;">
-                                @if(isset($activeChapter))
-                                <div class="p-3 p-md-4">
-                                    <h3 class="fw-bold mb-4" style="color: var(--brand-color);">{{ $activeChapter->title }}</h3>
-                                    <div style="font-size: 1.05rem; line-height: 1.8; color: var(--text-main); overflow-wrap: break-word;">
-                                        {!! $activeChapter->content !!}
-                                    </div>
-                                </div>
-                                @elseif($activeBook->pdf_file)
-                                <div>
-                                    <div class="bg-dark d-flex flex-wrap justify-content-between align-items-center px-3 py-2 text-white">
-                                        <small class="mb-1 mb-md-0"><i class="fa-solid fa-magnifying-glass me-1"></i> Gunakan <b>Ctrl + F</b> (PC) / <b>Cari</b> (HP) untuk mencari kata.</small>
-                                        <a href="{{ asset('uploads/books/' . $activeBook->pdf_file) }}" target="_blank" class="btn btn-sm btn-outline-light"><i class="fa-solid fa-up-right-from-square me-1"></i> Layar Penuh</a>
-                                    </div>
-                                    <iframe src="{{ asset('uploads/books/' . $activeBook->pdf_file) }}" width="100%" class="pdf-frame" style="height: 75vh; border: none; border-radius: 0 0 16px 16px;"></iframe>
-                                </div>
-                                @endif
-                            </div>
-
-                        @else
-                            <div class="d-flex h-100 flex-column align-items-center justify-content-center text-center p-4">
-                                <i class="fa-solid fa-file-circle-xmark fa-4x mb-4 text-muted"></i>
-                                <h3 class="fw-bold mb-2" style="color: var(--text-main);">PDF Belum Diunggah</h3>
-                                <p style="color: var(--text-muted); max-width: 500px; font-size: 1.1rem;">
-                                    Administrator belum melampirkan file mentahan PDF untuk buku <b>{{ $activeBook->title }}</b>.
-                                </p>
-                                <p style="color: var(--text-muted); font-size: 0.9rem;">
-                                    Silakan gunakan ikon <i class="fa-solid fa-chevron-down"></i> di sidebar untuk membaca teks interaktif per bab.
-                                </p>
-                            </div>
-                        @endif
-
-                    @else
-                        <div class="p-4 p-md-5">
-                            <div class="d-flex flex-column flex-md-row align-items-center mb-5 border-bottom pb-4 text-center text-md-start" style="border-color: var(--glass-border) !important;">
-                                <i class="fa-brands fa-space-awesome fa-4x mb-3 mb-md-0 me-md-4" style="color: var(--brand-color); filter: drop-shadow(var(--brand-glow));"></i>
-                                <div>
-                                    <h2 class="fw-bold mb-2" style="color: var(--text-main);">E-Book Terintegrasi</h2>
-                                    <p style="color: var(--text-muted); margin: 0; font-size: 1.1rem;">Platform digitalisasi dokumen operasional dan keselamatan kapal PT Amarin Ship Management.</p>
-                                </div>
-                            </div>
-
-                            <h5 class="fw-bold mb-3" style="color: var(--brand-color);">
-                                <i class="fa-solid fa-book-bookmark me-2"></i> Daftar E-Book Tersedia
-                            </h5>
-                            <div class="row g-3 mb-5">
-                                @forelse($books as $book)
-                                    <div class="col-6 col-md-4 col-lg-3">
-                                        <a href="?read_book={{ $book->id }}" class="text-decoration-none">
-                                            <div class="glass-panel p-3 h-100 d-flex flex-column align-items-center text-center book-card" style="border-top: 4px solid {{ $book->theme_color ?? 'var(--brand-color)' }};">
-                                                @if($book->cover_image)
-                                                    <img src="{{ asset('uploads/books/' . $book->cover_image) }}" alt="Cover" class="rounded mb-3 shadow-sm" style="width: 70px; height: 95px; object-fit: cover;">
-                                                @else
-                                                    <div class="rounded mb-3 d-flex justify-content-center align-items-center shadow-sm" style="width: 70px; height: 95px; background: {{ $book->theme_color ?? 'var(--brand-color)' }}; color: white;"><i class="fa-solid fa-book fa-2x"></i></div>
-                                                @endif
-                                                <h6 class="fw-bold mb-1 w-100 text-truncate" style="color: var(--text-main); font-size: 0.9rem;" title="{{ $book->title }}">{{ $book->title }}</h6>
-                                                <small style="color: var(--text-muted); font-size: 0.75rem;">{{ $book->parts->count() }} Bagian</small>
-                                            </div>
-                                        </a>
-                                    </div>
-                                @empty
-                                    <div class="col-12">
-                                        <div class="alert glass-panel border-0 text-center text-muted">Belum ada E-Book yang ditambahkan.</div>
-                                    </div>
-                                @endforelse
-                            </div>
-
-                            <h5 class="fw-bold mb-4" style="color: var(--brand-color);">
-                                <i class="fa-solid fa-clock-rotate-left me-2"></i> Baru Saja Diperbarui
-                            </h5>
-                            @if(isset($recentUpdates) && $recentUpdates->isNotEmpty())
-                                <div class="list-group shadow-sm">
-                                    @foreach($recentUpdates as $update)
-                                        <a href="?read={{ $update->id }}" class="list-group-item list-group-item-action border-0 mb-2 rounded glass-panel" style="background: var(--acc-active-bg); transition: 0.3s;">
-                                            <div class="d-flex flex-column flex-md-row w-100 justify-content-between align-items-md-center mb-1">
-                                                <h6 class="fw-bold mb-2 mb-md-0" style="color: var(--text-main); font-size: 1.1rem;">{{ $update->title }}</h6>
-                                                <span class="badge rounded-pill align-self-start align-self-md-center" style="background-color: var(--brand-color);">{{ $update->created_at->diffForHumans() }}</span>
-                                            </div>
-                                            <div class="small mt-2 mt-md-0" style="color: var(--text-muted);">
-                                                <i class="fa-solid fa-book-open me-1"></i> <strong>{{ $update->part->book->title ?? 'Tidak diketahui' }}</strong> &nbsp;|&nbsp;
-                                                <i class="fa-solid fa-folder me-1"></i> {{ $update->part->title }}
-                                            </div>
-                                        </a>
-                                    @endforeach
-                                </div>
-                            @else
-                                <div class="alert glass-panel border-0 text-center py-4 text-muted">
-                                    <i class="fa-solid fa-box-open fa-2x mb-2"></i><br>Belum ada aktivitas penambahan bab.
-                                </div>
-                            @endif
-                        </div>
-                    @endif
-
+            @else
+                <div class="flex flex-col md:flex-row items-center mb-10 pb-8 border-b border-gray-200 dark:border-gray-700 text-center md:text-left mt-4">
+                    <i class="fa-brands fa-space-awesome text-6xl text-amarin dark:text-blue-400 mb-4 md:mb-0 md:me-6"></i>
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white mb-2">E-Book Terintegrasi</h1>
+                        <p class="text-base md:text-lg text-gray-500 dark:text-gray-400">Platform digitalisasi dokumen operasional dan keselamatan kapal PT Amarin Ship Management.</p>
+                    </div>
                 </div>
-            </div>
 
+                <h3 class="text-xl font-bold text-amarin dark:text-blue-400 mb-4"><i class="fa-solid fa-book-bookmark me-2"></i> Pustaka Utama</h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
+                    @forelse($books as $book)
+                        <a href="?read_book={{ $book->id }}" class="flex flex-col items-center justify-center p-4 bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 transition-transform hover:-translate-y-1">
+                            @if($book->cover_image)
+                                <img src="{{ asset('uploads/books/' . $book->cover_image) }}" class="w-20 h-28 object-cover rounded shadow mb-3">
+                            @else
+                                <div class="w-20 h-28 rounded bg-amarin flex items-center justify-center text-white shadow mb-3"><i class="fa-solid fa-book text-3xl"></i></div>
+                            @endif
+                            <h5 class="text-sm font-bold text-center text-gray-900 dark:text-white truncate w-full">{{ $book->title }}</h5>
+                            <span class="text-xs text-red-600 dark:text-red-400 mt-1"><i class="fa-solid fa-file-pdf"></i> PDF Mentahan</span>
+                        </a>
+                    @empty
+                        <div class="col-span-full p-4 text-center text-gray-500 bg-gray-50 rounded-lg dark:bg-gray-800 dark:text-gray-400">Belum ada buku diunggah.</div>
+                    @endforelse
+                </div>
+            @endif
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // === Logika Tema ===
-            const themeSwitch = document.getElementById('themeSwitch');
-            const htmlElement = document.documentElement;
-            if (localStorage.getItem('amarin-theme') === 'dark') {
-                htmlElement.setAttribute('data-theme', 'dark');
-                themeSwitch.checked = true;
+
+            // Dropdown Tampilan
+            const dropdownBtn = document.getElementById('dropdownDefaultButton');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            if (dropdownBtn && dropdownMenu) {
+                dropdownBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('hidden');
+                });
+                dropdownMenu.addEventListener('click', (e) => { e.stopPropagation(); });
+                document.addEventListener('click', () => { dropdownMenu.classList.add('hidden'); });
             }
-            themeSwitch.addEventListener('change', (e) => {
-                const theme = e.target.checked ? 'dark' : 'light';
-                htmlElement.setAttribute('data-theme', theme);
-                localStorage.setItem('amarin-theme', theme);
+
+            // Accordion Buku
+            const accordionBtns = document.querySelectorAll('.accordion-btn');
+            accordionBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetId = btn.getAttribute('data-target');
+                    const targetBody = document.getElementById(targetId);
+                    const icon = btn.querySelector('svg');
+                    if (targetBody.classList.contains('hidden')) {
+                        targetBody.classList.remove('hidden');
+                        targetBody.classList.add('block');
+                        icon.classList.add('rotate-180');
+                    } else {
+                        targetBody.classList.add('hidden');
+                        targetBody.classList.remove('block');
+                        icon.classList.remove('rotate-180');
+                    }
+                });
             });
 
-            // === Logika Proteksi Mata ===
+            // Mobile Sidebar Toggle
+            const sidebarBtn = document.getElementById('sidebarToggleBtn');
+            const sidebar = document.getElementById('logo-sidebar');
+            if (sidebarBtn && sidebar) {
+                sidebarBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    sidebar.classList.toggle('-translate-x-full');
+                });
+            }
+
+            // Dark Mode & Sepia
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                themeToggleBtn.checked = true;
+            } else { document.documentElement.classList.remove('dark'); }
+
+            themeToggleBtn.addEventListener('change', function() {
+                if (this.checked) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                }
+            });
+
             const readSlider = document.getElementById('readSlider');
             const sliderValueText = document.getElementById('sliderValue');
+            const htmlElement = document.documentElement;
             const savedSepia = localStorage.getItem('amarin-sepia') || '0';
-
             readSlider.value = savedSepia;
             htmlElement.style.setProperty('--sepia-level', savedSepia);
             sliderValueText.textContent = Math.round((savedSepia / 0.4) * 100) + '%';
-
             readSlider.addEventListener('input', (e) => {
                 const val = e.target.value;
                 htmlElement.style.setProperty('--sepia-level', val);
@@ -362,28 +310,112 @@
                 sliderValueText.textContent = Math.round((val / 0.4) * 100) + '%';
             });
 
-            document.querySelector('.widget-dropdown').addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
-
-            // === Logika Buka/Tutup Sidebar ===
-            const desktopToggle = document.getElementById('desktopSidebarToggle');
-            const sidebarCol = document.getElementById('sidebar-column');
-            const contentCol = document.getElementById('content-column');
-            const toggleIcon = document.getElementById('sidebarToggleIcon');
-
-            if(desktopToggle) {
-                desktopToggle.addEventListener('click', () => {
-                    sidebarCol.classList.toggle('sidebar-hidden');
-
-                    if(sidebarCol.classList.contains('sidebar-hidden')) {
-                        contentCol.classList.replace('col-md-9', 'col-md-12');
-                        toggleIcon.classList.replace('fa-bars-staggered', 'fa-bars');
-                    } else {
-                        contentCol.classList.replace('col-md-12', 'col-md-9');
-                        toggleIcon.classList.replace('fa-bars', 'fa-bars-staggered');
+            // Auto Highlight
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchQuery = urlParams.get('search');
+            const contentBox = document.getElementById('reader-content');
+            if (searchQuery && contentBox) {
+                const markInstance = new Mark(contentBox);
+                markInstance.mark(searchQuery, {
+                    element: "mark",
+                    className: "search-highlight",
+                    separateWordSearch: false,
+                    done: function() {
+                        const firstHighlight = document.querySelector('mark.search-highlight');
+                        if (firstHighlight) {
+                            setTimeout(() => { firstHighlight.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 500);
+                        }
                     }
                 });
+            }
+
+            // ========================================================
+            // MESIN EKSTRAKSI DAFTAR ISI (TOC) 6-LEVEL FINAL
+            // ========================================================
+            const tocContainer = document.getElementById('dynamic-toc');
+            if (contentBox && tocContainer) {
+
+                // MURNI HANYA mengambil teks yang di-Heading/Bold oleh user, bukan <p>
+                const headings = contentBox.querySelectorAll('h1, h2, h3, h4, h5, h6, strong, b');
+                let tocHTML = '<div class="flex flex-col w-full">';
+                let validId = 0;
+                let seenTexts = new Set(); // Mencegah judul terekam 2x jika ada Bold di dalam Heading
+
+                headings.forEach((heading) => {
+                    let text = heading.innerText.replace(/\s+/g, ' ').trim();
+
+                    // PEMBERSIH AJAIB: Menghapus titik-titik dan nomor halaman bawaan Word
+                    // Mengubah "1.1. Purpose ...................... 1" -> "1.1. Purpose"
+                    text = text.replace(/\.{2,}\s*\d*$/, '').trim();
+
+                    if (text.length < 3 || text.length > 150 || seenTexts.has(text)) return;
+
+                    let level = 0;
+
+                    // LEVEL 1: PART A (Huruf kapital setelah kata PART)
+                    if (/^PART\s+[A-Z]\b/i.test(text)) { level = 1; }
+                    // LEVEL 2: CHAPTER 1 (Angka setelah kata CHAPTER)
+                    else if (/^CHAPTER\s+\d+/i.test(text)) { level = 2; }
+                    // LEVEL 3: PART 1 / BAGIAN 1 (Angka)
+                    else if (/^(?:PART|BAGIAN)\s+\d+/i.test(text)) { level = 3; }
+                    // LEVEL 4, 5, 6: Sub-bab angka (1.1, 1.1.1, dll)
+                    else if (/^\d+\.\d+/.test(text) || /^\d+\.\s/.test(text)) {
+                        // Menghitung jumlah titik untuk menentukan kedalaman
+                        const match = text.match(/^(\d+(?:\.\d+)*)/);
+                        if (match) {
+                            const dotsCount = match[1].split('.').length - 1;
+                            // 1 titik (1.1) = Level 4. 2 titik (1.1.1) = Level 5.
+                            level = 3 + dotsCount;
+                        }
+                    }
+
+                    if (level > 0) {
+                        validId++;
+                        seenTexts.add(text);
+                        const id = 'section-' + validId;
+                        heading.id = id; // Tanamkan jangkar
+
+                        let paddingClass = '';
+                        let textClass = '';
+                        let icon = '';
+
+                        // STYLING SIDEBAR BERDASARKAN LEVEL HIERARKI
+                        if (level === 1) {
+                            paddingClass = 'pl-1 mt-4';
+                            textClass = 'text-amarin dark:text-blue-400 font-extrabold uppercase border-b border-gray-200 dark:border-gray-700 pb-1 text-[0.85rem]';
+                            icon = '<i class="fa-solid fa-book-open me-1 opacity-70"></i>';
+                        } else if (level === 2) {
+                            paddingClass = 'pl-3 border-l-2 border-amarin ml-2 mt-2';
+                            textClass = 'text-gray-800 dark:text-gray-200 font-bold text-[0.8rem]';
+                            icon = '<i class="fa-solid fa-folder me-1 text-amarin opacity-80"></i>';
+                        } else if (level === 3) {
+                            paddingClass = 'pl-5 border-l-2 border-gray-300 dark:border-gray-600 ml-2 mt-1';
+                            textClass = 'text-gray-700 dark:text-gray-300 font-semibold text-[0.75rem]';
+                            icon = '<i class="fa-solid fa-bookmark me-1 opacity-50"></i>';
+                        } else if (level === 4) {
+                            paddingClass = 'pl-7 border-l-2 border-gray-300 dark:border-gray-600 ml-2';
+                            textClass = 'text-gray-600 dark:text-gray-400 text-[0.75rem]';
+                            icon = '<i class="fa-solid fa-caret-right me-1 opacity-50"></i>';
+                        } else {
+                            // Level 5 ke atas
+                            paddingClass = 'pl-9 border-l-2 border-gray-300 dark:border-gray-600 ml-2';
+                            textClass = 'text-gray-500 dark:text-gray-400 text-[0.7rem]';
+                            icon = '<i class="fa-solid fa-circle text-[4px] me-1 opacity-50 align-middle"></i>';
+                        }
+
+                        tocHTML += `<a href="#${id}" class="block py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors w-full truncate ${paddingClass} ${textClass}" title="${text}">
+                            ${icon} ${text}
+                        </a>`;
+                    }
+                });
+
+                tocHTML += '</div>';
+
+                if (validId > 0) {
+                    tocContainer.innerHTML = tocHTML;
+                } else {
+                    tocContainer.innerHTML = '<span class="text-xs text-gray-400 italic px-2">Sub-bab tidak terdeteksi. Bold teks (contoh: 1.1) di Editor.</span>';
+                }
             }
         });
     </script>

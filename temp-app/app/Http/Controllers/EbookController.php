@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Models\Chapter;
@@ -12,7 +14,7 @@ class EbookController extends Controller
         $activeChapter = null;
         $activeBook = null;
         $searchResults = null;
-        $recentUpdates = null; // Penampung aktivitas terbaru
+        $recentUpdates = null;
 
         if ($request->has('search') && $request->search != '') {
             $keyword = $request->search;
@@ -25,8 +27,11 @@ class EbookController extends Controller
                 $activeBook = $activeChapter->part->book;
             }
         }
+        // 👇 INI ADALAH KODE YANG HILANG SEBELUMNYA. INI YANG MEMBUAT PDF BISA DIBUKA!
+        elseif ($request->has('read_book')) {
+            $activeBook = Book::with('parts.chapters')->find($request->read_book);
+        }
         else {
-            // Jika sedang di halaman utama, ambil 5 bab terbaru
             $recentUpdates = Chapter::with('part.book')->latest()->take(5)->get();
         }
 

@@ -39,3 +39,7 @@ Route::post('/admin/parts/{part_id}/chapters', [ChapterController::class, 'store
 // 5. Kelola Isi Materi (Sub-Chapter)
 Route::get('/admin/chapters/{chapter_id}/sub-chapters', [SubChapterController::class, 'index']);
 Route::post('/admin/chapters/{chapter_id}/sub-chapters', [SubChapterController::class, 'store']);
+
+// Tambahkan baris ini di routes/web.php
+Route::get('/admin/chapters/{chapter_id}/edit', [ChapterController::class, 'edit']);
+Route::put('/admin/chapters/{chapter_id}', [ChapterController::class, 'update']);
