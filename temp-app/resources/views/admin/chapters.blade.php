@@ -23,17 +23,6 @@
         </div>
     @endif
 
-    @if($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <ul class="mb-0">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
     <div class="card border-0 shadow-sm">
         <div class="card-body">
             <table class="table table-hover align-middle">
@@ -41,7 +30,7 @@
                     <tr>
                         <th width="5%">No</th>
                         <th>Judul Bab (Chapter)</th>
-                        <th width="15%">Aksi</th>
+                        <th width="20%">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,27 +61,31 @@
             <form action="/admin/parts/{{ $part->id }}/chapters" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title"><i class="fa-solid fa-file-signature me-2"></i> Tulis / Import Materi Bab</h5>
+                    <h5 class="modal-title"><i class="fa-solid fa-file-signature me-2"></i> Tambah Bab Baru</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Judul Bab (Sesuai Daftar Isi)</label>
-                        <input type="text" class="form-control" name="title" placeholder="Contoh: Chapter 1 - General Issues" required>
+                        <label class="form-label fw-bold">Judul Bab</label>
+                        <input type="text" class="form-control" name="title" placeholder="Contoh: 1.1. Purpose" required>
                     </div>
 
-                    <div class="mb-4 p-3 bg-light border rounded" style="border-left: 4px solid #198754 !important;">
-                        <label class="form-label fw-bold text-success"><i class="fa-solid fa-magic me-1"></i> Auto-Import Text dari PDF (Opsional)</label>
-                        <input type="file" class="form-control" name="import_pdf" accept="application/pdf">
-                        <small class="text-muted">Upload file PDF di sini. Sistem akan otomatis menyedot seluruh teks di dalam PDF tersebut menjadi materi interaktif.</small>
+                    <div class="mb-4 p-4 bg-light rounded-4 shadow-sm" style="border: 2px dashed #0d6efd;">
+                        <label class="form-label fw-bold text-primary mb-1">
+                            <i class="fa-solid fa-wand-magic-sparkles me-2"></i> Auto-Convert Dokumen Word (.docx)
+                        </label>
+                        <p class="text-muted small mb-3">Pilih file Word, sistem akan mengekstrak formatnya ke editor di bawah.</p>
+                        <input type="file" id="upload-docx-modal" class="form-control" accept=".docx">
+                        <div id="docx-loading-modal" class="text-warning fw-bold mt-2" style="display: none;">
+                            <i class="fa-solid fa-spinner fa-spin me-1"></i> Sedang mengekstrak dokumen...
+                        </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Atau Tulis / Paste Manual (Isi Dokumen)</label>
+                        <label class="form-label fw-bold">Isi Materi</label>
                         <textarea name="content" id="editor"></textarea>
                     </div>
                 </div>
-
                 <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i> Simpan Dokumen</button>
@@ -103,9 +96,37 @@
 </div>
 
 <script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
 <script>
-    CKEDITOR.replace('editor', {
-        height: 400
+    // Inisialisasi Editor
+    CKEDITOR.replace('editor', { height: 400 });
+
+    // Algoritma Ekstraksi Word Otomatis di Modal
+    document.getElementById('upload-docx-modal').addEventListener('change', function(event) {
+        var reader = new FileReader();
+        var loadingText = document.getElementById('docx-loading-modal');
+
+        reader.onload = function(event) {
+            loadingText.style.display = 'block';
+            var arrayBuffer = reader.result;
+
+            mammoth.convertToHtml({arrayBuffer: arrayBuffer})
+                .then(function(result) {
+                    var html = result.value;
+                    CKEDITOR.instances.editor.setData(html); // Kirim ke editor modal
+                    loadingText.style.display = 'none';
+                    alert('Dokumen Word berhasil diekstrak!');
+                })
+                .catch(function(err) {
+                    console.log(err);
+                    loadingText.style.display = 'none';
+                    alert('Gagal membaca file Word.');
+                });
+        };
+
+        if (this.files.length > 0) {
+            reader.readAsArrayBuffer(this.files[0]);
+        }
     });
 </script>
 @endsection
