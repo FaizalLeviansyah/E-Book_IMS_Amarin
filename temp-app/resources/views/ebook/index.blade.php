@@ -20,33 +20,74 @@
     <style>
         #sepia-overlay { position: fixed; inset: 0; background-color: rgba(255, 190, 90, var(--sepia-level, 0)); pointer-events: none; z-index: 9999; mix-blend-mode: multiply; }
         html { scroll-behavior: smooth; }
-        mark.search-highlight { background-color: #fde047; color: #000; padding: 0.1rem 0.2rem; border-radius: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
 
-        /* Tembok Pelindung Teks Word agar tidak dihancurkan Tailwind */
-        #reader-content { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 1.05rem; line-height: 1.6; color: #374151; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #4b5563; }
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: #9ca3af; }
+
+        /* CLASS MAGIC UNTUK VIRTUAL PAGE GITBOOK */
+        .virtual-hidden { display: none !important; }
+
+        /* ========================================================
+           GITBOOK TYPOGRAPHY STYLE (Tampilan Mewah & Readable)
+           ======================================================== */
+        #reader-content {
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #374151;
+        }
         .dark #reader-content { color: #d1d5db; }
-        #reader-content p { margin-bottom: 1rem; text-align: justify; }
-        #reader-content strong, #reader-content b { font-weight: 700 !important; color: #111827; }
-        .dark #reader-content strong, .dark #reader-content b { color: #f9fafb; }
-        #reader-content ul { list-style-type: disc !important; padding-left: 2rem !important; margin-bottom: 1rem; }
-        #reader-content ol { list-style-type: decimal !important; padding-left: 2rem !important; margin-bottom: 1rem; }
-        #reader-content table { width: 100% !important; border-collapse: collapse !important; margin-top: 1.5rem; margin-bottom: 1.5rem; }
-        #reader-content th, #reader-content td { border: 1px solid #9ca3af !important; padding: 0.75rem !important; }
-        #reader-content th { background-color: #e5e7eb; font-weight: bold !important; text-align: left; }
-        .dark #reader-content th { background-color: #374151; border-color: #4b5563 !important; }
-        .dark #reader-content td { border-color: #4b5563 !important; }
-        #reader-content h1, #reader-content h2, #reader-content h3, #reader-content h4 { font-weight: bold !important; margin-top: 1.5rem; margin-bottom: 0.75rem; color: #1e3a8a; }
-        .dark #reader-content h1, .dark #reader-content h2, .dark #reader-content h3, .dark #reader-content h4 { color: #60a5fa; }
+
+        #reader-content p { margin-bottom: 1.25rem; text-align: left; }
+        #reader-content strong, #reader-content b { font-weight: 600 !important; color: #111827; }
+        .dark #reader-content strong, .dark #reader-content b { color: #f3f4f6; }
+
+        #reader-content h1, #reader-content h2, #reader-content h3, #reader-content h4, #reader-content h5 {
+            font-weight: 700 !important;
+            color: #111827;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+        .dark #reader-content h1, .dark #reader-content h2, .dark #reader-content h3, .dark #reader-content h4, .dark #reader-content h5 { color: #f9fafb; }
+
+        #reader-content h1 { font-size: 2.25rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; }
+        .dark #reader-content h1 { border-color: #374151; }
+        #reader-content h2 { font-size: 1.75rem; border-bottom: 1px solid #f3f4f6; padding-bottom: 0.5rem; }
+        .dark #reader-content h2 { border-color: #374151; }
+        #reader-content h3 { font-size: 1.35rem; }
+        #reader-content h4 { font-size: 1.15rem; }
+
+        #reader-content ul { list-style-type: disc !important; padding-left: 1.5rem !important; margin-bottom: 1.25rem; }
+        #reader-content ol { list-style-type: decimal !important; padding-left: 1.5rem !important; margin-bottom: 1.25rem; }
+
+        /* Format Tabel Dwibahasa Word (Invisible Table Layout) */
+        #reader-content table {
+            width: 100% !important;
+            table-layout: fixed;
+            border-collapse: collapse !important;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            border: none !important;
+        }
+        #reader-content td { padding: 0.5rem 1rem 0.5rem 0 !important; vertical-align: top; border: none !important; }
+        #reader-content th { background-color: #f9fafb; font-weight: 600 !important; text-align: left; padding: 0.75rem !important; border-bottom: 2px solid #e5e7eb !important; border-top: none; border-left: none; border-right: none;}
+        .dark #reader-content th { background-color: #1f2937; border-color: #374151 !important; color: #d1d5db; }
+
+        /* Animasi Transisi Halaman Virtual */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .page-active { animation: fadeIn 0.4s ease-out forwards; }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300 antialiased overflow-x-hidden">
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300 antialiased overflow-x-hidden">
 
     <div id="sepia-overlay"></div>
 
-    <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 shadow-sm">
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 dark:bg-gray-900/80 dark:border-gray-800 shadow-sm">
         <div class="px-2 py-3 lg:px-5 lg:pl-3 flex items-center justify-between">
             <div class="flex items-center justify-start shrink-0">
                 <button id="sidebarToggleBtn" type="button" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
@@ -69,84 +110,80 @@
                 </form>
 
                 <div class="relative">
-                    <button id="dropdownDefaultButton" class="text-amarin dark:text-blue-400 bg-blue-50 dark:bg-gray-700 hover:bg-blue-100 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2.5 py-2 sm:px-4 sm:py-2 text-center inline-flex items-center" type="button">
+                    <button id="dropdownDefaultButton" class="text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-2.5 py-2 sm:px-4 sm:py-2 text-center inline-flex items-center transition-colors" type="button">
                         <i class="fa-solid fa-sliders"></i> <span class="hidden sm:inline ms-2">Tampilan</span>
                     </button>
 
-                    <div id="dropdownMenu" class="absolute right-0 top-full mt-2 z-50 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-64 dark:bg-gray-700 dark:divide-gray-600">
+                    <div id="dropdownMenu" class="absolute right-0 top-full mt-2 z-50 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-lg border border-gray-100 w-64 dark:bg-gray-800 dark:border-gray-700 dark:divide-gray-700">
                         <ul class="p-4 space-y-4 text-sm text-gray-700 dark:text-gray-200">
                             <li class="flex justify-between items-center">
-                                <span class="font-bold"><i class="fa-solid fa-moon me-2"></i> Mode Malam</span>
+                                <span class="font-medium"><i class="fa-solid fa-moon me-2 text-gray-400"></i> Mode Malam</span>
                                 <label class="inline-flex items-center cursor-pointer">
                                     <input type="checkbox" value="" id="theme-toggle" class="sr-only peer">
-                                    <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-amarin"></div>
+                                    <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-amarin"></div>
                                 </label>
                             </li>
-                            <li class="pt-2 border-t border-gray-200 dark:border-gray-600">
+                            <li class="pt-3 border-t border-gray-100 dark:border-gray-700">
                                 <div class="flex justify-between items-center mb-2">
-                                    <span class="font-bold"><i class="fa-solid fa-glasses me-2"></i> Proteksi Mata</span>
-                                    <span id="sliderValue" class="text-xs text-gray-500">0%</span>
+                                    <span class="font-medium"><i class="fa-solid fa-glasses me-2 text-gray-400"></i> Proteksi Mata</span>
+                                    <span id="sliderValue" class="text-xs text-gray-500 font-mono">0%</span>
                                 </div>
-                                <input id="readSlider" type="range" min="0" max="0.4" step="0.05" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-600">
+                                <input id="readSlider" type="range" min="0" max="0.4" step="0.05" value="0" class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <a href="/admin" class="text-white bg-amarin hover:bg-amarinDark focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 sm:px-4 sm:py-2 dark:bg-blue-600 dark:hover:bg-blue-700">
-                    <i class="fa-solid fa-shield-halved"></i> <span class="hidden sm:inline ms-1">Admin</span>
+                <a href="/admin" class="text-gray-600 bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-3 py-2 sm:px-4 sm:py-2 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fa-solid fa-shield-halved"></i>
                 </a>
             </div>
         </div>
     </nav>
 
-    <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-[22rem] h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700">
-        <div class="h-full px-4 pb-4 overflow-y-auto custom-scrollbar bg-white dark:bg-gray-800">
-            <h5 class="text-lg font-bold text-amarin dark:text-blue-400 mb-4 pb-2 border-b dark:border-gray-700"><i class="fa-solid fa-book-journal-whills me-2"></i> Pustaka Dokumen</h5>
+    <!-- SIDEBAR -->
+    <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-[22rem] h-screen pt-[4.5rem] transition-transform -translate-x-full bg-gray-50 border-r border-gray-200 sm:translate-x-0 dark:bg-gray-900/50 dark:border-gray-800">
+        <div class="h-full px-4 pb-4 overflow-y-auto custom-scrollbar">
 
             @if($books->isEmpty())
-                <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-700 dark:text-blue-400">Pustaka masih kosong.</div>
+                <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400">Pustaka masih kosong.</div>
             @else
-                <div id="accordion-container">
+                <div id="accordion-container" class="mt-2">
                     @foreach($books as $book)
-                    <div class="mb-3">
-                        <button type="button" class="accordion-btn flex items-center justify-between w-full p-3 font-medium text-left text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-600 dark:text-gray-300" data-target="accordion-body-{{ $book->id }}">
+                    <div class="mb-2">
+                        <button type="button" class="accordion-btn flex items-center justify-between w-full p-2.5 font-medium text-left text-gray-700 rounded-lg hover:bg-gray-200/50 dark:hover:bg-gray-800 dark:text-gray-300 transition-colors" data-target="accordion-body-{{ $book->id }}">
                             <div class="flex items-center gap-3 overflow-hidden">
-                                @if($book->cover_image)
-                                    <img src="{{ asset('uploads/books/' . $book->cover_image) }}" class="w-10 h-14 object-cover rounded shadow-sm">
-                                @else
-                                    <div class="w-10 h-14 rounded bg-amarin flex items-center justify-center text-white shadow-sm"><i class="fa-solid fa-book"></i></div>
-                                @endif
+                                <div class="w-8 h-8 rounded bg-amarin flex items-center justify-center text-white shadow-sm shrink-0"><i class="fa-solid fa-book text-xs"></i></div>
                                 <div class="text-sm truncate">
-                                    <div class="font-bold truncate text-wrap leading-tight">{{ $book->title }}</div>
-                                    <div class="text-xs font-normal text-gray-500 dark:text-gray-400 mt-1">{{ $book->parts->count() }} Bagian</div>
+                                    <div class="font-bold truncate text-gray-900 dark:text-gray-100">{{ $book->title }}</div>
                                 </div>
                             </div>
-                            <svg class="w-3 h-3 transition-transform duration-200 {{ (isset($activeBook) && $activeBook->id == $book->id) ? 'rotate-180' : '' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/></svg>
+                            <svg class="w-3 h-3 text-gray-400 transition-transform duration-200 {{ (isset($activeBook) && $activeBook->id == $book->id) ? 'rotate-180' : '' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/></svg>
                         </button>
 
-                        <div id="accordion-body-{{ $book->id }}" class="{{ (isset($activeBook) && $activeBook->id == $book->id) ? 'block' : 'hidden' }} pt-2">
+                        <div id="accordion-body-{{ $book->id }}" class="{{ (isset($activeBook) && $activeBook->id == $book->id) ? 'block' : 'hidden' }} pt-1">
                             @if($book->pdf_file)
-                                <a href="?read_book={{ $book->id }}" class="flex items-center p-2 text-sm text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-gray-700 dark:text-red-400 border border-red-200 dark:border-gray-600 mb-3 bg-red-50 dark:bg-gray-800 transition-colors shadow-sm">
-                                    <i class="fa-solid fa-file-pdf w-5 h-5 text-lg"></i>
-                                    <span class="ms-2 font-bold">Buka PDF Mentahan</span>
+                                <a href="?read_book={{ $book->id }}" class="flex items-center p-2 mt-2 mx-2 text-xs text-red-600 rounded-lg border border-red-200 mb-3 bg-red-50 dark:bg-red-900/10 dark:border-red-900/30 dark:text-red-400 hover:bg-red-100 transition-colors">
+                                    <i class="fa-solid fa-file-pdf w-4 h-4"></i>
+                                    <span class="ms-2 font-semibold">Lihat PDF Original</span>
                                 </a>
                             @endif
 
-                            <div class="ps-2 ms-2 border-s-2 border-gray-200 dark:border-gray-600 space-y-4">
+                            <div class="space-y-3 mt-3">
                                 @foreach($book->parts as $part)
                                     <div>
-                                        <h6 class="text-xs font-bold text-gray-500 uppercase dark:text-gray-400 mb-2"><i class="fa-solid fa-layer-group me-1"></i> {{ $part->title }}</h6>
-                                        <ul class="space-y-1 ms-2 border-s border-gray-200 dark:border-gray-700">
+                                        <h6 class="text-[0.7rem] font-bold text-gray-400 uppercase tracking-wider mb-1 px-3">{{ $part->title }}</h6>
+                                        <ul class="space-y-0.5">
                                             @foreach($part->chapters as $chapter)
                                                 <li>
-                                                    <a href="?read={{ $chapter->id }}" class="flex items-center p-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group transition-colors {{ (isset($activeChapter) && $activeChapter->id == $chapter->id) ? 'text-amarin font-bold bg-blue-50 dark:bg-gray-700 dark:text-blue-400 border-l-2 border-amarin' : 'text-gray-600 dark:text-gray-300' }}">
-                                                        <i class="fa-regular fa-file-lines me-2"></i>
+                                                    <!-- Link Chapter Utama (Akan menampilkan keseluruhan / reset mode) -->
+                                                    <a href="?read={{ $chapter->id }}" class="flex items-center px-3 py-1.5 text-sm rounded-md transition-colors {{ (isset($activeChapter) && $activeChapter->id == $chapter->id) ? 'text-amarin font-semibold bg-blue-50/50 dark:bg-gray-800 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800' }}">
                                                         <span class="truncate">{{ $chapter->title }}</span>
                                                     </a>
 
+                                                    <!-- TEMPAT DYNAMIC TOC -->
                                                     @if(isset($activeChapter) && $activeChapter->id == $chapter->id)
-                                                        <div id="dynamic-toc" class="ms-1 mt-2 mb-2 space-y-0.5 border-s-2 border-gray-200 dark:border-gray-700"></div>
+                                                        <div id="dynamic-toc" class="mt-1 mb-3 space-y-0.5 border-l border-gray-200 dark:border-gray-800 ml-4"></div>
                                                     @endif
                                                 </li>
                                             @endforeach
@@ -162,20 +199,21 @@
         </div>
     </aside>
 
-    <div class="p-4 sm:ml-[22rem] mt-16 min-h-screen">
-        <div class="p-4 md:p-8 border border-gray-200 rounded-xl dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm min-h-[85vh]">
+    <!-- KONTEN UTAMA -->
+    <div class="p-0 sm:ml-[22rem] mt-[4.5rem] min-h-screen">
+        <div class="px-6 py-8 md:px-16 md:py-12 max-w-5xl mx-auto">
 
             @if(isset($searchResults))
-                <h4 class="text-2xl font-bold mb-6 text-amarin dark:text-blue-400 border-b pb-4 dark:border-gray-700"><i class="fa-solid fa-magnifying-glass me-2"></i> Hasil: "{{ request('search') }}"</h4>
+                <h4 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 pb-4"><i class="fa-solid fa-magnifying-glass me-2 text-gray-400"></i> Hasil Pencarian: "{{ request('search') }}"</h4>
                 @if($searchResults->isEmpty())
-                    <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 text-center"><i class="fa-solid fa-triangle-exclamation fa-2x mb-2"></i><br>Tidak ada dokumen yang cocok.</div>
+                    <div class="p-6 text-sm text-gray-500 bg-gray-50 rounded-xl dark:bg-gray-800/50 dark:text-gray-400 text-center border border-gray-100 dark:border-gray-800">Tidak ada dokumen yang cocok.</div>
                 @else
-                    <ul class="space-y-3">
+                    <ul class="space-y-4">
                         @foreach($searchResults as $result)
                             <li>
-                                <a href="?read={{ $result->id }}&search={{ request('search') }}" class="block p-4 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-                                    <h5 class="mb-1 text-lg font-bold tracking-tight text-amarin dark:text-blue-400">{{ $result->title }}</h5>
-                                    <p class="text-sm text-gray-700 dark:text-gray-400">Kata <span class="font-bold bg-yellow-200 text-black px-1 rounded">"{{ request('search') }}"</span> ditemukan di bab ini.</p>
+                                <a href="?read={{ $result->id }}&search={{ request('search') }}" class="block p-5 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md dark:bg-gray-800/50 dark:border-gray-700 transition-all">
+                                    <h5 class="mb-2 text-lg font-bold text-amarin dark:text-blue-400">{{ $result->title }}</h5>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Ditemukan di dalam modul ini.</p>
                                 </a>
                             </li>
                         @endforeach
@@ -183,74 +221,65 @@
                 @endif
 
             @elseif(isset($activeChapter))
-                <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
-                    <h2 class="text-2xl md:text-3xl font-extrabold text-amarin dark:text-blue-400">{{ $activeChapter->title }}</h2>
-                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 border border-blue-400 hidden sm:inline">Dokumen Interaktif</span>
+                <!-- BREADCRUMB ALA GITBOOK -->
+                <nav class="flex mb-4 text-sm text-gray-500 dark:text-gray-400">
+                    <ol class="inline-flex items-center space-x-1 md:space-x-2">
+                        <li class="inline-flex items-center"><span class="hover:text-gray-900 dark:hover:text-white">{{ $activeBook->title }}</span></li>
+                        <li><div class="flex items-center"><i class="fa-solid fa-chevron-right text-[0.6rem] mx-2"></i><span class="hover:text-gray-900 dark:hover:text-white">{{ $activeChapter->part->title }}</span></div></li>
+                    </ol>
+                </nav>
+
+                <!-- TOMBOL KEMBALI KE TAMPILAN PENUH (Disembunyikan default, muncul saat mode Virtual Page aktif) -->
+                <button id="btn-show-all" class="hidden mb-6 text-xs font-semibold text-amarin bg-blue-50 hover:bg-blue-100 dark:text-blue-400 dark:bg-gray-800 dark:hover:bg-gray-700 px-3 py-1.5 rounded-lg transition-colors">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Tampilkan Seluruh Dokumen
+                </button>
+
+                <!-- JUDUL UTAMA (Ditangani oleh JS kalau mode Virtual Page aktif) -->
+                <div id="main-chapter-title" class="mb-10">
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">{{ $activeChapter->title }}</h1>
                 </div>
 
+                <!-- ISI KONTEN -->
                 <div id="reader-content">
                     {!! $activeChapter->content !!}
                 </div>
 
             @elseif(isset($activeBook) && $activeBook->pdf_file)
-                <div class="flex flex-col lg:flex-row justify-between items-center mb-4 bg-gray-100 dark:bg-gray-700 p-3 rounded-lg border border-gray-200 dark:border-gray-600 gap-3">
-                    <div class="flex items-center text-sm text-gray-700 dark:text-gray-300 text-center lg:text-left">
-                        <i class="fa-solid fa-file-pdf text-red-600 text-xl me-2"></i>
-                        <span>Dokumen Asli: <strong class="text-amarin dark:text-blue-400">{{ $activeBook->title }}</strong></span>
+                <div class="flex justify-between items-center mb-4 bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
+                    <div class="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                        <i class="fa-solid fa-file-pdf text-red-500 text-xl me-3"></i>
+                        <span class="font-medium">{{ $activeBook->title }}</span>
                     </div>
-                    <div class="flex gap-2 w-full lg:w-auto justify-center">
-                        <a href="{{ asset('uploads/books/' . $activeBook->pdf_file) }}" target="_blank" class="text-white bg-amarin hover:bg-amarinDark focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 whitespace-nowrap">
-                            <i class="fa-solid fa-up-right-from-square me-1"></i> Buka Layar Penuh
-                        </a>
-                    </div>
+                    <a href="{{ asset('uploads/books/' . $activeBook->pdf_file) }}" target="_blank" class="text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-4 py-2 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors">
+                        Buka Layar Penuh <i class="fa-solid fa-up-right-from-square ms-1"></i>
+                    </a>
                 </div>
-                <iframe src="{{ asset('uploads/books/' . $activeBook->pdf_file) }}" class="w-full h-[75vh] rounded-lg border border-gray-200 dark:border-gray-700"></iframe>
+                <iframe src="{{ asset('uploads/books/' . $activeBook->pdf_file) }}" class="w-full h-[80vh] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm"></iframe>
 
             @else
-                <div class="flex flex-col md:flex-row items-center mb-10 pb-8 border-b border-gray-200 dark:border-gray-700 text-center md:text-left mt-4">
-                    <i class="fa-brands fa-space-awesome text-6xl text-amarin dark:text-blue-400 mb-4 md:mb-0 md:me-6"></i>
-                    <div>
-                        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white mb-2">E-Book Terintegrasi</h1>
-                        <p class="text-base md:text-lg text-gray-500 dark:text-gray-400">Platform digitalisasi dokumen operasional dan keselamatan kapal PT Amarin Ship Management.</p>
+                <div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+                    <div class="w-20 h-20 bg-blue-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-book-open text-3xl text-amarin dark:text-blue-400"></i>
                     </div>
-                </div>
-
-                <h3 class="text-xl font-bold text-amarin dark:text-blue-400 mb-4"><i class="fa-solid fa-book-bookmark me-2"></i> Pustaka Utama</h3>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
-                    @forelse($books as $book)
-                        <a href="?read_book={{ $book->id }}" class="flex flex-col items-center justify-center p-4 bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 transition-transform hover:-translate-y-1">
-                            @if($book->cover_image)
-                                <img src="{{ asset('uploads/books/' . $book->cover_image) }}" class="w-20 h-28 object-cover rounded shadow mb-3">
-                            @else
-                                <div class="w-20 h-28 rounded bg-amarin flex items-center justify-center text-white shadow mb-3"><i class="fa-solid fa-book text-3xl"></i></div>
-                            @endif
-                            <h5 class="text-sm font-bold text-center text-gray-900 dark:text-white truncate w-full">{{ $book->title }}</h5>
-                            <span class="text-xs text-red-600 dark:text-red-400 mt-1"><i class="fa-solid fa-file-pdf"></i> PDF Mentahan</span>
-                        </a>
-                    @empty
-                        <div class="col-span-full p-4 text-center text-gray-500 bg-gray-50 rounded-lg dark:bg-gray-800 dark:text-gray-400">Belum ada buku diunggah.</div>
-                    @endforelse
+                    <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-3 tracking-tight">Dokumentasi Operasional</h1>
+                    <p class="text-base text-gray-500 dark:text-gray-400 max-w-lg leading-relaxed">Pilih panduan atau prosedur melalui struktur navigasi di sebelah kiri untuk mulai membaca.</p>
                 </div>
             @endif
         </div>
     </div>
 
+    <!-- SCRIPT UTAMA -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            // Dropdown Tampilan
+            // Pengaturan Navbar & Tampilan (Standard)
             const dropdownBtn = document.getElementById('dropdownDefaultButton');
             const dropdownMenu = document.getElementById('dropdownMenu');
             if (dropdownBtn && dropdownMenu) {
-                dropdownBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    dropdownMenu.classList.toggle('hidden');
-                });
-                dropdownMenu.addEventListener('click', (e) => { e.stopPropagation(); });
+                dropdownBtn.addEventListener('click', (e) => { e.stopPropagation(); dropdownMenu.classList.toggle('hidden'); });
                 document.addEventListener('click', () => { dropdownMenu.classList.add('hidden'); });
             }
 
-            // Accordion Buku
             const accordionBtns = document.querySelectorAll('.accordion-btn');
             accordionBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -269,31 +298,20 @@
                 });
             });
 
-            // Mobile Sidebar Toggle
             const sidebarBtn = document.getElementById('sidebarToggleBtn');
             const sidebar = document.getElementById('logo-sidebar');
             if (sidebarBtn && sidebar) {
-                sidebarBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    sidebar.classList.toggle('-translate-x-full');
-                });
+                sidebarBtn.addEventListener('click', (e) => { e.stopPropagation(); sidebar.classList.toggle('-translate-x-full'); });
             }
 
-            // Dark Mode & Sepia
             const themeToggleBtn = document.getElementById('theme-toggle');
             if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-                themeToggleBtn.checked = true;
+                document.documentElement.classList.add('dark'); themeToggleBtn.checked = true;
             } else { document.documentElement.classList.remove('dark'); }
 
             themeToggleBtn.addEventListener('change', function() {
-                if (this.checked) {
-                    document.documentElement.classList.add('dark');
-                    localStorage.setItem('color-theme', 'dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                    localStorage.setItem('color-theme', 'light');
-                }
+                if (this.checked) { document.documentElement.classList.add('dark'); localStorage.setItem('color-theme', 'dark'); }
+                else { document.documentElement.classList.remove('dark'); localStorage.setItem('color-theme', 'light'); }
             });
 
             const readSlider = document.getElementById('readSlider');
@@ -304,67 +322,38 @@
             htmlElement.style.setProperty('--sepia-level', savedSepia);
             sliderValueText.textContent = Math.round((savedSepia / 0.4) * 100) + '%';
             readSlider.addEventListener('input', (e) => {
-                const val = e.target.value;
-                htmlElement.style.setProperty('--sepia-level', val);
-                localStorage.setItem('amarin-sepia', val);
-                sliderValueText.textContent = Math.round((val / 0.4) * 100) + '%';
+                const val = e.target.value; htmlElement.style.setProperty('--sepia-level', val);
+                localStorage.setItem('amarin-sepia', val); sliderValueText.textContent = Math.round((val / 0.4) * 100) + '%';
             });
 
-            // Auto Highlight
-            const urlParams = new URLSearchParams(window.location.search);
-            const searchQuery = urlParams.get('search');
+            // ========================================================
+            // ENGINE VIRTUAL PAGE: Memecah Konten Tunggal menjadi Halaman-halaman
+            // ========================================================
             const contentBox = document.getElementById('reader-content');
-            if (searchQuery && contentBox) {
-                const markInstance = new Mark(contentBox);
-                markInstance.mark(searchQuery, {
-                    element: "mark",
-                    className: "search-highlight",
-                    separateWordSearch: false,
-                    done: function() {
-                        const firstHighlight = document.querySelector('mark.search-highlight');
-                        if (firstHighlight) {
-                            setTimeout(() => { firstHighlight.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 500);
-                        }
-                    }
-                });
-            }
-
-            // ========================================================
-            // MESIN EKSTRAKSI DAFTAR ISI (TOC) 6-LEVEL FINAL
-            // ========================================================
             const tocContainer = document.getElementById('dynamic-toc');
+
             if (contentBox && tocContainer) {
-
-                // MURNI HANYA mengambil teks yang di-Heading/Bold oleh user, bukan <p>
                 const headings = contentBox.querySelectorAll('h1, h2, h3, h4, h5, h6, strong, b');
-                let tocHTML = '<div class="flex flex-col w-full">';
+                let tocHTML = '<div class="flex flex-col w-full py-1">';
                 let validId = 0;
-                let seenTexts = new Set(); // Mencegah judul terekam 2x jika ada Bold di dalam Heading
+                let seenTexts = new Set();
 
+                // 1. Ekstraksi Daftar Isi
                 headings.forEach((heading) => {
-                    let text = heading.innerText.replace(/\s+/g, ' ').trim();
+                    const originalText = heading.innerText;
+                    if (originalText.match(/\.{3,}/)) return; // Abaikan TOC bawaan Word
 
-                    // PEMBERSIH AJAIB: Menghapus titik-titik dan nomor halaman bawaan Word
-                    // Mengubah "1.1. Purpose ...................... 1" -> "1.1. Purpose"
-                    text = text.replace(/\.{2,}\s*\d*$/, '').trim();
-
+                    let text = originalText.replace(/\s+/g, ' ').trim();
                     if (text.length < 3 || text.length > 150 || seenTexts.has(text)) return;
 
                     let level = 0;
-
-                    // LEVEL 1: PART A (Huruf kapital setelah kata PART)
                     if (/^PART\s+[A-Z]\b/i.test(text)) { level = 1; }
-                    // LEVEL 2: CHAPTER 1 (Angka setelah kata CHAPTER)
                     else if (/^CHAPTER\s+\d+/i.test(text)) { level = 2; }
-                    // LEVEL 3: PART 1 / BAGIAN 1 (Angka)
                     else if (/^(?:PART|BAGIAN)\s+\d+/i.test(text)) { level = 3; }
-                    // LEVEL 4, 5, 6: Sub-bab angka (1.1, 1.1.1, dll)
                     else if (/^\d+\.\d+/.test(text) || /^\d+\.\s/.test(text)) {
-                        // Menghitung jumlah titik untuk menentukan kedalaman
                         const match = text.match(/^(\d+(?:\.\d+)*)/);
                         if (match) {
                             const dotsCount = match[1].split('.').length - 1;
-                            // 1 titik (1.1) = Level 4. 2 titik (1.1.1) = Level 5.
                             level = 3 + dotsCount;
                         }
                     }
@@ -373,48 +362,96 @@
                         validId++;
                         seenTexts.add(text);
                         const id = 'section-' + validId;
-                        heading.id = id; // Tanamkan jangkar
+                        heading.id = id;
 
                         let paddingClass = '';
-                        let textClass = '';
-                        let icon = '';
+                        let textClass = 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200';
 
-                        // STYLING SIDEBAR BERDASARKAN LEVEL HIERARKI
                         if (level === 1) {
-                            paddingClass = 'pl-1 mt-4';
-                            textClass = 'text-amarin dark:text-blue-400 font-extrabold uppercase border-b border-gray-200 dark:border-gray-700 pb-1 text-[0.85rem]';
-                            icon = '<i class="fa-solid fa-book-open me-1 opacity-70"></i>';
+                            paddingClass = 'pl-2 mt-3'; textClass = 'text-gray-900 dark:text-gray-200 font-bold uppercase text-[0.75rem] tracking-wider';
                         } else if (level === 2) {
-                            paddingClass = 'pl-3 border-l-2 border-amarin ml-2 mt-2';
-                            textClass = 'text-gray-800 dark:text-gray-200 font-bold text-[0.8rem]';
-                            icon = '<i class="fa-solid fa-folder me-1 text-amarin opacity-80"></i>';
+                            paddingClass = 'pl-2 mt-1'; textClass = 'text-gray-800 dark:text-gray-300 font-semibold text-[0.8rem]';
                         } else if (level === 3) {
-                            paddingClass = 'pl-5 border-l-2 border-gray-300 dark:border-gray-600 ml-2 mt-1';
-                            textClass = 'text-gray-700 dark:text-gray-300 font-semibold text-[0.75rem]';
-                            icon = '<i class="fa-solid fa-bookmark me-1 opacity-50"></i>';
-                        } else if (level === 4) {
-                            paddingClass = 'pl-7 border-l-2 border-gray-300 dark:border-gray-600 ml-2';
-                            textClass = 'text-gray-600 dark:text-gray-400 text-[0.75rem]';
-                            icon = '<i class="fa-solid fa-caret-right me-1 opacity-50"></i>';
+                            paddingClass = 'pl-4'; textClass = 'text-gray-700 dark:text-gray-400 font-medium text-[0.8rem]';
                         } else {
-                            // Level 5 ke atas
-                            paddingClass = 'pl-9 border-l-2 border-gray-300 dark:border-gray-600 ml-2';
-                            textClass = 'text-gray-500 dark:text-gray-400 text-[0.7rem]';
-                            icon = '<i class="fa-solid fa-circle text-[4px] me-1 opacity-50 align-middle"></i>';
+                            paddingClass = 'pl-6'; textClass = 'text-gray-500 dark:text-gray-500 text-[0.8rem]';
                         }
 
-                        tocHTML += `<a href="#${id}" class="block py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors w-full truncate ${paddingClass} ${textClass}" title="${text}">
-                            ${icon} ${text}
+                        // LINK INI KITA GANTI CLASS-NYA JADI toc-link UNTUK DI-INTERCEPT
+                        tocHTML += `<a href="#${id}" class="toc-link block py-1.5 transition-colors w-full truncate ${paddingClass} ${textClass}" title="${text}">
+                            ${text}
                         </a>`;
                     }
                 });
 
                 tocHTML += '</div>';
+                if (validId > 0) { tocContainer.innerHTML = tocHTML; }
 
-                if (validId > 0) {
-                    tocContainer.innerHTML = tocHTML;
-                } else {
-                    tocContainer.innerHTML = '<span class="text-xs text-gray-400 italic px-2">Sub-bab tidak terdeteksi. Bold teks (contoh: 1.1) di Editor.</span>';
+                // 2. TAGGING SEMUA ELEMEN: Memasukkan elemen paragraf & baris tabel ke dalam "Virtual Group"
+                // Mengambil anak langsung (seperti p, div, atau baris tabel di dalam tabel raksasa)
+                const elementsToGroup = contentBox.querySelectorAll(':scope > p, :scope > ul, :scope > ol, :scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > h5, :scope > table > tbody > tr, :scope > table > tr, :scope > div');
+                let currentPageGroup = 'page-intro'; // Teks sebelum ada judul
+
+                elementsToGroup.forEach(el => {
+                    // Cari tau apakah elemen ini sendiri adalah judul, atau di dalam elemen ini ada judul
+                    const headingInside = el.querySelector('[id^="section-"]');
+                    const isHeading = el.id && el.id.startsWith('section-');
+                    const actualHeading = isHeading ? el : headingInside;
+
+                    // Kalau nemu judul baru, ubah ID grupnya
+                    if (actualHeading) {
+                        currentPageGroup = actualHeading.id;
+                    }
+
+                    // Tempel ID grup ke elemen tersebut
+                    el.setAttribute('data-virtual-page', currentPageGroup);
+                });
+
+                // 3. MAGIC ISOLATOR: Waktu Link Sidebar Diklik
+                const btnShowAll = document.getElementById('btn-show-all');
+                const mainChapterTitle = document.getElementById('main-chapter-title');
+
+                document.querySelectorAll('.toc-link').forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const targetPageId = this.getAttribute('href').substring(1);
+
+                        // Sembunyikan SEMUA elemen
+                        elementsToGroup.forEach(el => el.classList.add('virtual-hidden'));
+
+                        // Tampilkan HANYA elemen yang punya grup data-virtual-page yang sama dengan target
+                        contentBox.querySelectorAll(`[data-virtual-page="${targetPageId}"]`).forEach(el => {
+                            el.classList.remove('virtual-hidden');
+                            el.classList.add('page-active'); // Kasih animasi muncul
+                        });
+
+                        // Munculkan tombol "Kembali", sembunyikan judul besar bawaan
+                        btnShowAll.classList.remove('hidden');
+                        if(mainChapterTitle) mainChapterTitle.classList.add('hidden');
+
+                        // Beri styling tebal pada link sidebar yang aktif
+                        document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('text-amarin', 'dark:text-blue-400', 'font-bold'));
+                        this.classList.add('text-amarin', 'dark:text-blue-400', 'font-bold');
+
+                        // Scroll ke atas layar dengan mulus
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
+                });
+
+                // 4. Tombol "Tampilkan Seluruh Dokumen"
+                if (btnShowAll) {
+                    btnShowAll.addEventListener('click', () => {
+                        // Tampilkan ulang semua
+                        elementsToGroup.forEach(el => {
+                            el.classList.remove('virtual-hidden', 'page-active');
+                        });
+                        // Reset tombol dan judul
+                        btnShowAll.classList.add('hidden');
+                        if(mainChapterTitle) mainChapterTitle.classList.remove('hidden');
+
+                        // Reset link aktif
+                        document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('text-amarin', 'dark:text-blue-400', 'font-bold'));
+                    });
                 }
             }
         });
