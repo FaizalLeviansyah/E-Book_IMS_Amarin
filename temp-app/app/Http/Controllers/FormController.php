@@ -8,30 +8,30 @@ use Illuminate\Http\Request;
 
 class FormController extends Controller
 {
-    public function index($book_id)
+    public function index()
     {
-        $book = Book::with('forms')->findOrFail($book_id);
-        return view('admin.forms', compact('book'));
+        $forms = Form::with('book')->get();
+        $books = Book::all();
+        return view('admin.forms', compact('forms', 'books'));
     }
 
-    public function store(Request $request, $book_id)
+    public function store(Request $request)
     {
         $request->validate([
+            'book_id' => 'required|exists:books,id',
             'title' => 'required|string|max:255',
-            'form_file' => 'required|file|mimes:pdf,doc,docx|max:10240' // Max 10MB
+            'form_file' => 'required|file|mimes:pdf,doc,docx|max:10240'
         ]);
 
         $file = $request->file('form_file');
         $fileName = time() . '_' . $file->getClientOriginalName();
         $file->move(public_path('uploads/forms'), $fileName);
 
-        $type = $file->getClientOriginalExtension() == 'pdf' ? 'pdf' : 'word';
-
         Form::create([
-            'book_id' => $book_id,
+            'book_id' => $request->book_id,
             'title' => $request->title,
             'file_path' => $fileName,
-            'file_type' => $type
+            'file_type' => $file->getClientOriginalExtension() == 'pdf' ? 'pdf' : 'word'
         ]);
 
         return back()->with('success', 'Formulir berhasil diunggah!');
@@ -42,30 +42,26 @@ class FormController extends Controller
         $form = Form::findOrFail($id);
 
         $request->validate([
+            'book_id' => 'required|exists:books,id',
             'title' => 'required|string|max:255',
             'form_file' => 'nullable|file|mimes:pdf,doc,docx|max:10240'
         ]);
 
+        $form->book_id = $request->book_id;
         $form->title = $request->title;
 
-        // Jika user mengunggah file pengganti
         if ($request->hasFile('form_file')) {
-            // Hapus file lama
             if(file_exists(public_path('uploads/forms/'.$form->file_path))) {
                 unlink(public_path('uploads/forms/'.$form->file_path));
             }
-
-            // Simpan file baru
             $file = $request->file('form_file');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('uploads/forms'), $fileName);
-
             $form->file_path = $fileName;
             $form->file_type = $file->getClientOriginalExtension() == 'pdf' ? 'pdf' : 'word';
         }
 
         $form->save();
-
         return back()->with('success', 'Formulir berhasil diperbarui!');
     }
 
