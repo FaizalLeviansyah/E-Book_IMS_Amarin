@@ -6,6 +6,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\PartController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\SubChapterController;
+use App\Http\Controllers\FormController;
 
 // ==========================================
 // RUTE PUBLIK (Untuk Kru Kapal membaca)
@@ -45,3 +46,12 @@ Route::get('/admin/chapters/{chapter_id}/edit', [ChapterController::class, 'edit
 Route::put('/admin/chapters/{chapter_id}', [ChapterController::class, 'update']);
 
 Route::put('/admin/parts/{part_id}', [PartController::class, 'update']);
+
+Route::post('/admin/books/{book_id}/forms', [FormController::class, 'store']);
+Route::delete('/admin/forms/{id}', [FormController::class, 'destroy']);
+
+Route::get('/admin/books/{book_id}/forms', [App\Http\Controllers\FormController::class, 'index']);
+Route::post('/admin/books/{book_id}/forms', [App\Http\Controllers\FormController::class, 'store']);
+Route::put('/admin/forms/{id}', [App\Http\Controllers\FormController::class, 'update']);
+Route::delete('/admin/forms/{id}', [App\Http\Controllers\FormController::class, 'destroy']);
+

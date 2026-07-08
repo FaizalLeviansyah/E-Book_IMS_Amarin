@@ -30,13 +30,16 @@
                 <h5 class="fw-bold text-dark mb-1">{{ $book->title }}</h5>
                 <small class="text-muted">{{ $book->parts->count() }} Bagian Tersedia</small>
             </div>
-            <div class="p-3 bg-white/40 d-flex justify-content-between">
-                <a href="/admin/books/{{ $book->id }}/parts" class="btn btn-sm btn-amarin w-100 me-2"><i class="fa-solid fa-folder-tree"></i> Kelola Isi</a>
-                <form action="/admin/books/{{ $book->id }}" method="POST" onsubmit="return confirm('Hapus buku ini?');">
+            <div class="p-3 bg-white/40 d-flex flex-column gap-2">
+                <a href="/admin/books/{{ $book->id }}/parts" class="btn btn-sm btn-amarin w-100"><i class="fa-solid fa-folder-tree"></i> Kelola Isi Bab</a>
+                <a href="/admin/books/{{ $book->id }}/forms" class="btn btn-sm btn-outline-primary w-100 bg-white mb-2 fw-bold text-amarin border-blue-200">
+                    <i class="fa-solid fa-file-contract"></i> Kelola Form Mentah
+                </a>
+                <form action="/admin/books/{{ $book->id }}" method="POST" onsubmit="return confirm('Hapus buku ini?');" class="mt-2">
                     @csrf @method('DELETE')
-                    <button class="btn btn-sm btn-outline-danger border-0"><i class="fa-solid fa-trash"></i></button>
+                    <button class="btn btn-sm btn-outline-danger border-0 w-100"><i class="fa-solid fa-trash"></i> Hapus Buku</button>
                 </form>
-            </div>
+            </div>w
         </div>
     </div>
     @empty

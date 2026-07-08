@@ -228,6 +228,28 @@
                                     </div>
                                 @endforeach
                             </div>
+                            <!-- TABEL FORMS MENTAHAN -->
+                            @if($book->forms->count() > 0)
+                            <div class="mt-6 pt-4 border-t border-slate-200/60 dark:border-slate-700/60">
+                                <h6 class="text-[0.7rem] font-extrabold text-rose-500/90 dark:text-rose-400/90 uppercase tracking-widest flex items-center gap-2 px-3 mb-3">
+                                    <i class="fa-solid fa-file-signature text-[0.8rem]"></i> Formulir & Checklist
+                                </h6>
+                                <div class="space-y-2 px-1">
+                                    @foreach($book->forms as $form)
+                                        <a href="?read_form={{ $form->id }}" class="flex items-center justify-between px-3 py-2 bg-white/60 dark:bg-slate-700/40 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-all border border-white/50 dark:border-slate-600 shadow-sm group">
+                                            <div class="flex items-center gap-2 truncate">
+                                                @if($form->file_type == 'pdf')
+                                                    <i class="fa-solid fa-file-pdf text-red-500 text-lg"></i>
+                                                @else
+                                                    <i class="fa-solid fa-file-word text-blue-600 text-lg"></i>
+                                                @endif
+                                                <span class="text-sm font-bold text-slate-700 dark:text-slate-300 group-hover:text-rose-600 dark:group-hover:text-rose-400 truncate">{{ $form->title }}</span>
+                                            </div>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     </div>
                     @endforeach

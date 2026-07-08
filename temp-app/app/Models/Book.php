@@ -16,4 +16,6 @@ class Book extends Model
     {
         return $this->hasMany(Part::class);
     }
+
+    public function forms() { return $this->hasMany(Form::class); }
 }
