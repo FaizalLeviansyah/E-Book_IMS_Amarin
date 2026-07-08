@@ -27,9 +27,6 @@
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #4b5563; }
         .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: #9ca3af; }
 
-        /* CLASS MAGIC UNTUK VIRTUAL PAGE GITBOOK */
-        .virtual-hidden { display: none !important; }
-
         /* ========================================================
            GITBOOK TYPOGRAPHY STYLE (Tampilan Mewah & Readable)
            ======================================================== */
@@ -86,7 +83,6 @@
 
     <div id="sepia-overlay"></div>
 
-    <!-- NAVBAR -->
     <nav class="fixed top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 dark:bg-gray-900/80 dark:border-gray-800 shadow-sm">
         <div class="px-2 py-3 lg:px-5 lg:pl-3 flex items-center justify-between">
             <div class="flex items-center justify-start shrink-0">
@@ -141,7 +137,6 @@
         </div>
     </nav>
 
-    <!-- SIDEBAR -->
     <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-[22rem] h-screen pt-[4.5rem] transition-transform -translate-x-full bg-gray-50 border-r border-gray-200 sm:translate-x-0 dark:bg-gray-900/50 dark:border-gray-800">
         <div class="h-full px-4 pb-4 overflow-y-auto custom-scrollbar">
 
@@ -153,7 +148,11 @@
                     <div class="mb-2">
                         <button type="button" class="accordion-btn flex items-center justify-between w-full p-2.5 font-medium text-left text-gray-700 rounded-lg hover:bg-gray-200/50 dark:hover:bg-gray-800 dark:text-gray-300 transition-colors" data-target="accordion-body-{{ $book->id }}">
                             <div class="flex items-center gap-3 overflow-hidden">
-                                <div class="w-8 h-8 rounded bg-amarin flex items-center justify-center text-white shadow-sm shrink-0"><i class="fa-solid fa-book text-xs"></i></div>
+                                @if($book->cover_image)
+                                    <img src="{{ asset('uploads/books/' . $book->cover_image) }}" class="w-10 h-14 object-cover rounded shadow-sm shrink-0 border border-gray-200 dark:border-gray-700">
+                                @else
+                                    <div class="w-10 h-14 rounded bg-amarin flex items-center justify-center text-white shadow-sm shrink-0"><i class="fa-solid fa-book"></i></div>
+                                @endif
                                 <div class="text-sm truncate">
                                     <div class="font-bold truncate text-gray-900 dark:text-gray-100">{{ $book->title }}</div>
                                 </div>
@@ -176,12 +175,10 @@
                                         <ul class="space-y-0.5">
                                             @foreach($part->chapters as $chapter)
                                                 <li>
-                                                    <!-- Link Chapter Utama (Akan menampilkan keseluruhan / reset mode) -->
                                                     <a href="?read={{ $chapter->id }}" class="flex items-center px-3 py-1.5 text-sm rounded-md transition-colors {{ (isset($activeChapter) && $activeChapter->id == $chapter->id) ? 'text-amarin font-semibold bg-blue-50/50 dark:bg-gray-800 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800' }}">
                                                         <span class="truncate">{{ $chapter->title }}</span>
                                                     </a>
 
-                                                    <!-- TEMPAT DYNAMIC TOC -->
                                                     @if(isset($activeChapter) && $activeChapter->id == $chapter->id)
                                                         <div id="dynamic-toc" class="mt-1 mb-3 space-y-0.5 border-l border-gray-200 dark:border-gray-800 ml-4"></div>
                                                     @endif
@@ -199,8 +196,7 @@
         </div>
     </aside>
 
-    <!-- KONTEN UTAMA -->
-    <div class="p-0 sm:ml-[22rem] mt-[4.5rem] min-h-screen">
+    <div class="p-0 sm:ml-[22rem] mt-[4.5rem] min-h-screen relative">
         <div class="px-6 py-8 md:px-16 md:py-12 max-w-5xl mx-auto">
 
             @if(isset($searchResults))
@@ -221,25 +217,21 @@
                 @endif
 
             @elseif(isset($activeChapter))
-                <!-- BREADCRUMB ALA GITBOOK -->
-                <nav class="flex mb-4 text-sm text-gray-500 dark:text-gray-400">
-                    <ol class="inline-flex items-center space-x-1 md:space-x-2">
-                        <li class="inline-flex items-center"><span class="hover:text-gray-900 dark:hover:text-white">{{ $activeBook->title }}</span></li>
-                        <li><div class="flex items-center"><i class="fa-solid fa-chevron-right text-[0.6rem] mx-2"></i><span class="hover:text-gray-900 dark:hover:text-white">{{ $activeChapter->part->title }}</span></div></li>
-                    </ol>
-                </nav>
 
-                <!-- TOMBOL KEMBALI KE TAMPILAN PENUH (Disembunyikan default, muncul saat mode Virtual Page aktif) -->
-                <button id="btn-show-all" class="hidden mb-6 text-xs font-semibold text-amarin bg-blue-50 hover:bg-blue-100 dark:text-blue-400 dark:bg-gray-800 dark:hover:bg-gray-700 px-3 py-1.5 rounded-lg transition-colors">
-                    <i class="fa-solid fa-arrow-left me-1"></i> Tampilkan Seluruh Dokumen
+                <button id="btn-show-all" class="hidden mb-6 text-sm font-bold text-white bg-amarin hover:bg-amarinDark dark:bg-blue-600 dark:hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors shadow-sm w-full sm:w-auto text-center border border-transparent">
+                    <i class="fa-solid fa-book-open me-2"></i> Tampilkan Seluruh Dokumen
                 </button>
 
-                <!-- JUDUL UTAMA (Ditangani oleh JS kalau mode Virtual Page aktif) -->
-                <div id="main-chapter-title" class="mb-10">
+                <div id="main-chapter-title" class="mb-8 border-b border-gray-200 dark:border-gray-800 pb-4">
+                    <nav class="flex mb-3 text-sm text-gray-500 dark:text-gray-400">
+                        <ol class="inline-flex items-center space-x-1 md:space-x-2">
+                            <li class="inline-flex items-center"><span class="font-medium text-amarin dark:text-blue-400">{{ $activeBook->title }}</span></li>
+                            <li><div class="flex items-center"><i class="fa-solid fa-chevron-right text-[0.6rem] mx-2"></i><span>{{ $activeChapter->part->title }}</span></div></li>
+                        </ol>
+                    </nav>
                     <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">{{ $activeChapter->title }}</h1>
                 </div>
 
-                <!-- ISI KONTEN -->
                 <div id="reader-content">
                     {!! $activeChapter->content !!}
                 </div>
@@ -258,21 +250,20 @@
 
             @else
                 <div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-                    <div class="w-20 h-20 bg-blue-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mb-6">
+                    <div class="w-20 h-20 bg-blue-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-blue-100 dark:border-gray-700">
                         <i class="fa-solid fa-book-open text-3xl text-amarin dark:text-blue-400"></i>
                     </div>
                     <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-3 tracking-tight">Dokumentasi Operasional</h1>
-                    <p class="text-base text-gray-500 dark:text-gray-400 max-w-lg leading-relaxed">Pilih panduan atau prosedur melalui struktur navigasi di sebelah kiri untuk mulai membaca.</p>
+                    <p class="text-base text-gray-500 dark:text-gray-400 max-w-lg leading-relaxed">Pilih panduan atau prosedur melalui struktur navigasi di sebelah kiri untuk mulai membaca materi secara interaktif.</p>
                 </div>
             @endif
         </div>
     </div>
 
-    <!-- SCRIPT UTAMA -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            // Pengaturan Navbar & Tampilan (Standard)
+            // Toggle Dropdown, Sidebar, & Accordion
             const dropdownBtn = document.getElementById('dropdownDefaultButton');
             const dropdownMenu = document.getElementById('dropdownMenu');
             if (dropdownBtn && dropdownMenu) {
@@ -287,13 +278,9 @@
                     const targetBody = document.getElementById(targetId);
                     const icon = btn.querySelector('svg');
                     if (targetBody.classList.contains('hidden')) {
-                        targetBody.classList.remove('hidden');
-                        targetBody.classList.add('block');
-                        icon.classList.add('rotate-180');
+                        targetBody.classList.remove('hidden'); targetBody.classList.add('block'); icon.classList.add('rotate-180');
                     } else {
-                        targetBody.classList.add('hidden');
-                        targetBody.classList.remove('block');
-                        icon.classList.remove('rotate-180');
+                        targetBody.classList.add('hidden'); targetBody.classList.remove('block'); icon.classList.remove('rotate-180');
                     }
                 });
             });
@@ -304,6 +291,7 @@
                 sidebarBtn.addEventListener('click', (e) => { e.stopPropagation(); sidebar.classList.toggle('-translate-x-full'); });
             }
 
+            // Dark Mode
             const themeToggleBtn = document.getElementById('theme-toggle');
             if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark'); themeToggleBtn.checked = true;
@@ -314,6 +302,7 @@
                 else { document.documentElement.classList.remove('dark'); localStorage.setItem('color-theme', 'light'); }
             });
 
+            // Proteksi Mata
             const readSlider = document.getElementById('readSlider');
             const sliderValueText = document.getElementById('sliderValue');
             const htmlElement = document.documentElement;
@@ -326,88 +315,99 @@
                 localStorage.setItem('amarin-sepia', val); sliderValueText.textContent = Math.round((val / 0.4) * 100) + '%';
             });
 
-            // ========================================================
-            // ENGINE VIRTUAL PAGE: Memecah Konten Tunggal menjadi Halaman-halaman
-            // ========================================================
+            // Highlight Search
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchQuery = urlParams.get('search');
             const contentBox = document.getElementById('reader-content');
+            if (searchQuery && contentBox) {
+                const markInstance = new Mark(contentBox);
+                markInstance.mark(searchQuery, {
+                    element: "mark",
+                    className: "search-highlight",
+                    separateWordSearch: false,
+                    done: function() {
+                        const firstHighlight = document.querySelector('mark.search-highlight');
+                        if (firstHighlight) setTimeout(() => { firstHighlight.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 500);
+                    }
+                });
+            }
+
+            // ========================================================
+            // ENGINE VIRTUAL PAGE (ISOLASI PARAGRAF/TABEL BERDASARKAN JUDUL)
+            // ========================================================
             const tocContainer = document.getElementById('dynamic-toc');
 
             if (contentBox && tocContainer) {
-                const headings = contentBox.querySelectorAll('h1, h2, h3, h4, h5, h6, strong, b');
+                // 1. Tangkap semua elemen block (Paragraf, Tabel Baris/Tr, Div, Ul) dari hasil copy paste Word
+                const blocks = contentBox.querySelectorAll(':scope > p, :scope > div, :scope > ul, :scope > ol, :scope > table > tbody > tr, :scope > table > tr, :scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > h5');
+
                 let tocHTML = '<div class="flex flex-col w-full py-1">';
+                let currentSectionId = 'intro-section';
                 let validId = 0;
-                let seenTexts = new Set();
+                let seenTexts = new Set(); // Mencegah judul bilingual kembar (Purpose / Tujuan) membuat 2 menu terpisah
 
-                // 1. Ekstraksi Daftar Isi
-                headings.forEach((heading) => {
-                    const originalText = heading.innerText;
-                    if (originalText.match(/\.{3,}/)) return; // Abaikan TOC bawaan Word
+                // 2. Loop setiap baris/blok teks, cari tau siapa judulnya
+                blocks.forEach((block) => {
+                    const headingsInBlock = block.querySelectorAll('h1, h2, h3, h4, h5, h6, strong, b');
+                    let blockIsNewSection = false;
 
-                    let text = originalText.replace(/\s+/g, ' ').trim();
-                    if (text.length < 3 || text.length > 150 || seenTexts.has(text)) return;
+                    // Cek apakah di dalam baris ini ada teks yang ditebalkan (berpotensi jadi judul)
+                    if (headingsInBlock.length > 0) {
+                        headingsInBlock.forEach((heading) => {
+                            const originalText = heading.innerText;
 
-                    let level = 0;
-                    if (/^PART\s+[A-Z]\b/i.test(text)) { level = 1; }
-                    else if (/^CHAPTER\s+\d+/i.test(text)) { level = 2; }
-                    else if (/^(?:PART|BAGIAN)\s+\d+/i.test(text)) { level = 3; }
-                    else if (/^\d+\.\d+/.test(text) || /^\d+\.\s/.test(text)) {
-                        const match = text.match(/^(\d+(?:\.\d+)*)/);
-                        if (match) {
-                            const dotsCount = match[1].split('.').length - 1;
-                            level = 3 + dotsCount;
-                        }
+                            // FITUR ANTI-BAJAK DAFTAR ISI: Abaikan kalimat yang punya titik-titik panjang dari Word
+                            if (originalText.match(/\.{3,}/)) return;
+
+                            let text = originalText.replace(/\s+/g, ' ').trim();
+                            if (text.length < 3 || text.length > 150) return;
+
+                            let level = 0;
+                            if (/^PART\s+[A-Z]\b/i.test(text)) { level = 1; }
+                            else if (/^CHAPTER\s+\d+/i.test(text)) { level = 2; }
+                            else if (/^(?:PART|BAGIAN)\s+\d+/i.test(text)) { level = 3; }
+                            else if (/^\d+\.\d+/.test(text) || /^\d+\.\s/.test(text)) {
+                                const match = text.match(/^(\d+(?:\.\d+)*)/);
+                                if (match) {
+                                    const dotsCount = match[1].split('.').length - 1;
+                                    level = 3 + dotsCount;
+                                }
+                            }
+
+                            if (level > 0 && !seenTexts.has(text)) {
+                                if (!blockIsNewSection) {
+                                    validId++;
+                                    currentSectionId = 'virtual-section-' + validId;
+                                    blockIsNewSection = true;
+                                }
+                                seenTexts.add(text);
+
+                                let paddingClass = '';
+                                let textClass = 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200';
+
+                                if (level === 1) {
+                                    paddingClass = 'pl-2 mt-3'; textClass = 'text-gray-900 dark:text-gray-200 font-bold uppercase text-[0.75rem] tracking-wider';
+                                } else if (level === 2) {
+                                    paddingClass = 'pl-2 mt-1'; textClass = 'text-gray-800 dark:text-gray-300 font-semibold text-[0.8rem]';
+                                } else if (level === 3) {
+                                    paddingClass = 'pl-4'; textClass = 'text-gray-700 dark:text-gray-400 font-medium text-[0.8rem]';
+                                } else {
+                                    paddingClass = 'pl-6'; textClass = 'text-gray-500 dark:text-gray-500 text-[0.8rem]';
+                                }
+
+                                tocHTML += `<a href="#${currentSectionId}" class="toc-link block py-1.5 transition-colors w-full truncate ${paddingClass} ${textClass}" title="${text}">${text}</a>`;
+                            }
+                        });
                     }
 
-                    if (level > 0) {
-                        validId++;
-                        seenTexts.add(text);
-                        const id = 'section-' + validId;
-                        heading.id = id;
-
-                        let paddingClass = '';
-                        let textClass = 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200';
-
-                        if (level === 1) {
-                            paddingClass = 'pl-2 mt-3'; textClass = 'text-gray-900 dark:text-gray-200 font-bold uppercase text-[0.75rem] tracking-wider';
-                        } else if (level === 2) {
-                            paddingClass = 'pl-2 mt-1'; textClass = 'text-gray-800 dark:text-gray-300 font-semibold text-[0.8rem]';
-                        } else if (level === 3) {
-                            paddingClass = 'pl-4'; textClass = 'text-gray-700 dark:text-gray-400 font-medium text-[0.8rem]';
-                        } else {
-                            paddingClass = 'pl-6'; textClass = 'text-gray-500 dark:text-gray-500 text-[0.8rem]';
-                        }
-
-                        // LINK INI KITA GANTI CLASS-NYA JADI toc-link UNTUK DI-INTERCEPT
-                        tocHTML += `<a href="#${id}" class="toc-link block py-1.5 transition-colors w-full truncate ${paddingClass} ${textClass}" title="${text}">
-                            ${text}
-                        </a>`;
-                    }
+                    // 3. Stempel baris/blok ini dengan ID kelompoknya
+                    block.setAttribute('data-virtual-page', currentSectionId);
                 });
 
                 tocHTML += '</div>';
-                if (validId > 0) { tocContainer.innerHTML = tocHTML; }
+                if (validId > 0) tocContainer.innerHTML = tocHTML;
 
-                // 2. TAGGING SEMUA ELEMEN: Memasukkan elemen paragraf & baris tabel ke dalam "Virtual Group"
-                // Mengambil anak langsung (seperti p, div, atau baris tabel di dalam tabel raksasa)
-                const elementsToGroup = contentBox.querySelectorAll(':scope > p, :scope > ul, :scope > ol, :scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > h5, :scope > table > tbody > tr, :scope > table > tr, :scope > div');
-                let currentPageGroup = 'page-intro'; // Teks sebelum ada judul
-
-                elementsToGroup.forEach(el => {
-                    // Cari tau apakah elemen ini sendiri adalah judul, atau di dalam elemen ini ada judul
-                    const headingInside = el.querySelector('[id^="section-"]');
-                    const isHeading = el.id && el.id.startsWith('section-');
-                    const actualHeading = isHeading ? el : headingInside;
-
-                    // Kalau nemu judul baru, ubah ID grupnya
-                    if (actualHeading) {
-                        currentPageGroup = actualHeading.id;
-                    }
-
-                    // Tempel ID grup ke elemen tersebut
-                    el.setAttribute('data-virtual-page', currentPageGroup);
-                });
-
-                // 3. MAGIC ISOLATOR: Waktu Link Sidebar Diklik
+                // 4. LOGIKA KLIK: Menyembunyikan baris lain & menampilkan definisi secara utuh
                 const btnShowAll = document.getElementById('btn-show-all');
                 const mainChapterTitle = document.getElementById('main-chapter-title');
 
@@ -416,40 +416,39 @@
                         e.preventDefault();
                         const targetPageId = this.getAttribute('href').substring(1);
 
-                        // Sembunyikan SEMUA elemen
-                        elementsToGroup.forEach(el => el.classList.add('virtual-hidden'));
-
-                        // Tampilkan HANYA elemen yang punya grup data-virtual-page yang sama dengan target
-                        contentBox.querySelectorAll(`[data-virtual-page="${targetPageId}"]`).forEach(el => {
-                            el.classList.remove('virtual-hidden');
-                            el.classList.add('page-active'); // Kasih animasi muncul
+                        // Sembunyikan SEMUA baris (termasuk baris tabel lain)
+                        blocks.forEach(b => {
+                            b.style.display = 'none';
+                            b.classList.remove('page-active');
                         });
 
-                        // Munculkan tombol "Kembali", sembunyikan judul besar bawaan
+                        // Munculkan HANYA baris/paragraf yang stempelnya sama dengan judul yang diklik
+                        contentBox.querySelectorAll(`[data-virtual-page="${targetPageId}"]`).forEach(b => {
+                            b.style.display = ''; // Reset display (agar tabel row tetap jadi tr, p jadi block)
+                            b.classList.add('page-active');
+                        });
+
+                        // UI Switch (Munculkan tombol kembali)
                         btnShowAll.classList.remove('hidden');
                         if(mainChapterTitle) mainChapterTitle.classList.add('hidden');
 
-                        // Beri styling tebal pada link sidebar yang aktif
+                        // Highlight menu sidebar yang sedang aktif
                         document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('text-amarin', 'dark:text-blue-400', 'font-bold'));
                         this.classList.add('text-amarin', 'dark:text-blue-400', 'font-bold');
 
-                        // Scroll ke atas layar dengan mulus
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                     });
                 });
 
-                // 4. Tombol "Tampilkan Seluruh Dokumen"
+                // 5. Tombol Reset / Kembali ke Seluruh Dokumen
                 if (btnShowAll) {
                     btnShowAll.addEventListener('click', () => {
-                        // Tampilkan ulang semua
-                        elementsToGroup.forEach(el => {
-                            el.classList.remove('virtual-hidden', 'page-active');
+                        blocks.forEach(b => {
+                            b.style.display = '';
+                            b.classList.remove('page-active');
                         });
-                        // Reset tombol dan judul
                         btnShowAll.classList.add('hidden');
                         if(mainChapterTitle) mainChapterTitle.classList.remove('hidden');
-
-                        // Reset link aktif
                         document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('text-amarin', 'dark:text-blue-400', 'font-bold'));
                     });
                 }
