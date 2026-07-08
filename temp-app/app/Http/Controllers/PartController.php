@@ -33,4 +33,19 @@ class PartController extends Controller
 
         return back()->with('success', 'Bagian (Part) baru berhasil ditambahkan!');
     }
+
+    public function update(Request $request, $id)
+{
+    $request->validate([
+        'title' => 'required|string|max:255'
+    ]);
+
+    $part = Part::findOrFail($id);
+    $part->update([
+        'title' => $request->input('title'),
+        'slug' => Str::slug($request->input('title'))
+    ]);
+
+    return back()->with('success', 'Bagian (Part) berhasil diperbarui!');
+}
 }

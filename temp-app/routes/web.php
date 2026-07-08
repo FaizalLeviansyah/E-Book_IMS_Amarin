@@ -43,3 +43,5 @@ Route::post('/admin/chapters/{chapter_id}/sub-chapters', [SubChapterController::
 // Tambahkan baris ini di routes/web.php
 Route::get('/admin/chapters/{chapter_id}/edit', [ChapterController::class, 'edit']);
 Route::put('/admin/chapters/{chapter_id}', [ChapterController::class, 'update']);
+
+Route::put('/admin/parts/{part_id}', [PartController::class, 'update']);

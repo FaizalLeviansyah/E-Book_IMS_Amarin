@@ -42,12 +42,14 @@
                             <a href="/admin/parts/{{ $part->id }}/chapters" class="btn btn-sm btn-info text-white">
                                 <i class="fa-solid fa-list me-1"></i> Kelola Bab
                             </a>
-                            <button class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="editPart({{ $part->id }}, '{{ $part->title }}')">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="3" class="text-center text-muted py-4">Belum ada data Part. Silakan tambah baru.</td>
+                        <td colspan="3" class="text-center text-muted py-4">Belum ada data Part.</td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -68,15 +70,42 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Judul Part</label>
-                        <input type="text" class="form-control" name="title" placeholder="Contoh: PART A - GENERAL" required>
+                        <input type="text" class="form-control" name="title" required>
                     </div>
                 </div>
-                <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn text-white" style="background-color: {{ $book->theme_color }};"><i class="fa-solid fa-save me-1"></i> Simpan</button>
-                </div>
+                <div class="modal-footer"><button type="submit" class="btn text-white" style="background-color: {{ $book->theme_color }};">Simpan</button></div>
             </form>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="editPartModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header text-white" style="background-color: {{ $book->theme_color }};">
+                    <h5 class="modal-title">Edit Part</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Judul Part</label>
+                        <input type="text" class="form-control" id="editTitle" name="title" required>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="submit" class="btn text-white" style="background-color: {{ $book->theme_color }};">Update</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function editPart(id, title) {
+        document.getElementById('editForm').action = '/admin/parts/' + id;
+        document.getElementById('editTitle').value = title;
+        new bootstrap.Modal(document.getElementById('editPartModal')).show();
+    }
+</script>
 @endsection
