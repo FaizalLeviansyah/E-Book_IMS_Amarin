@@ -10,7 +10,7 @@ class FormController extends Controller
 {
     public function index()
     {
-        $forms = Form::with('book')->get();
+        $forms = Form::with('book')->orderBy('category')->get();
         $books = Book::all();
         return view('admin.forms', compact('forms', 'books'));
     }
@@ -20,6 +20,7 @@ class FormController extends Controller
         $request->validate([
             'book_id' => 'required|exists:books,id',
             'title' => 'required|string|max:255',
+            'category' => 'required|string|max:100', // Validasi Kategori
             'form_file' => 'required|file|mimes:pdf,doc,docx|max:10240'
         ]);
 
@@ -30,6 +31,7 @@ class FormController extends Controller
         Form::create([
             'book_id' => $request->book_id,
             'title' => $request->title,
+            'category' => strtoupper($request->category), // Dibuat kapital agar rapi (Contoh: FORM C)
             'file_path' => $fileName,
             'file_type' => $file->getClientOriginalExtension() == 'pdf' ? 'pdf' : 'word'
         ]);
@@ -44,11 +46,13 @@ class FormController extends Controller
         $request->validate([
             'book_id' => 'required|exists:books,id',
             'title' => 'required|string|max:255',
+            'category' => 'required|string|max:100',
             'form_file' => 'nullable|file|mimes:pdf,doc,docx|max:10240'
         ]);
 
         $form->book_id = $request->book_id;
         $form->title = $request->title;
+        $form->category = strtoupper($request->category);
 
         if ($request->hasFile('form_file')) {
             if(file_exists(public_path('uploads/forms/'.$form->file_path))) {

@@ -7,6 +7,9 @@ use App\Models\Chapter;
 use App\Models\Part;
 use Illuminate\Support\Str;
 use Smalot\PdfParser\Parser; // Library baru untuk baca PDF
+use Illuminate\Support\Facades\Process;
+use Illuminate\Support\Facades\File;
+use PhpOffice\PhpWord\IOFactory; // Tambahkan di bagian atas file
 
 class ChapterController extends Controller
 {
@@ -90,4 +93,36 @@ class ChapterController extends Controller
 
         return back()->with('success', 'Bab berhasil diperbarui! (Jika menggunakan PDF, teks telah otomatis diekstrak)');
     }
+
+    public function importWordToHtml(Request $request)
+{
+    try {
+        $file = $request->file('docx_file');
+
+        // Load dokumen word menggunakan PHPWord
+        $phpWord = IOFactory::load($file->getPathname());
+
+        // Buat writer untuk format HTML
+        $htmlWriter = IOFactory::createWriter($phpWord, 'HTML');
+
+        // Simpan sementara sebagai file HTML
+        $tempHtmlPath = storage_path('app/temp/' . time() . '.html');
+        $htmlWriter->save($tempHtmlPath);
+
+        // Baca isi HTML yang dihasilkan
+        $htmlContent = file_get_contents($tempHtmlPath);
+
+        // Hapus file sementara agar server tidak penuh
+        unlink($tempHtmlPath);
+
+        // Bersihkan tag <html>, <head>, dan <body>, ambil isi <body> saja
+        preg_match("/<body[^>]*>(.*?)<\/body>/is", $htmlContent, $matches);
+        $cleanHtml = $matches[1] ?? $htmlContent;
+
+        return response()->json(['html' => $cleanHtml]);
+
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Gagal konversi: ' . $e->getMessage()], 500);
+    }
+}
 }
