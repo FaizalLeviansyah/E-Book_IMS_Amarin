@@ -81,19 +81,74 @@
     </div>
 </div>
 
-<script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+<div class="mb-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+    <label class="fw-bold text-slate-700 mb-2 block"><i class="fa-solid fa-file-word text-blue-600"></i> Auto-Import dari MS Word (BETA)</label>
+    <div class="d-flex gap-2">
+        <input type="file" id="wordFileInput" class="form-control form-control-sm" accept=".doc, .docx">
+        <button type="button" class="btn btn-sm btn-amarin" onclick="importWord()"><i class="fa-solid fa-upload"></i> Ekstrak ke Editor</button>
+    </div>
+    <small class="text-muted mt-1">Pilih file Word, lalu klik Ekstrak. Teks beserta tabel dan strukturnya akan otomatis masuk ke editor di bawah.</small>
+</div>
+
+<script>
+function importWord() {
+    let fileInput = document.getElementById('wordFileInput');
+    if (fileInput.files.length === 0) {
+        alert('Pilih file Word terlebih dahulu!');
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append('docx_file', fileInput.files[0]);
+    formData.append('_token', '{{ csrf_token() }}'); // Token keamanan Laravel
+
+    // Ubah tombol jadi loading
+    let btn = event.currentTarget;
+    let originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+    btn.disabled = true;
+
+    // Kirim ke backend Laravel
+    fetch('/admin/import-word-to-html', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.html) {
+            // Memasukkan hasil HTML ke dalam CKEditor (Pastikan nama instance CKEditor kamu adalah 'content' atau sesuaikan)
+            // Jika name textarea kamu 'content', biasanya instance-nya CKEDITOR.instances.content
+            let editorName = Object.keys(CKEDITOR.instances)[0]; // Mengambil editor pertama yang aktif
+            CKEDITOR.instances[editorName].setData(data.html);
+            alert('Sukses! Silakan periksa hasilnya di editor.');
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan pada server. Pastikan LibreOffice terinstall.');
+    })
+    .finally(() => {
+        // Kembalikan tombol seperti semula
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        fileInput.value = ''; // Reset input file
+    });
+}
+</script>
+
+<script src="https://cdn.ckeditor.com/4.25.2-lts/full/ckeditor.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
 <script>
-    CKEDITOR.replace('editor', { height: 400 });
-    document.getElementById('upload-docx-modal').addEventListener('change', function(e) {
-        var r = new FileReader(), l = document.getElementById('docx-loading-modal');
-        r.onload = function() {
-            l.style.display = 'block';
-            mammoth.convertToHtml({arrayBuffer: r.result}).then(function(res) {
-                CKEDITOR.instances.editor.setData(res.value); l.style.display = 'none';
-            }).catch(function() { l.style.display = 'none'; alert('Gagal membaca Word.'); });
-        };
-        if(this.files.length > 0) r.readAsArrayBuffer(this.files[0]);
+    CKEDITOR.replace('editor', {
+        height: 500,
+        // MATIKAN FILTER: Izinkan semua tag HTML, class, dan inline CSS masuk!
+        allowedContent: true,
+        extraAllowedContent: '*(*);*{*};*[*];',
+
+        // Pastikan plugin alignment aktif
+        extraPlugins: 'justify,colordialog',
     });
 </script>
 @endsection

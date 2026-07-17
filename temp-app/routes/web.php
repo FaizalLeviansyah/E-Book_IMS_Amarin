@@ -36,3 +36,5 @@ Route::get('/admin/forms', [FormController::class, 'index']);
 Route::post('/admin/forms', [FormController::class, 'store']);
 Route::put('/admin/forms/{id}', [FormController::class, 'update']);
 Route::delete('/admin/forms/{id}', [FormController::class, 'destroy']);
+
+Route::post('/admin/import-word-to-html', [App\Http\Controllers\ChapterController::class, 'importWordToHtml'])->name('admin.import_word');

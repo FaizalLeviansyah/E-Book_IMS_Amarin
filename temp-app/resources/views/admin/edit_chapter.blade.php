@@ -35,43 +35,44 @@
 
                 <div class="mb-4">
                     <label class="form-label fw-bold">Judul Bab</label>
-                    <input type="text" class="form-control" name="title" value="{{ $chapter->title }}" required>
+                    <input type="text" class="form-control form-control-lg" name="title" value="{{ $chapter->title }}" required>
                 </div>
 
-                <div class="mb-4 p-4 bg-light rounded-4 shadow-sm" style="border: 2px dashed #0d6efd;">
-                    <label class="form-label fw-bold text-primary mb-1">
-                        <i class="fa-solid fa-wand-magic-sparkles me-2"></i> Auto-Convert Dokumen Word (.docx)
-                    </label>
-                    <p class="text-muted small mb-3">Pilih file Word, dan sistem akan langsung mengekstrak teks beserta format tabelnya ke dalam editor di bawah tanpa perlu Copy-Paste manual!</p>
-                    <input type="file" id="upload-docx" class="form-control" accept=".docx">
-                    <div id="docx-loading" class="text-warning fw-bold mt-2" style="display: none;">
-                        <i class="fa-solid fa-spinner fa-spin me-1"></i> Sedang mengekstrak dokumen...
-                    </div>
+                <div class="mb-4 p-3 bg-light rounded border">
+                    <label class="form-label fw-bold text-primary"><i class="fa-solid fa-file-word me-1"></i> Auto-Import dari MS Word (.docx)</label>
+                    <input type="file" id="upload-docx" accept=".docx" class="form-control mb-2">
+                    <small class="text-muted">Pilih file Word untuk mengekstrak teksnya langsung ke dalam editor di bawah.</small>
+                    <div id="docx-loading" class="text-primary fw-bold mt-2" style="display: none;"><i class="fa-solid fa-spinner fa-spin me-1"></i> Sedang mengekstrak dokumen...</div>
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Isi Dokumen (Editor Teks)</label>
-                    <textarea name="content" id="editor">{{ $chapter->content }}</textarea>
+                    <label class="form-label fw-bold">Isi Materi</label>
+                    <textarea class="form-control" id="editor" name="content" rows="10" required>{{ $chapter->content }}</textarea>
                 </div>
 
-                <div class="d-flex justify-content-end bg-light p-3 rounded">
-                    <button type="submit" class="btn btn-primary fw-bold px-4">
-                        <i class="fa-solid fa-save me-2"></i> Perbarui Materi
-                    </button>
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="/admin/parts/{{ $chapter->part_id }}/chapters" class="btn btn-light border"><i class="fa-solid fa-times me-1"></i> Batal</a>
+                    <button type="submit" class="btn btn-primary px-4"><i class="fa-solid fa-save me-1"></i> Simpan Perubahan</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.22.1/ckeditor.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+
 <script>
+    // Inisialisasi CKEditor yang 100% AMAN dari Crash
     CKEDITOR.replace('editor', {
-        height: 600
+        height: 600,
+        versionCheck: false,  // KUNCI 1: Menghilangkan banner merah "Not Secure" yang menutupi layar
+        allowedContent: true, // KUNCI 2: Mencegah format Word (Tabel, Rata Tengah) agar tidak terhapus
+        extraAllowedContent: '*(*);*{*};*[*];'
+        // Plugin tambahan dihapus agar tidak memicu error "plugin not found" dari CDN
     });
 
-    // Algoritma Ekstraksi Word Otomatis
+    // Algoritma Ekstraksi Word Otomatis via Mammoth
     document.getElementById('upload-docx').addEventListener('change', function(event) {
         var reader = new FileReader();
         var loadingText = document.getElementById('docx-loading');
@@ -80,19 +81,27 @@
             loadingText.style.display = 'block';
             var arrayBuffer = reader.result;
 
-            mammoth.convertToHtml({arrayBuffer: arrayBuffer})
-                .then(function(result) {
-                    var html = result.value; // Hasil ekstraksi HTML mentah dari Word
-                    // Masukkan langsung ke dalam kotak CKEditor
-                    CKEDITOR.instances.editor.setData(html);
-                    loadingText.style.display = 'none';
-                    alert('Dokumen Word berhasil diekstrak! Silakan periksa hasilnya di editor dan klik Simpan.');
-                })
-                .catch(function(err) {
-                    console.log(err);
-                    loadingText.style.display = 'none';
-                    alert('Gagal membaca file Word. Pastikan formatnya .docx');
-                });
+            mammoth.convertToHtml({
+                arrayBuffer: arrayBuffer,
+                styleMap: [
+                    "p[style-name='Section Title'] => h1:fresh",
+                    "p[style-name='Subsection Title'] => h2:fresh",
+                    "p[style-name='Heading 1'] => h1:fresh",
+                    "p[style-name='Heading 2'] => h2:fresh",
+                    "p[style-name='Heading 3'] => h3:fresh"
+                ]
+            })
+            .then(function(result) {
+                var html = result.value;
+                CKEDITOR.instances.editor.setData(html);
+                loadingText.style.display = 'none';
+                alert('Dokumen Word berhasil diekstrak! Silakan periksa hasilnya di editor dan pastikan tabel/formatnya sudah rapi sebelum klik Simpan.');
+            })
+            .catch(function(err) {
+                console.log(err);
+                loadingText.style.display = 'none';
+                alert('Gagal membaca file Word. Pastikan formatnya .docx');
+            });
         };
 
         if (this.files.length > 0) {
