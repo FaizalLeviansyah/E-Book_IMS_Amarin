@@ -65,6 +65,7 @@
 
     <div id="sepia-overlay"></div>
 
+    <!-- NAVBAR UTAMA -->
     <nav class="fixed top-0 z-50 w-full glass-panel border-b border-transparent shadow-sm transition-all">
         <div class="px-4 py-3 lg:px-6 flex items-center justify-between">
             <div class="flex items-center justify-start shrink-0">
@@ -89,6 +90,7 @@
                     </div>
                 </form>
 
+                <!-- MEGA MENU SETTINGS -->
                 <div class="relative">
                     <button id="dropdownDefaultButton" class="p-2.5 bg-white/50 dark:bg-slate-800/50 border border-white/40 hover:bg-white/80 rounded-2xl transition-all shadow-sm focus:ring-2 focus:ring-blue-200" type="button"><i class="fa-solid fa-sliders text-amarin"></i></button>
 
@@ -137,6 +139,7 @@
         </div>
     </nav>
 
+    <!-- SIDEBAR KIRI -->
     <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-[20rem] md:w-[24rem] h-screen pt-[5rem] transition-transform -translate-x-full lg:translate-x-0 glass-sidebar shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col">
         <div class="px-4 md:px-5 mt-4 mb-2 shrink-0">
             <div class="relative">
@@ -147,10 +150,12 @@
 
         <div class="px-4 md:px-5 pb-8 overflow-y-auto custom-scrollbar flex-grow">
             <h5 class="text-[0.7rem] font-extrabold text-slate-500 uppercase tracking-widest mb-3 mt-4 px-1"><i class="fa-solid fa-book-open me-2"></i>Pustaka Manual</h5>
+
+            <!-- LIST BUKU SIDEBAR -->
             <div class="space-y-3">
                 @foreach($books as $book)
                 <div class="book-group bg-white/40 dark:bg-slate-800/40 rounded-2xl border border-white/50 overflow-hidden transition-all hover:bg-white/60">
-                    <button type="button" class="accordion-btn flex items-center justify-between w-full p-3.5 text-left" data-target="accordion-body-{{ $book->id }}">
+                    <button type="button" class="accordion-btn flex items-center justify-between w-full p-3.5 text-left" data-target="sidebar-book-{{ $book->id }}">
                         <div class="flex items-center gap-4">
                             @if($book->cover_image)
                                 <img src="{{ asset('uploads/books/' . $book->cover_image) }}" class="w-12 h-16 object-cover rounded-xl shadow-sm shrink-0">
@@ -159,48 +164,63 @@
                             @endif
                             <div class="font-extrabold text-base text-gray-800 dark:text-gray-100 leading-tight book-title">{{ $book->title }}</div>
                         </div>
-                        <div class="w-8 h-8 rounded-full bg-white/50 flex items-center justify-center shrink-0 ms-2"><i class="fa-solid fa-chevron-down text-amarin text-xs transition-transform {{ (isset($activeBook) && $activeBook->id == $book->id) ? 'rotate-180' : '' }}"></i></div>
+                        <div class="w-8 h-8 rounded-full bg-white/50 flex items-center justify-center shrink-0 ms-2"><i class="fa-solid fa-chevron-down text-amarin text-xs transition-transform duration-300 {{ (isset($activeBook) && $activeBook->id == $book->id) ? 'rotate-180' : '' }}"></i></div>
                     </button>
 
-                    <div id="accordion-body-{{ $book->id }}" class="book-body {{ (isset($activeBook) && $activeBook->id == $book->id) ? 'block' : 'hidden' }} px-3 pb-4">
+                    <div id="sidebar-book-{{ $book->id }}" class="book-body {{ (isset($activeBook) && $activeBook->id == $book->id) ? 'block' : 'hidden' }} px-3 pb-4">
                         @if($book->pdf_file)
                             <a href="?read_book={{ $book->id }}" class="sidebar-searchable flex items-center justify-center gap-2 p-2.5 mt-1 mx-1 text-xs text-red-500 rounded-xl bg-red-50/50 border border-red-100 font-bold shadow-sm hover:bg-red-100/50"><i class="fa-solid fa-file-pdf"></i> Lihat Dokumen Original (PDF)</a>
                         @endif
 
-                        <div class="space-y-2 mt-4 px-1">
-                            @foreach($book->parts as $part)
-                                @php $isPartActive = isset($activeChapter) && $activeChapter->part_id == $part->id; @endphp
-                                <div class="part-container mb-2">
-                                    <button type="button" class="part-accordion-btn flex items-center justify-between w-full px-3 py-2 bg-white/50 hover:bg-white/80 rounded-lg transition-colors border border-white/40 shadow-sm" data-target="part-body-{{ $part->id }}">
-                                        <h6 class="text-[0.7rem] font-extrabold text-amarin/90 uppercase tracking-widest flex items-center gap-2 truncate"><i class="fa-solid fa-folder-open text-[0.6rem]"></i> <span class="part-title">{{ $part->title }}</span></h6>
-                                        <i class="fa-solid fa-chevron-down text-[0.6rem] text-amarin/80 transition-transform duration-300 {{ $isPartActive ? 'rotate-180' : '' }}"></i>
-                                    </button>
+                        <!-- FOLDER TREE SIDEBAR -->
+                        <div class="mt-4 px-1">
+                            <ul class="border-l-2 border-slate-200 dark:border-slate-700 ml-2 pl-4 mt-3 space-y-2">
+                                @foreach($book->parts as $part)
+                                    @php $isPartActive = isset($activeChapter) && $activeChapter->part_id == $part->id; @endphp
+                                    <li class="relative group part-container">
+                                        <!-- Garis penghubung -->
+                                        <div class="absolute -left-4 top-3 w-3 h-0.5 bg-slate-200 dark:bg-slate-700"></div>
 
-                                    <ul id="part-body-{{ $part->id }}" class="part-body space-y-1 mt-1 {{ $isPartActive ? 'block active-part' : 'hidden' }} pl-1 border-l-2 border-amarin/20 ml-4 py-1">
-                                        @foreach($part->chapters as $chapter)
-                                            <li class="chapter-item">
-                                                <div class="flex items-center justify-between px-3 py-2 text-[0.85rem] rounded-xl transition-all {{ (isset($activeChapter) && $activeChapter->id == $chapter->id) ? 'bg-white/80 shadow-sm border border-white/50' : 'hover:bg-white/40 font-medium' }}">
-                                                    <a href="?read={{ $chapter->id }}" onclick="recordProgress('{{ $book->id }}', '{{ $chapter->id }}')" class="flex items-center flex-grow {{ (isset($activeChapter) && $activeChapter->id == $chapter->id) ? 'text-amarin font-bold' : 'text-gray-600 hover:text-amarin' }}">
-                                                        <i class="fa-solid fa-file-lines text-[0.6rem] me-2 opacity-50"></i><span class="truncate chapter-title">{{ $chapter->title }}</span>
-                                                    </a>
+                                        <!-- Tombol Accordion Part -->
+                                        <button type="button" class="part-accordion-btn flex items-center justify-between w-full px-2 py-1.5 rounded-lg transition-colors {{ $isPartActive ? 'bg-blue-50 dark:bg-slate-800/80' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50' }}" data-target="sidebar-part-{{ $part->id }}">
+                                            <div class="flex items-center gap-2 text-sm font-bold truncate {{ $isPartActive ? 'text-amarin' : 'text-slate-500 dark:text-slate-400' }}">
+                                                <i class="fa-solid fa-caret-{{ $isPartActive ? 'down' : 'right' }} text-[12px] w-3 text-center transition-transform"></i>
+                                                <span class="truncate part-title">{{ $part->title }}</span>
+                                            </div>
+                                        </button>
+
+                                        <!-- Daftar Chapter dalam Part -->
+                                        <div id="sidebar-part-{{ $part->id }}" class="part-body mt-1 {{ $isPartActive ? 'block active-part' : 'hidden' }}">
+                                            <ul class="pl-5 space-y-1.5 py-1">
+                                                @foreach($part->chapters as $chapter)
+                                                    <li class="chapter-item flex items-center justify-between px-2 py-1.5 text-[0.85rem] rounded-lg transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                                        <a href="?read={{ $chapter->id }}" onclick="recordProgress('{{ $book->id }}', '{{ $chapter->id }}')" class="flex items-center gap-2 flex-grow truncate {{ (isset($activeChapter) && $activeChapter->id == $chapter->id) ? 'text-amarin font-bold' : 'text-slate-500 hover:text-amarin font-medium' }}">
+                                                            <i class="fa-solid fa-file-lines text-[10px] opacity-40"></i>
+                                                            <span class="truncate chapter-title">{{ $chapter->title }}</span>
+                                                        </a>
+                                                        <!-- Indikator sudah dibaca -->
+                                                        <i class="fa-solid fa-check-circle text-green-500 text-[10px] hidden read-indicator" data-chapter-id="{{ $chapter->id }}"></i>
+
+                                                        @if(isset($activeChapter) && $activeChapter->id == $chapter->id)
+                                                            <button type="button" class="ms-2 p-1 focus:outline-none" onclick="toggleToc()"><i id="icon-toc-toggle" class="fa-solid fa-chevron-up text-[0.7rem] text-amarin bg-blue-50 w-5 h-5 rounded-full flex items-center justify-center transition-transform duration-300 shadow-inner"></i></button>
+                                                        @endif
+                                                    </li>
                                                     @if(isset($activeChapter) && $activeChapter->id == $chapter->id)
-                                                        <button type="button" class="ms-2 p-1 focus:outline-none" onclick="toggleToc()"><i id="icon-toc-toggle" class="fa-solid fa-chevron-up text-[0.7rem] text-amarin bg-blue-50 w-5 h-5 rounded-full flex items-center justify-center transition-transform duration-300 shadow-inner"></i></button>
+                                                        <li class="pl-2"><div id="dynamic-toc" class="mt-1 mb-2 space-y-1 border-l-2 border-amarin/20 ml-2 relative block transition-all duration-300 overflow-hidden"></div></li>
                                                     @endif
-                                                </div>
-                                                @if(isset($activeChapter) && $activeChapter->id == $chapter->id)
-                                                    <div id="dynamic-toc" class="mt-2 mb-3 space-y-1 border-l-2 border-amarin/20 ml-5 relative block transition-all duration-300 overflow-hidden"></div>
-                                                @endif
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endforeach
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
                         </div>
                     </div>
                 </div>
                 @endforeach
             </div>
 
+            <!-- KATEGORI FORMULIR -->
             <div class="mt-8 border-t border-slate-200/50 pt-6">
                 <h5 class="text-[0.7rem] font-extrabold text-rose-500 uppercase tracking-widest mb-4 px-1"><i class="fa-solid fa-file-signature me-2"></i>Formulir & Checklist</h5>
                 @php $groupedForms = isset($allForms) ? $allForms->groupBy('category') : collect(); @endphp
@@ -223,10 +243,12 @@
         </div>
     </aside>
 
+    <!-- AREA KONTEN UTAMA -->
     <div class="p-0 lg:ml-[24rem] mt-[5rem] min-h-screen relative z-10 transition-all duration-300">
         <div class="px-4 py-8 sm:px-8 sm:py-10 md:px-14 md:py-14 w-full max-w-none mx-auto relative">
 
             @if(isset($searchResults))
+                <!-- HASIL DEEP SEARCH -->
                 <div class="glass-panel rounded-3xl p-6 sm:p-8 md:p-12 border-t border-white/60">
                     <h4 class="text-2xl sm:text-3xl font-bold mb-8 text-gray-900 border-b border-gray-200 pb-5 flex items-center"><i class="fa-solid fa-magnifying-glass me-3 text-amarin"></i> Hasil Deep Search: "{{ request('search') }}"</h4>
                     @if($searchResults->isEmpty())
@@ -247,7 +269,9 @@
                 </div>
 
             @elseif(isset($activeChapter))
+                <!-- CHAPTER VIEW -->
                 <div class="glass-panel rounded-3xl p-6 sm:p-10 md:p-14 border-t border-white/60 shadow-[0_10px_40px_-10px_rgba(14,165,233,0.1)] mb-10 relative">
+                    <button id="btn-show-all" class="hidden mb-8 text-sm font-bold text-white bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-3 rounded-2xl transition-all shadow-lg w-full sm:w-auto text-center"><i class="fa-solid fa-book-open me-2 text-amarin"></i> Tampilkan Seluruh Modul</button>
                     <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-10">
                         <div class="inline-flex flex-wrap items-center gap-2 px-4 py-2 bg-blue-50/50 rounded-xl border border-blue-100/50 text-xs sm:text-sm font-bold text-amarin">
                             <span class="truncate max-w-[120px] sm:max-w-xs">{{ $activeBook->title }}</span><i class="fa-solid fa-chevron-right text-[0.6rem] opacity-50"></i><span class="truncate max-w-[150px] sm:max-w-xs">{{ $activeChapter->part->title }}</span>
@@ -273,6 +297,7 @@
                 </div>
 
             @elseif(isset($activeForm))
+                <!-- FORM VIEW -->
                 <div class="glass-panel rounded-3xl p-6 md:p-10 lg:p-14 shadow-2xl border border-white/60 w-full mb-10">
                     <div class="flex flex-col xl:flex-row justify-between items-center gap-6 mb-10 border-b border-slate-200 pb-8">
                         <div class="flex items-center gap-5 w-full">
@@ -311,7 +336,7 @@
                 <iframe src="{{ asset('uploads/books/' . $activeBook->pdf_file) }}" class="w-full h-[80vh] rounded-3xl border border-white/50 shadow-xl glass-panel mb-10"></iframe>
 
             @else
-
+                <!-- DASHBOARD HOMEPAGE -->
                 <div class="w-full max-w-7xl mx-auto mb-10">
 
                     <div class="glass-panel rounded-[2rem] p-6 sm:p-10 mb-8 flex flex-col md:flex-row items-center gap-6 md:gap-10 border-t border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
@@ -323,7 +348,7 @@
                         </div>
                     </div>
 
-
+                    <!-- STATISTICS WIDGET -->
                     <div class="mb-8">
                         <div class="flex items-center gap-3 px-2 mb-4">
                             <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 shadow-inner shrink-0"><i class="fa-solid fa-chart-simple text-sm"></i></div>
@@ -377,6 +402,99 @@
                         </div>
                     </div>
 
+                    <!-- GRID PUSTAKA & WIDGET -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-12 mt-8">
+                        <!-- PUSTAKA & PROGRESS (KIRI) -->
+                        <div class="lg:col-span-8 flex flex-col gap-6">
+                            <div class="flex items-center gap-3 px-2">
+                                <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-amarin shadow-inner shrink-0"><i class="fa-solid fa-book-bookmark text-xl"></i></div>
+                                <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">Pustaka & Modul Materi</h2>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                @forelse($books as $book)
+                                    @php $totalChapters = $book->parts->flatMap->chapters->count(); @endphp
+                                    <div class="glass-panel rounded-2xl p-5 border border-white/50 hover:shadow-xl transition-all duration-300 flex flex-col h-full group bg-white/40">
+                                        <div class="flex gap-4 mb-4">
+                                            @if($book->cover_image)
+                                                <img src="{{ asset('uploads/books/' . $book->cover_image) }}" class="w-24 h-32 object-cover rounded-xl shadow-md border border-white/50 shrink-0 group-hover:-translate-y-1 transition-transform">
+                                            @else
+                                                <div class="w-24 h-32 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex flex-col items-center justify-center shrink-0 border border-white/50 shadow-md group-hover:-translate-y-1 transition-transform"><i class="fa-solid fa-book text-slate-300 text-3xl mb-1"></i></div>
+                                            @endif
+
+                                            <div class="flex flex-col w-full">
+                                                <h3 class="text-lg font-bold text-slate-800 mb-2 leading-snug">{{ $book->title }}</h3>
+                                                <div class="flex gap-1.5 mt-1">
+                                                    <span class="bg-blue-50 text-blue-700 text-[9px] font-bold px-2 py-1 rounded w-fit"><i class="fa-solid fa-folder-tree me-1"></i> {{ $book->parts->count() }} Bagian</span>
+                                                    <span class="bg-cyan-50 text-cyan-700 text-[9px] font-bold px-2 py-1 rounded w-fit"><i class="fa-solid fa-file-lines me-1"></i> {{ $totalChapters }} Bab</span>
+                                                </div>
+
+                                                <div class="mt-auto pt-3">
+                                                    <div class="flex justify-between text-[10px] font-bold text-slate-500 mb-1.5">
+                                                        <span>Progres Kru</span>
+                                                        <span class="text-amarin progress-percentage" data-book-id="{{ $book->id }}" data-total-chapters="{{ $totalChapters }}">0%</span>
+                                                    </div>
+                                                    <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                                                        <div class="bg-gradient-to-r from-cyan-400 to-blue-500 h-1.5 rounded-full progress-bar shadow-sm transition-all duration-1000 ease-out" data-book-id="{{ $book->id }}" style="width: 0%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-auto border-t border-slate-200/60 pt-4">
+                                            <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-2 px-1 flex items-center justify-between"><span>Isi Pustaka</span><i class="fa-solid fa-list-ul"></i></h4>
+
+                                            <!-- FOLDER TREE (GRID DASHBOARD) -->
+                                            <div class="bg-white/60 dark:bg-slate-800/60 border border-blue-100/50 dark:border-slate-700 rounded-xl shadow-sm mb-2 mt-3">
+                                                <button type="button" class="accordion-btn w-full flex items-center justify-between p-3 focus:outline-none group" data-target="grid-book-{{ $book->id }}">
+                                                    <div class="flex items-center gap-2 text-amarin font-extrabold text-xs tracking-widest uppercase">
+                                                        <i class="fa-solid fa-folder-open group-hover:scale-110 transition-transform"></i>
+                                                        <span>{{ $book->title }}</span>
+                                                    </div>
+                                                    <i class="fa-solid fa-chevron-down text-amarin text-xs transition-transform duration-300"></i>
+                                                </button>
+
+                                                <div id="grid-book-{{ $book->id }}" class="folder-content hidden p-3 pt-0 border-t border-slate-200/50 dark:border-slate-700/50 transition-all duration-300">
+                                                    <ul class="border-l-2 border-slate-200 dark:border-slate-700 ml-2 pl-4 mt-3 space-y-2">
+                                                        @foreach($book->parts as $part)
+                                                            <li class="relative group part-container">
+                                                                <div class="absolute -left-4 top-3 w-3 h-0.5 bg-slate-200 dark:bg-slate-700"></div>
+
+                                                                <button type="button" class="part-accordion-btn flex items-center justify-between w-full px-2 py-1.5 rounded-lg transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50" data-target="grid-part-{{ $part->id }}">
+                                                                    <div class="flex items-center gap-2 text-sm font-bold truncate text-slate-500 dark:text-slate-400">
+                                                                        <i class="fa-solid fa-caret-right text-[12px] w-3 text-center transition-transform"></i>
+                                                                        <span class="truncate part-title">{{ $part->title }}</span>
+                                                                    </div>
+                                                                </button>
+
+                                                                <div id="grid-part-{{ $part->id }}" class="part-body hidden mt-1">
+                                                                    <ul class="pl-5 space-y-1.5 py-1">
+                                                                        @foreach($part->chapters as $chapter)
+                                                                            <li class="chapter-item flex items-center justify-between px-2 py-1.5 text-[0.85rem] rounded-lg transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                                                                <a href="?read={{ $chapter->id }}" onclick="recordProgress('{{ $book->id }}', '{{ $chapter->id }}')" class="flex items-center gap-2 flex-grow truncate text-slate-500 hover:text-amarin font-medium">
+                                                                                    <i class="fa-solid fa-file-lines text-[10px] opacity-40"></i>
+                                                                                    <span class="truncate chapter-title">{{ $chapter->title }}</span>
+                                                                                </a>
+                                                                                <i class="fa-solid fa-check-circle text-green-500 text-[10px] hidden read-indicator" data-chapter-id="{{ $chapter->id }}"></i>
+                                                                            </li>
+                                                                        @endforeach
+                                                                    </ul>
+                                                                </div>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="col-span-full glass-panel p-8 text-center rounded-2xl border border-white/50"><p class="text-slate-500 text-sm">Belum ada buku yang diunggah.</p></div>
+                                @endforelse
+                            </div>
+                        </div>
+
+                        <!-- FORMULIR CEPAT & STATUS (KANAN) -->
                         <div class="lg:col-span-4 flex flex-col gap-6">
                             <div class="flex items-center gap-3 px-2">
                                 <div class="w-10 h-10 rounded-lg bg-rose-100 flex items-center justify-center text-rose-500 shadow-inner shrink-0"><i class="fa-solid fa-bolt text-xl"></i></div>
@@ -404,7 +522,6 @@
                                 @endif
                             </div>
 
-
                             <div class="glass-panel rounded-2xl p-5 border border-white/60 shadow-sm relative overflow-hidden bg-white/40">
                                 <div class="absolute -right-4 -bottom-4 text-slate-200 opacity-50"><i class="fa-solid fa-server text-5xl"></i></div>
                                 <h4 class="text-sm font-extrabold text-slate-800 mb-3 flex items-center gap-2 relative z-10"><i class="fa-solid fa-signal text-green-500"></i> Server Amarin</h4>
@@ -413,70 +530,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="flex items-center gap-3 mb-6 px-2 mt-8">
-                        <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-amarin shadow-inner shrink-0"><i class="fa-solid fa-book-bookmark text-xl"></i></div>
-                        <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">Pustaka & Modul Materi</h2>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pb-12">
-                        @forelse($books as $book)
-                            @php $totalChapters = $book->parts->flatMap->chapters->count(); @endphp
-                            <div class="glass-panel rounded-2xl p-5 border border-white/50 hover:shadow-xl transition-all duration-300 flex flex-col h-full group bg-white/40">
-                                <div class="flex gap-4 mb-4">
-                                    @if($book->cover_image)
-                                        <img src="{{ asset('uploads/books/' . $book->cover_image) }}" class="w-24 h-32 object-cover rounded-xl shadow-md border border-white/50 shrink-0 group-hover:-translate-y-1 transition-transform">
-                                    @else
-                                        <div class="w-24 h-32 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex flex-col items-center justify-center shrink-0 border border-white/50 shadow-md group-hover:-translate-y-1 transition-transform"><i class="fa-solid fa-book text-slate-300 text-3xl mb-1"></i></div>
-                                    @endif
-
-                                    <div class="flex flex-col w-full">
-                                        <h3 class="text-lg font-bold text-slate-800 mb-2 leading-snug">{{ $book->title }}</h3>
-                                        <div class="flex gap-1.5 mt-1">
-                                            <span class="bg-blue-50 text-blue-700 text-[9px] font-bold px-2 py-1 rounded w-fit"><i class="fa-solid fa-folder-tree me-1"></i> {{ $book->parts->count() }} Bagian</span>
-                                            <span class="bg-cyan-50 text-cyan-700 text-[9px] font-bold px-2 py-1 rounded w-fit"><i class="fa-solid fa-file-lines me-1"></i> {{ $totalChapters }} Bab</span>
-                                        </div>
-
-                                        <div class="mt-auto pt-3">
-                                            <div class="flex justify-between text-[10px] font-bold text-slate-500 mb-1.5">
-                                                <span>Progres Kru</span>
-                                                <span class="text-amarin progress-percentage" data-book-id="{{ $book->id }}" data-total-chapters="{{ $totalChapters }}">0%</span>
-                                            </div>
-                                            <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                                                <div class="bg-gradient-to-r from-cyan-400 to-blue-500 h-1.5 rounded-full progress-bar shadow-sm transition-all duration-1000 ease-out" data-book-id="{{ $book->id }}" style="width: 0%"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="mt-auto border-t border-slate-200/60 pt-4">
-                                    <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-2 px-1 flex items-center justify-between"><span>Isi Pustaka</span><i class="fa-solid fa-list-ul"></i></h4>
-                                    <div class="max-h-48 overflow-y-auto custom-scrollbar pe-1 space-y-2">
-                                        @foreach($book->parts as $part)
-                                            <div class="bg-white/50 p-2.5 rounded-lg border border-white/40 shadow-sm">
-                                                <div class="flex justify-between items-center mb-2">
-                                                    <div class="flex items-center gap-2"><div class="w-6 h-6 rounded bg-blue-100/50 flex items-center justify-center text-amarin shrink-0"><i class="fa-solid fa-folder-open text-[10px]"></i></div><span class="font-bold text-xs text-slate-800 truncate">{{ $part->title }}</span></div>
-                                                </div>
-                                                <div class="pl-8 space-y-1.5 border-l border-slate-200 ml-3 py-0.5">
-                                                    @foreach($part->chapters as $chapter)
-                                                        <a href="?read={{ $chapter->id }}" onclick="recordProgress('{{ $book->id }}', '{{ $chapter->id }}')" class="flex items-center justify-between gap-1.5 text-[11px] font-medium text-slate-600 hover:text-amarin transition-colors group/link">
-                                                            <div class="flex items-center gap-1.5 truncate">
-                                                                <i class="fa-solid fa-file-lines text-[8px] opacity-40 group-hover/link:opacity-100"></i> <span class="truncate">{{ $chapter->title }}</span>
-                                                            </div>
-                                                            <i class="fa-solid fa-check-circle text-green-500 text-[10px] hidden read-indicator" data-chapter-id="{{ $chapter->id }}"></i>
-                                                        </a>
-                                                    @endforeach
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="col-span-full glass-panel p-8 text-center rounded-2xl border border-white/50"><p class="text-slate-500 text-sm">Belum ada buku yang diunggah.</p></div>
-                        @endforelse
-                    </div>
-
                     </div>
                 </div>
             @endif
@@ -514,9 +567,8 @@
     @endif
 
     <script>
-        // THEME PICKER & SLIDERS (DROPDOWN MENU TAMPILAN)
+        // SCRIPT: THEME PICKER & SLIDERS
         const themeBtns = document.querySelectorAll('.theme-btn');
-
         function updateThemeUI(theme) {
             themeBtns.forEach(btn => {
                 if (btn.getAttribute('data-theme') === theme) {
@@ -549,7 +601,6 @@
             });
         });
 
-        // TYPOGRAPHY STYLE (Font & Spacing)
         const fontSizeSlider = document.getElementById('slider-font-size');
         const lineHeightSlider = document.getElementById('slider-line-height');
 
@@ -571,7 +622,6 @@
             document.getElementById('panel-typo-settings').addEventListener('click', e => e.stopPropagation());
         }
 
-        // TEXT-TO-SPEECH
         const btnTTSPlay = document.getElementById('btn-tts-play');
         const btnTTSStop = document.getElementById('btn-tts-stop');
         const ttsIndicator = document.getElementById('tts-indicator');
@@ -591,7 +641,6 @@
             btnTTSStop.addEventListener('click', () => { synth.cancel(); btnTTSPlay.classList.remove('hidden'); btnTTSStop.classList.add('hidden'); ttsIndicator.classList.add('hidden'); ttsIndicator.classList.remove('flex'); });
         }
 
-        // AI PARTNER
         function toggleAI() { const panel = document.getElementById('ai-chat-panel'); if(panel.classList.contains('hidden')) { panel.classList.remove('hidden'); panel.classList.add('ai-panel-active'); } else { panel.classList.add('hidden'); panel.classList.remove('ai-panel-active'); } }
         function sendAIMessage() {
             const input = document.getElementById('ai-input'); const msg = input.value.trim(); if(!msg) return;
@@ -599,13 +648,12 @@
             chatBox.innerHTML += `<div class="flex gap-2 w-5/6 self-end ml-auto justify-end"><div class="bg-blue-600 p-3 rounded-2xl rounded-tr-sm shadow-sm text-white leading-relaxed">${msg}</div></div>`;
             input.value = ''; chatBox.scrollTop = chatBox.scrollHeight;
             setTimeout(() => {
-                chatBox.innerHTML += `<div class="flex gap-2 w-5/6"><div class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-[10px]"></i></div><div class="bg-white p-3 rounded-2xl rounded-tl-sm shadow-sm border border-slate-100 text-slate-700 leading-relaxed text-xs"><b>[Simulasi UI API]</b><br>Terkait pertanyaan Anda: "${msg}".<br><br>Ini adalah antarmuka AI Partner. Nantinya fitur ini akan mengirim teks Anda ke Backend Laravel untuk dicarikan jawabannya langsung dari database dokumen menggunakan LLM API (OpenAI/Gemini).</div></div>`;
+                chatBox.innerHTML += `<div class="flex gap-2 w-5/6"><div class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-[10px]"></i></div><div class="bg-white p-3 rounded-2xl rounded-tl-sm shadow-sm border border-slate-100 text-slate-700 leading-relaxed text-xs"><b>[Simulasi UI API]</b><br>Terkait pertanyaan Anda: "${msg}".<br><br>Ini adalah antarmuka AI Partner.</div></div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
             }, 1000);
         }
         document.getElementById('ai-input')?.addEventListener('keypress', function (e) { if (e.key === 'Enter') sendAIMessage(); });
 
-        // READING PROGRESS & STATS MOCKUP
         function recordProgress(bookId, chapterId) {
             let readData = JSON.parse(localStorage.getItem('amarin_read_progress')) || {};
             if(!readData[bookId]) readData[bookId] = [];
@@ -668,17 +716,6 @@
             }
         }
 
-        // OTHER SCRIPTS (TOC, Dropdown, Search, etc)
-        function toggleToc() {
-            const toc = document.getElementById('dynamic-toc');
-            const icon = document.getElementById('icon-toc-toggle');
-            if (toc.style.maxHeight && toc.style.maxHeight !== '0px') {
-                toc.style.maxHeight = '0px'; icon.classList.remove('rotate-180');
-            } else {
-                toc.style.maxHeight = toc.scrollHeight + "px"; icon.classList.add('rotate-180');
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
             renderProgressAndStats();
 
@@ -719,28 +756,39 @@
             }
             setInterval(updateDateClock, 1000); updateDateClock();
 
-            const partAccordionBtns = document.querySelectorAll('.part-accordion-btn');
-            partAccordionBtns.forEach(btn => {
+            // JS ACCORDION BUKU
+            const accordionBtns = document.querySelectorAll('.accordion-btn');
+            accordionBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
-                    const targetId = btn.getAttribute('data-target');
-                    if(!targetId) {
-                        const nextUl = btn.nextElementSibling; const icon = btn.querySelector('i.fa-chevron-down');
-                        if(nextUl && nextUl.classList.contains('hidden')) { nextUl.classList.remove('hidden'); nextUl.classList.add('block'); if(icon) icon.classList.add('rotate-180'); }
-                        else if(nextUl) { nextUl.classList.add('hidden'); nextUl.classList.remove('block'); if(icon) icon.classList.remove('rotate-180'); }
-                    } else {
-                        const targetBody = document.getElementById(targetId); const icon = btn.querySelector('i.fa-chevron-down');
-                        if (targetBody && targetBody.classList.contains('hidden')) { targetBody.classList.remove('hidden'); targetBody.classList.add('block'); if(icon) icon.classList.add('rotate-180'); }
-                        else if(targetBody) { targetBody.classList.add('hidden'); targetBody.classList.remove('block'); if(icon) icon.classList.remove('rotate-180'); }
+                    const targetId = btn.getAttribute('data-target'); const targetBody = document.getElementById(targetId); const icon = btn.querySelector('.fa-chevron-down, .fa-chevron-up');
+                    if (targetBody && targetBody.classList.contains('hidden')) {
+                        targetBody.classList.remove('hidden'); targetBody.classList.add('block');
+                        if(icon) { icon.classList.replace('fa-chevron-down', 'fa-chevron-up'); }
+                    } else if(targetBody) {
+                        targetBody.classList.add('hidden'); targetBody.classList.remove('block');
+                        if(icon) { icon.classList.replace('fa-chevron-up', 'fa-chevron-down'); }
                     }
                 });
             });
 
-            const accordionBtns = document.querySelectorAll('.accordion-btn');
-            accordionBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const targetId = btn.getAttribute('data-target'); const targetBody = document.getElementById(targetId); const icon = btn.querySelector('svg') || btn.querySelector('.fa-chevron-down');
-                    if (targetBody && targetBody.classList.contains('hidden')) { targetBody.classList.remove('hidden'); targetBody.classList.add('block'); if(icon) icon.classList.add('rotate-180'); }
-                    else if(targetBody) { targetBody.classList.add('hidden'); targetBody.classList.remove('block'); if(icon) icon.classList.remove('rotate-180'); }
+            // JS ACCORDION PART (Sub-Bab)
+            const partAccordionBtns = document.querySelectorAll('.part-accordion-btn');
+            partAccordionBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    if(e.target.tagName.toLowerCase() === 'a') return;
+
+                    const targetId = btn.getAttribute('data-target');
+                    if(!targetId) return;
+                    const targetBody = document.getElementById(targetId);
+                    const icon = btn.querySelector('.fa-caret-right, .fa-caret-down');
+
+                    if (targetBody && targetBody.classList.contains('hidden')) {
+                        targetBody.classList.remove('hidden'); targetBody.classList.add('block');
+                        if(icon) { icon.classList.replace('fa-caret-right', 'fa-caret-down'); }
+                    } else if(targetBody) {
+                        targetBody.classList.add('hidden'); targetBody.classList.remove('block');
+                        if(icon) { icon.classList.replace('fa-caret-down', 'fa-caret-right'); }
+                    }
                 });
             });
 
@@ -819,7 +867,7 @@
                         e.preventDefault(); const targetPageId = this.getAttribute('href').substring(1);
                         children.forEach(c => { c.classList.add('virtual-hidden'); c.classList.remove('page-active'); });
                         contentBox.querySelectorAll(`[data-virtual-page="${targetPageId}"]`).forEach(c => { c.classList.remove('virtual-hidden'); c.classList.add('page-active'); });
-                        btnShowAll.classList.remove('hidden'); if(mainChapterTitle) mainChapterTitle.classList.add('hidden');
+                        if(btnShowAll) btnShowAll.classList.remove('hidden'); if(mainChapterTitle) mainChapterTitle.classList.add('hidden');
                         document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('text-amarin', 'bg-white/60', 'shadow-sm'));
                         this.classList.add('text-amarin', 'bg-white/60', 'shadow-sm');
                         window.scrollTo({ top: 0, behavior: 'smooth' });
