@@ -55,6 +55,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/admin/forms/{id}', [FormController::class, 'update']);
     Route::delete('/admin/forms/{id}', [FormController::class, 'destroy']);
 
+    // Manajemen Statistik & Pembaca
+    Route::get('/admin/readers', [App\Http\Controllers\ReaderController::class, 'index'])->name('admin.readers.index');
+    Route::put('/admin/readers/{id}', [App\Http\Controllers\ReaderController::class, 'updateName'])->name('admin.readers.update');
+
 });
 
 // Memuat rute bawaan Laravel Breeze (Login, Register, Logout, Reset Password)
