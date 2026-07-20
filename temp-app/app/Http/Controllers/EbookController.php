@@ -12,11 +12,10 @@ class EbookController extends Controller
     public function index(Request $request)
     {
 
-        // Logika Merekam IP & Device Pembaca
+        // 1. Rekam IP & Perangkat
         $ip = $request->ip();
         $userAgent = $request->header('User-Agent');
 
-        // Deteksi sederhana jenis perangkat
         $device = 'Desktop/Laptop';
         if (preg_match('/mobile/i', $userAgent)) { $device = 'Mobile Device'; }
         if (preg_match('/tablet/i', $userAgent)) { $device = 'Tablet'; }

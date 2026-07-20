@@ -30,18 +30,51 @@
     </style>
 </head>
 <body>
-    <nav class="navbar-glass fixed top-0 w-full z-50 h-[4.5rem] flex items-center justify-between px-4 sm:px-6 shadow-sm">
-        <div class="flex items-center">
-            <button id="sidebarToggle" class="mr-4 sm:hidden text-slate-600 hover:text-amarin focus:outline-none bg-white/50 p-2 rounded-lg"><i class="fa-solid fa-bars text-xl"></i></button>
-            <div class="hidden sm:block font-bold text-slate-500 text-sm tracking-widest uppercase">PT Amarin Ship Management</div>
-        </div>
-        <div class="flex items-center gap-3">
-            <a href="/" class="flex items-center gap-2 text-sm font-bold text-amarin hover:text-blue-700 bg-blue-50/50 hover:bg-blue-100 px-4 py-2.5 rounded-xl border border-blue-100 transition-all shadow-sm">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i> <span class="hidden sm:inline">Lihat Portal Publik</span>
+    <!-- TOP NAVBAR -->
+    <nav class="navbar navbar-expand-lg bg-white/80 backdrop-blur-md border-bottom border-slate-200 fixed-top shadow-sm z-50">
+        <div class="container-fluid px-4">
+            <!-- LOGO & BRAND -->
+            <a class="navbar-brand d-flex align-items-center gap-3" href="#">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 d-flex align-items-center justify-content-center shadow-sm">
+                    <i class="fa-solid fa-anchor text-white text-sm"></i>
+                </div>
+                <span class="fw-black text-slate-800 tracking-widest text-sm text-uppercase">PT Amarin Ship Management</span>
             </a>
+
+            <!-- RIGHT SIDE: PORTAL PUBLIK & DROPDOWN PROFIL -->
+            <div class="d-flex align-items-center gap-4">
+                <a href="/" target="_blank" class="btn btn-sm btn-light border fw-bold text-amarin shadow-sm hover:bg-slate-50 transition-all rounded-pill px-3">
+                    <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Lihat Portal Publik
+                </a>
+
+                <div class="dropdown">
+                    <button class="btn btn-light border-0 bg-transparent d-flex align-items-center gap-2 p-1 focus:outline-none" type="button" data-bs-toggle="dropdown">
+                        <div class="w-8 h-8 rounded-circle bg-blue-100 text-blue-600 d-flex align-items-center justify-content-center fw-bold border border-blue-200">
+                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                        </div>
+                        <div class="text-start d-none d-md-block">
+                            <div class="text-xs fw-bold text-slate-800 lh-1">{{ Auth::user()->name }}</div>
+                            <div class="text-[10px] text-slate-500 fw-medium">Administrator</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 ms-1"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2 p-2">
+                        <!-- LINK EDIT PROFIL DIHAPUS UNTUK MENCEGAH ROUTE ERROR -->
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item rounded-3 text-sm fw-medium py-2 text-danger hover:bg-red-50 w-100 text-start">
+                                    <i class="fa-solid fa-right-from-bracket w-4 text-center me-2"></i> Keluar (Logout)
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </nav>
 
+    <!-- SIDEBAR -->
     <aside id="adminSidebar" class="glass-sidebar fixed top-0 left-0 z-40 w-72 h-screen pt-[4.5rem] transition-transform -translate-x-full sm:translate-x-0 shadow-[4px_0_24px_rgba(0,0,0,0.03)]">
         <div class="h-full px-4 py-8 overflow-y-auto">
             <a href="/admin" class="flex items-center gap-4 mb-10 px-2 group">
@@ -52,6 +85,11 @@
                 <li><a href="/admin" class="nav-link-admin {{ request()->is('admin') ? 'active' : '' }}"><i class="fa-solid fa-chart-pie w-8 text-lg"></i> Dashboard Utama</a></li>
                 <li><a href="/admin/books" class="nav-link-admin {{ request()->is('admin/books*') || request()->is('admin/parts*') || request()->is('admin/chapters*') ? 'active' : '' }}"><i class="fa-solid fa-book-journal-whills w-8 text-lg"></i> Kelola Pustaka</a></li>
                 <li><a href="/admin/forms" class="nav-link-admin {{ request()->is('admin/forms*') ? 'active' : '' }}"><i class="fa-solid fa-file-signature w-8 text-lg"></i> Kelola Formulir</a></li>
+
+                <!-- LINK MENU BARU UNTUK USER DAN STATISTIK -->
+                <li class="pt-4 pb-1"><div class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-widest px-4">Pengaturan Sistem</div></li>
+                <li><a href="/admin/users" class="nav-link-admin {{ request()->is('admin/users*') ? 'active' : '' }}"><i class="fa-solid fa-users-gear w-8 text-lg"></i> Manajemen Admin</a></li>
+                <li><a href="/admin/readers" class="nav-link-admin {{ request()->is('admin/readers*') ? 'active' : '' }}"><i class="fa-solid fa-satellite-dish w-8 text-lg"></i> Statistik Akses</a></li>
             </ul>
         </div>
     </aside>
@@ -61,7 +99,12 @@
             @yield('content')
         </div>
     </main>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>document.getElementById('sidebarToggle')?.addEventListener('click', function() { document.getElementById('adminSidebar').classList.toggle('-translate-x-full'); });</script>
+    <script>
+        document.getElementById('sidebarToggle')?.addEventListener('click', function() {
+            document.getElementById('adminSidebar').classList.toggle('-translate-x-full');
+        });
+    </script>
 </body>
 </html>

@@ -55,7 +55,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/admin/forms/{id}', [FormController::class, 'update']);
     Route::delete('/admin/forms/{id}', [FormController::class, 'destroy']);
 
-    // Manajemen Statistik & Pembaca
+    // Statistik Baca
     Route::get('/admin/readers', [App\Http\Controllers\ReaderController::class, 'index'])->name('admin.readers.index');
     Route::put('/admin/readers/{id}', [App\Http\Controllers\ReaderController::class, 'updateName'])->name('admin.readers.update');
 
