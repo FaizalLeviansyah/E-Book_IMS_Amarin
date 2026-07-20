@@ -1,0 +1,27 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::table('users', function (Blueprint $table) {
+            // Cek dulu apakah kolomnya sudah ada di database untuk mencegah error duplikasi
+            if (!Schema::hasColumn('users', 'profile_photo')) {
+                $table->string('profile_photo')->nullable()->after('email');
+            }
+        });
+    }
+
+    public function down()
+    {
+        Schema::table('users', function (Blueprint $table) {
+            if (Schema::hasColumn('users', 'profile_photo')) {
+                $table->dropColumn('profile_photo');
+            }
+        });
+    }
+};

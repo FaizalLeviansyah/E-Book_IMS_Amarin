@@ -12,19 +12,42 @@ class EbookController extends Controller
     public function index(Request $request)
     {
 
-        // 1. Rekam IP & Perangkat
         $ip = $request->ip();
-        $userAgent = $request->header('User-Agent');
+        $agent = $request->header('User-Agent');
 
-        $device = 'Desktop/Laptop';
-        if (preg_match('/mobile/i', $userAgent)) { $device = 'Mobile Device'; }
-        if (preg_match('/tablet/i', $userAgent)) { $device = 'Tablet'; }
+        // 1. Ekstraksi Sistem Operasi
+        $os = 'Sistem Tidak Dikenal';
+        if (preg_match('/windows nt 10/i', $agent)) $os = 'Windows 10/11';
+        elseif (preg_match('/windows nt 6\.3/i', $agent)) $os = 'Windows 8.1';
+        elseif (preg_match('/windows nt 6\.2/i', $agent)) $os = 'Windows 8';
+        elseif (preg_match('/windows nt 6\.1/i', $agent)) $os = 'Windows 7';
+        elseif (preg_match('/macintosh|mac os x/i', $agent)) $os = 'Mac OS';
+        elseif (preg_match('/android/i', $agent)) $os = 'Android';
+        elseif (preg_match('/iphone/i', $agent)) $os = 'iPhone (iOS)';
+        elseif (preg_match('/ipad/i', $agent)) $os = 'iPad (iOS)';
+        elseif (preg_match('/linux/i', $agent)) $os = 'Linux';
 
-        Reader::updateOrCreate(
+        // 2. Ekstraksi Browser
+        $browser = 'Browser Tidak Dikenal';
+        if (preg_match('/Edg/i', $agent)) $browser = 'Microsoft Edge';
+        elseif (preg_match('/OPR/i', $agent)) $browser = 'Opera';
+        elseif (preg_match('/Chrome/i', $agent)) $browser = 'Google Chrome';
+        elseif (preg_match('/Safari/i', $agent)) $browser = 'Apple Safari';
+        elseif (preg_match('/Firefox/i', $agent)) $browser = 'Mozilla Firefox';
+
+        // 3. Ekstraksi Tipe Perangkat
+        $deviceType = 'Desktop / PC';
+        if (preg_match('/mobile/i', $agent)) $deviceType = 'Smartphone';
+        elseif (preg_match('/tablet|ipad/i', $agent)) $deviceType = 'Tablet';
+
+        // Gabungkan menggunakan separator (Pemisah pipa | agar mudah dibaca di view)
+        $detailedDevice = "$deviceType|$os|$browser";
+
+        \App\Models\Reader::updateOrCreate(
             ['ip_address' => $ip],
             [
-                'device_name' => $device,
-                'user_agent' => $userAgent,
+                'device_name' => $detailedDevice,
+                'user_agent' => $agent,
                 'last_accessed_at' => now(),
             ]
         );

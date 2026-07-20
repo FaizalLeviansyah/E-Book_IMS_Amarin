@@ -49,22 +49,37 @@
 
                 <div class="dropdown">
                     <button class="btn btn-light border-0 bg-transparent d-flex align-items-center gap-2 p-1 focus:outline-none" type="button" data-bs-toggle="dropdown">
-                        <div class="w-8 h-8 rounded-circle bg-blue-100 text-blue-600 d-flex align-items-center justify-content-center fw-bold border border-blue-200">
-                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                        </div>
+
+                        <!-- Pengecekan Foto Profil Aktif -->
+                        @if(Auth::user()->profile_photo && file_exists(public_path('uploads/profiles/' . Auth::user()->profile_photo)))
+                            <img src="{{ asset('uploads/profiles/' . Auth::user()->profile_photo) }}" class="w-8 h-8 rounded-circle object-fit-cover shadow-sm border border-slate-200">
+                        @else
+                            <div class="w-8 h-8 rounded-circle bg-blue-100 text-blue-600 d-flex align-items-center justify-content-center fw-bold border border-blue-200">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            </div>
+                        @endif
+
                         <div class="text-start d-none d-md-block">
                             <div class="text-xs fw-bold text-slate-800 lh-1">{{ Auth::user()->name }}</div>
-                            <div class="text-[10px] text-slate-500 fw-medium">Administrator</div>
+                            <div class="text-[10px] text-slate-500 fw-medium">
+                                {{ Auth::user()->hasRole('super-admin') ? 'Super Administrator' : 'Administrator' }}
+                            </div>
                         </div>
                         <i class="fa-solid fa-chevron-down text-xs text-slate-400 ms-1"></i>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2 p-2">
-                        <!-- LINK EDIT PROFIL DIHAPUS UNTUK MENCEGAH ROUTE ERROR -->
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2 p-2 w-48">
+                        <li>
+                            <a class="dropdown-item rounded-3 text-sm fw-medium py-2 hover:bg-slate-50 d-flex align-items-center" href="{{ route('admin.profile') }}">
+                                <i class="fa-solid fa-user-pen w-6 text-center text-slate-400 me-1"></i> Edit Profil
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider my-1 border-slate-200"></li>
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="dropdown-item rounded-3 text-sm fw-medium py-2 text-danger hover:bg-red-50 w-100 text-start">
-                                    <i class="fa-solid fa-right-from-bracket w-4 text-center me-2"></i> Keluar (Logout)
+                                <button type="submit" class="dropdown-item rounded-3 text-sm fw-bold py-2 text-danger hover:bg-red-50 d-flex align-items-center w-100 text-start">
+                                    <i class="fa-solid fa-power-off w-6 text-center me-1"></i> Keluar (Logout)
                                 </button>
                             </form>
                         </li>
@@ -86,10 +101,12 @@
                 <li><a href="/admin/books" class="nav-link-admin {{ request()->is('admin/books*') || request()->is('admin/parts*') || request()->is('admin/chapters*') ? 'active' : '' }}"><i class="fa-solid fa-book-journal-whills w-8 text-lg"></i> Kelola Pustaka</a></li>
                 <li><a href="/admin/forms" class="nav-link-admin {{ request()->is('admin/forms*') ? 'active' : '' }}"><i class="fa-solid fa-file-signature w-8 text-lg"></i> Kelola Formulir</a></li>
 
-                <!-- LINK MENU BARU UNTUK USER DAN STATISTIK -->
-                <li class="pt-4 pb-1"><div class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-widest px-4">Pengaturan Sistem</div></li>
-                <li><a href="/admin/users" class="nav-link-admin {{ request()->is('admin/users*') ? 'active' : '' }}"><i class="fa-solid fa-users-gear w-8 text-lg"></i> Manajemen Admin</a></li>
-                <li><a href="/admin/readers" class="nav-link-admin {{ request()->is('admin/readers*') ? 'active' : '' }}"><i class="fa-solid fa-satellite-dish w-8 text-lg"></i> Statistik Akses</a></li>
+                <!-- MENU HANYA MUNCUL UNTUK SUPER ADMIN -->
+                @role('super-admin')
+                    <li class="pt-4 pb-1"><div class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-widest px-4">Pengaturan Sistem</div></li>
+                    <li><a href="/admin/users" class="nav-link-admin {{ request()->is('admin/users*') ? 'active' : '' }}"><i class="fa-solid fa-users-gear w-8 text-lg"></i> Manajemen Admin</a></li>
+                    <li><a href="/admin/readers" class="nav-link-admin {{ request()->is('admin/readers*') ? 'active' : '' }}"><i class="fa-solid fa-satellite-dish w-8 text-lg"></i> Statistik Akses</a></li>
+                @endrole
             </ul>
         </div>
     </aside>

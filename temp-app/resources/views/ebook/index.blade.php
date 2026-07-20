@@ -21,9 +21,9 @@
         body { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); background-attachment: fixed; }
         .dark body { background: linear-gradient(135deg, #0f172a 0%, #082f49 100%); }
         .glass-panel { background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.4); box-shadow: 0 8px 32px 0 rgba(3, 105, 161, 0.07); }
-        .dark .glass-panel { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(14, 165, 233, 0.15); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); }
+        .dark .glass-panel { background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(14, 165, 233, 0.2); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); }
         .glass-sidebar { background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(24px); border-right: 1px solid rgba(255, 255, 255, 0.5); }
-        .dark .glass-sidebar { background: rgba(8, 47, 73, 0.4); border-right: 1px solid rgba(14, 165, 233, 0.1); }
+        .dark .glass-sidebar { background: rgba(8, 47, 73, 0.5); border-right: 1px solid rgba(14, 165, 233, 0.15); }
         #sepia-overlay { position: fixed; inset: 0; background-color: rgba(255, 190, 90, var(--sepia-level, 0)); pointer-events: none; z-index: 9999; mix-blend-mode: multiply; }
         html { scroll-behavior: smooth; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
@@ -57,11 +57,11 @@
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         .ai-panel-active { animation: slideInRight 0.3s ease forwards; display: flex !important; }
 
-        .stat-card { @apply flex flex-col justify-center p-4 sm:p-5 glass-panel rounded-2xl border border-white/60 shadow-sm hover:-translate-y-1 transition-transform; }
+        .stat-card { @apply flex flex-col justify-center p-4 sm:p-5 glass-panel rounded-2xl border border-white/60 dark:border-slate-700 shadow-sm hover:-translate-y-1 transition-transform; }
         .stat-icon-wrapper { @apply w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-lg sm:text-xl shrink-0 shadow-inner; }
     </style>
 </head>
-<body class="text-gray-800 transition-colors duration-300 antialiased overflow-x-hidden">
+<body class="text-gray-800 dark:text-slate-100 transition-colors duration-300 antialiased overflow-x-hidden">
 
     <div id="sepia-overlay"></div>
 
@@ -69,37 +69,41 @@
     <nav class="fixed top-0 z-50 w-full glass-panel border-b border-transparent shadow-sm transition-all">
         <div class="px-4 py-3 lg:px-6 flex items-center justify-between">
             <div class="flex items-center justify-start shrink-0">
-                <button id="sidebarToggleBtn" type="button" class="inline-flex items-center p-2 rounded-xl lg:hidden hover:bg-white/40 focus:ring-2 focus:ring-blue-200 transition-colors"><i class="fa-solid fa-bars text-xl text-amarin"></i></button>
+                <button id="sidebarToggleBtn" type="button" class="inline-flex items-center p-2 rounded-xl lg:hidden hover:bg-white/40 dark:hover:bg-slate-800 focus:ring-2 focus:ring-blue-200 transition-colors"><i class="fa-solid fa-bars text-xl text-amarin"></i></button>
                 <a href="/" class="flex ms-2 items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg"><i class="fa-solid fa-anchor text-white text-lg"></i></div>
-                    <span class="hidden sm:block text-xl md:text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-cyan-600">Amarin E-Book System</span>
+                    <span class="hidden sm:block text-xl md:text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-cyan-400 dark:from-cyan-400 dark:to-blue-400">Amarin E-Book System</span>
                 </a>
             </div>
 
             <div class="flex items-center space-x-3 ms-auto shrink-0">
-                <div class="hidden xl:flex items-center gap-2 px-3 py-2 bg-green-50/50 border border-green-200/50 rounded-2xl shadow-inner text-sm font-bold text-green-600"><div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div> Online</div>
-                <div class="hidden lg:flex items-center gap-3 px-4 py-2 bg-blue-50/50 border border-blue-200/50 rounded-2xl shadow-inner text-sm font-bold text-amarin">
+                <div class="hidden 2xl:flex items-center gap-2 px-3.5 py-2 bg-cyan-50/50 dark:bg-cyan-950/40 border border-cyan-200/50 dark:border-cyan-800/50 rounded-2xl shadow-inner text-xs font-bold text-cyan-700 dark:text-cyan-300">
+                    <i class="fa-solid fa-compass text-cyan-500 fa-spin-pulse"></i><span>Navigasi: Aman (Open Sea)</span>
+                </div>
+
+                <div class="hidden xl:flex items-center gap-2 px-3 py-2 bg-green-50/50 dark:bg-green-950/40 border border-green-200/50 dark:border-green-800/50 rounded-2xl shadow-inner text-sm font-bold text-green-600 dark:text-green-400"><div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div> Online</div>
+                <div class="hidden lg:flex items-center gap-3 px-4 py-2 bg-blue-50/50 dark:bg-slate-800/60 border border-blue-200/50 dark:border-slate-700 rounded-2xl shadow-inner text-sm font-bold text-amarin">
                     <i class="fa-regular fa-calendar text-blue-400"></i><span id="realtime-date">--/--/----</span>
-                    <div class="w-px h-4 bg-blue-200 mx-1"></div>
+                    <div class="w-px h-4 bg-blue-200 dark:bg-slate-700 mx-1"></div>
                     <i class="fa-regular fa-clock fa-spin-pulse text-blue-400"></i><span id="realtime-clock">00:00</span>
                 </div>
                 <form action="/" method="GET" class="hidden md:flex">
                     <div class="relative group">
-                        <input type="text" name="search" value="{{ request('search') }}" class="block w-48 lg:w-64 p-2.5 pl-4 text-sm text-gray-900 border border-white/40 rounded-2xl bg-white/50 backdrop-blur-sm focus:ring-amarin focus:border-amarin transition-all" placeholder="Deep Search regulasi...">
+                        <input type="text" name="search" value="{{ request('search') }}" class="block w-48 lg:w-64 p-2.5 pl-4 text-sm text-gray-900 dark:text-white border border-white/40 dark:border-slate-700 rounded-2xl bg-white/50 dark:bg-slate-900/60 backdrop-blur-sm focus:ring-amarin focus:border-amarin transition-all placeholder-slate-400" placeholder="Deep Search regulasi...">
                         <button type="submit" class="absolute top-0 end-0 p-2.5 h-full text-white bg-gradient-to-r from-cyan-500 to-blue-600 rounded-e-2xl hover:opacity-90"><i class="fa-solid fa-magnifying-glass px-2"></i></button>
                     </div>
                 </form>
 
                 <!-- MEGA MENU SETTINGS -->
                 <div class="relative">
-                    <button id="dropdownDefaultButton" class="p-2.5 bg-white/50 border border-white/40 hover:bg-white/80 rounded-2xl transition-all shadow-sm focus:ring-2 focus:ring-blue-200" type="button"><i class="fa-solid fa-sliders text-amarin"></i></button>
+                    <button id="dropdownDefaultButton" class="p-2.5 bg-white/50 dark:bg-slate-800/60 border border-white/40 dark:border-slate-700 hover:bg-white/80 dark:hover:bg-slate-800 rounded-2xl transition-all shadow-sm focus:ring-2 focus:ring-blue-200" type="button"><i class="fa-solid fa-sliders text-amarin"></i></button>
 
-                    <div id="dropdownMenu" class="absolute right-0 top-full mt-3 z-50 hidden glass-panel rounded-[2rem] w-80 sm:w-96 p-6 shadow-2xl border border-white/80 origin-top-right transition-all">
-                        <div class="flex items-center gap-3 mb-5 border-b border-slate-200/50 pb-4">
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 text-amarin flex items-center justify-center shrink-0 shadow-inner"><i class="fa-solid fa-palette text-lg"></i></div>
+                    <div id="dropdownMenu" class="absolute right-0 top-full mt-3 z-50 hidden glass-panel rounded-[2rem] w-80 sm:w-96 p-6 shadow-2xl border border-white/80 dark:border-slate-700 origin-top-right transition-all">
+                        <div class="flex items-center gap-3 mb-5 border-b border-slate-200/50 dark:border-slate-700 pb-4">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-slate-800 dark:to-cyan-950 text-amarin flex items-center justify-center shrink-0 shadow-inner"><i class="fa-solid fa-palette text-lg"></i></div>
                             <div>
-                                <h6 class="font-extrabold text-slate-800 tracking-tight text-base">Tampilan Global</h6>
-                                <p class="text-[10px] text-slate-500 font-medium uppercase tracking-widest mt-0.5">App Appearance</p>
+                                <h6 class="font-extrabold text-slate-800 dark:text-slate-100 tracking-tight text-base">Tampilan Global</h6>
+                                <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium uppercase tracking-widest mt-0.5">App Appearance</p>
                             </div>
                         </div>
 
@@ -109,33 +113,33 @@
                                 <div class="grid grid-cols-3 gap-3">
                                     <button class="theme-btn flex flex-col items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all shadow-sm" data-theme="light">
                                         <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center shadow-inner"><i class="fa-solid fa-sun"></i></div>
-                                        <span class="text-[10px] font-bold text-slate-600">Terang</span>
+                                        <span class="text-[10px] font-bold text-slate-600 dark:text-slate-300">Terang</span>
                                     </button>
                                     <button class="theme-btn flex flex-col items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all shadow-sm" data-theme="dark">
                                         <div class="w-8 h-8 rounded-full bg-slate-800 text-blue-400 border border-slate-600 flex items-center justify-center shadow-inner"><i class="fa-solid fa-moon"></i></div>
-                                        <span class="text-[10px] font-bold text-slate-600">Gelap</span>
+                                        <span class="text-[10px] font-bold text-slate-600 dark:text-slate-300">Gelap</span>
                                     </button>
                                     <button class="theme-btn flex flex-col items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all shadow-sm" data-theme="auto">
-                                        <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center shadow-inner"><i class="fa-solid fa-desktop"></i></div>
-                                        <span class="text-[10px] font-bold text-slate-600">Sistem</span>
+                                        <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 flex items-center justify-center shadow-inner"><i class="fa-solid fa-desktop"></i></div>
+                                        <span class="text-[10px] font-bold text-slate-600 dark:text-slate-300">Sistem</span>
                                     </button>
                                 </div>
                             </div>
 
-                            <div class="bg-gradient-to-br from-amber-50/80 to-orange-50/50 p-4 rounded-2xl border border-amber-100/50 shadow-sm">
+                            <div class="bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-slate-800 dark:to-slate-900 p-4 rounded-2xl border border-amber-100/50 dark:border-slate-700 shadow-sm">
                                 <div class="flex justify-between items-center mb-3">
-                                    <span class="text-xs font-bold text-amber-700 flex items-center gap-2"><i class="fa-solid fa-eye text-amber-500"></i> Proteksi Mata (Sepia)</span>
-                                    <span id="sliderValue" class="text-[10px] font-bold text-amber-600 bg-amber-100 px-2 py-1 rounded-md shadow-inner">0%</span>
+                                    <span class="text-xs font-bold text-amber-700 dark:text-amber-400 flex items-center gap-2"><i class="fa-solid fa-eye text-amber-500"></i> Proteksi Mata (Sepia)</span>
+                                    <span id="sliderValue" class="text-[10px] font-bold text-amber-600 dark:text-amber-300 bg-amber-100 dark:bg-slate-800 px-2 py-1 rounded-md shadow-inner">0%</span>
                                 </div>
-                                <input id="readSlider" type="range" min="0" max="0.4" step="0.05" value="0" class="w-full h-1.5 bg-amber-200 rounded-lg appearance-none cursor-pointer accent-amber-500">
-                                <p class="text-[9px] text-amber-600/70 mt-3 font-medium leading-snug">Aktifkan filter cahaya biru untuk kenyamanan membaca dalam durasi lama di ruangan redup.</p>
+                                <input id="readSlider" type="range" min="0" max="0.4" step="0.05" value="0" class="w-full h-1.5 bg-amber-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                                <p class="text-[9px] text-amber-600/70 dark:text-slate-400 mt-3 font-medium leading-snug">Aktifkan filter cahaya biru untuk kenyamanan membaca dalam durasi lama di ruangan redup.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                @role('super-admin')
-                    <a href="/admin" class="p-2.5 bg-gradient-to-tr from-cyan-500 to-blue-600 text-white rounded-2xl hover:shadow-lg transition-all">
+                    <a href="/admin" class="p-2.5 bg-gradient-to-tr from-cyan-500 to-blue-600 text-white rounded-2xl hover:shadow-lg transition-all" title="Panel Administrator">
                         <i class="fa-solid fa-shield-halved px-1"></i>
                     </a>
                 @endrole
@@ -147,66 +151,62 @@
     <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-[20rem] md:w-[24rem] h-screen pt-[5rem] transition-transform -translate-x-full lg:translate-x-0 glass-sidebar shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col">
         <div class="px-4 md:px-5 mt-4 mb-2 shrink-0">
             <div class="relative">
-                <input type="text" id="sidebarFilter" class="w-full bg-white/60 border border-white/50 rounded-xl px-4 py-2.5 text-sm focus:ring-amarin focus:border-amarin shadow-inner font-medium placeholder-slate-400" placeholder="Filter cepat judul bab atau formulir...">
+                <input type="text" id="sidebarFilter" class="w-full bg-white/60 dark:bg-slate-900/60 border border-white/50 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-slate-100 focus:ring-amarin focus:border-amarin shadow-inner font-medium placeholder-slate-400" placeholder="Filter cepat judul bab atau formulir...">
                 <i class="fa-solid fa-filter absolute right-4 top-3.5 text-slate-400 text-sm"></i>
             </div>
         </div>
 
         <div class="px-4 md:px-5 pb-8 overflow-y-auto custom-scrollbar flex-grow">
-            <h5 class="text-[0.7rem] font-extrabold text-slate-500 uppercase tracking-widest mb-3 mt-4 px-1"><i class="fa-solid fa-book-open me-2"></i>Pustaka Manual</h5>
+            <h5 class="text-[0.7rem] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 mt-4 px-1"><i class="fa-solid fa-book-open me-2"></i>Pustaka Manual</h5>
 
             <!-- LIST BUKU SIDEBAR -->
             <div class="space-y-3">
                 @foreach($books as $book)
-                <div class="book-group bg-white/40 rounded-2xl border border-white/50 overflow-hidden transition-all hover:bg-white/60">
+                <div class="book-group bg-white/40 dark:bg-slate-900/50 rounded-2xl border border-white/50 dark:border-slate-800 overflow-hidden transition-all hover:bg-white/60 dark:hover:bg-slate-900/80">
                     <button type="button" class="accordion-btn flex items-center justify-between w-full p-3.5 text-left" data-target="sidebar-book-{{ $book->id }}">
                         <div class="flex items-center gap-4">
                             @if($book->cover_image)
                                 <img src="{{ asset('uploads/books/' . $book->cover_image) }}" class="w-12 h-16 object-cover rounded-xl shadow-sm shrink-0">
                             @else
-                                <div class="w-12 h-16 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-50 flex items-center justify-center shrink-0 border border-white/50"><i class="fa-solid fa-book text-amarin text-lg"></i></div>
+                                <div class="w-12 h-16 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-50 dark:from-slate-800 dark:to-cyan-950 flex items-center justify-center shrink-0 border border-white/50 dark:border-slate-700"><i class="fa-solid fa-book text-amarin text-lg"></i></div>
                             @endif
-                            <div class="font-extrabold text-base text-gray-800 leading-tight book-title">{{ $book->title }}</div>
+                            <div class="font-extrabold text-base text-gray-800 dark:text-slate-100 leading-tight book-title">{{ $book->title }}</div>
                         </div>
-                        <div class="w-8 h-8 rounded-full bg-white/50 flex items-center justify-center shrink-0 ms-2"><i class="fa-solid fa-chevron-down text-amarin text-xs transition-transform duration-300 {{ (isset($activeBook) && $activeBook->id == $book->id) ? 'rotate-180' : '' }}"></i></div>
+                        <div class="w-8 h-8 rounded-full bg-white/50 dark:bg-slate-800 flex items-center justify-center shrink-0 ms-2"><i class="fa-solid fa-chevron-down text-amarin text-xs transition-transform duration-300 {{ (isset($activeBook) && $activeBook->id == $book->id) ? 'rotate-180' : '' }}"></i></div>
                     </button>
 
                     <div id="sidebar-book-{{ $book->id }}" class="book-body {{ (isset($activeBook) && $activeBook->id == $book->id) ? 'block' : 'hidden' }} px-3 pb-4">
                         @if($book->pdf_file)
-                            <a href="?read_book={{ $book->id }}" class="sidebar-searchable flex items-center justify-center gap-2 p-2.5 mt-1 mx-1 text-xs text-red-500 rounded-xl bg-red-50/50 border border-red-100 font-bold shadow-sm hover:bg-red-100/50"><i class="fa-solid fa-file-pdf"></i> Lihat Dokumen Original (PDF)</a>
+                            <a href="?read_book={{ $book->id }}" class="sidebar-searchable flex items-center justify-center gap-2 p-2.5 mt-1 mx-1 text-xs text-red-500 dark:text-red-400 rounded-xl bg-red-50/50 dark:bg-red-950/40 border border-red-100 dark:border-red-900/50 font-bold shadow-sm hover:bg-red-100/50"><i class="fa-solid fa-file-pdf"></i> Lihat Dokumen Original (PDF)</a>
                         @endif
 
                         <!-- FOLDER TREE SIDEBAR -->
                         <div class="mt-4 px-1">
-                            <ul class="border-l-2 border-slate-200 ml-2 pl-4 mt-3 space-y-2">
+                            <ul class="border-l-2 border-slate-200 dark:border-slate-700 ml-2 pl-4 mt-3 space-y-2">
                                 @foreach($book->parts as $part)
                                     @php $isPartActive = isset($activeChapter) && $activeChapter->part_id == $part->id; @endphp
                                     <li class="relative group part-container">
-                                        <!-- Garis penghubung -->
-                                        <div class="absolute -left-4 top-3 w-3 h-0.5 bg-slate-200"></div>
+                                        <div class="absolute -left-4 top-3 w-3 h-0.5 bg-slate-200 dark:bg-slate-700"></div>
 
-                                        <!-- Tombol Accordion Part -->
-                                        <button type="button" class="part-accordion-btn flex items-center justify-between w-full px-2 py-1.5 rounded-lg transition-colors {{ $isPartActive ? 'bg-blue-50' : 'hover:bg-slate-50' }}" data-target="sidebar-part-{{ $part->id }}">
-                                            <div class="flex items-center gap-2 text-sm font-bold truncate {{ $isPartActive ? 'text-amarin' : 'text-slate-500' }}">
+                                        <button type="button" class="part-accordion-btn flex items-center justify-between w-full px-2 py-1.5 rounded-lg transition-colors {{ $isPartActive ? 'bg-blue-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50' }}" data-target="sidebar-part-{{ $part->id }}">
+                                            <div class="flex items-center gap-2 text-sm font-bold truncate {{ $isPartActive ? 'text-amarin' : 'text-slate-500 dark:text-slate-400' }}">
                                                 <i class="fa-solid fa-caret-{{ $isPartActive ? 'down' : 'right' }} text-[12px] w-3 text-center transition-transform"></i>
                                                 <span class="truncate part-title">{{ $part->title }}</span>
                                             </div>
                                         </button>
 
-                                        <!-- Daftar Chapter dalam Part -->
                                         <div id="sidebar-part-{{ $part->id }}" class="part-body mt-1 {{ $isPartActive ? 'block active-part' : 'hidden' }}">
                                             <ul class="pl-5 space-y-1.5 py-1">
                                                 @foreach($part->chapters as $chapter)
-                                                    <li class="chapter-item flex items-center justify-between px-2 py-1.5 text-[0.85rem] rounded-lg transition-all hover:bg-slate-50">
-                                                        <a href="?read={{ $chapter->id }}" onclick="recordProgress('{{ $book->id }}', '{{ $chapter->id }}')" class="flex items-center gap-2 flex-grow truncate {{ (isset($activeChapter) && $activeChapter->id == $chapter->id) ? 'text-amarin font-bold' : 'text-slate-500 hover:text-amarin font-medium' }}">
+                                                    <li class="chapter-item flex items-center justify-between px-2 py-1.5 text-[0.85rem] rounded-lg transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                                        <a href="?read={{ $chapter->id }}" onclick="recordProgress('{{ $book->id }}', '{{ $chapter->id }}')" class="flex items-center gap-2 flex-grow truncate {{ (isset($activeChapter) && $activeChapter->id == $chapter->id) ? 'text-amarin font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-amarin font-medium' }}">
                                                             <i class="fa-solid fa-file-lines text-[10px] opacity-40"></i>
                                                             <span class="truncate chapter-title">{{ $chapter->title }}</span>
                                                         </a>
-                                                        <!-- Indikator sudah dibaca -->
                                                         <i class="fa-solid fa-check-circle text-green-500 text-[10px] hidden read-indicator" data-chapter-id="{{ $chapter->id }}"></i>
 
                                                         @if(isset($activeChapter) && $activeChapter->id == $chapter->id)
-                                                            <button type="button" class="ms-2 p-1 focus:outline-none" onclick="toggleToc()"><i id="icon-toc-toggle" class="fa-solid fa-chevron-up text-[0.7rem] text-amarin bg-blue-50 w-5 h-5 rounded-full flex items-center justify-center transition-transform duration-300 shadow-inner"></i></button>
+                                                            <button type="button" class="ms-2 p-1 focus:outline-none" onclick="toggleToc()"><i id="icon-toc-toggle" class="fa-solid fa-chevron-up text-[0.7rem] text-amarin bg-blue-50 dark:bg-slate-800 w-5 h-5 rounded-full flex items-center justify-center transition-transform duration-300 shadow-inner"></i></button>
                                                         @endif
                                                     </li>
                                                     @if(isset($activeChapter) && $activeChapter->id == $chapter->id)
@@ -225,18 +225,18 @@
             </div>
 
             <!-- KATEGORI FORMULIR -->
-            <div class="mt-8 border-t border-slate-200/50 pt-6">
+            <div class="mt-8 border-t border-slate-200/50 dark:border-slate-800 pt-6">
                 <h5 class="text-[0.7rem] font-extrabold text-rose-500 uppercase tracking-widest mb-4 px-1"><i class="fa-solid fa-file-signature me-2"></i>Formulir & Checklist</h5>
                 @php $groupedForms = isset($allForms) ? $allForms->groupBy('category') : collect(); @endphp
                 @foreach($groupedForms as $category => $forms)
                     <div class="form-category-group mb-5">
-                        <h6 class="text-[0.75rem] font-bold text-slate-500 uppercase tracking-widest mb-2 px-2 flex items-center gap-2 form-category-title"><i class="fa-solid fa-tags text-slate-400"></i> {{ $category ?: 'Lainnya' }}</h6>
+                        <h6 class="text-[0.75rem] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 px-2 flex items-center gap-2 form-category-title"><i class="fa-solid fa-tags text-slate-400"></i> {{ $category ?: 'Lainnya' }}</h6>
                         <div class="space-y-2">
                             @foreach($forms as $form)
-                                <a href="?read_form={{ $form->id }}" class="form-item flex items-center justify-between px-4 py-3 bg-white/50 hover:bg-white/90 rounded-xl transition-all border border-white/50 shadow-sm group {{ (isset($activeForm) && $activeForm->id == $form->id) ? 'border-rose-300 bg-rose-50 shadow-md' : '' }}">
+                                <a href="?read_form={{ $form->id }}" class="form-item flex items-center justify-between px-4 py-3 bg-white/50 dark:bg-slate-900/50 hover:bg-white/90 dark:hover:bg-slate-900 rounded-xl transition-all border border-white/50 dark:border-slate-800 shadow-sm group {{ (isset($activeForm) && $activeForm->id == $form->id) ? 'border-rose-300 bg-rose-50 dark:bg-rose-950/40 shadow-md' : '' }}">
                                     <div class="flex items-center gap-3 truncate">
-                                        <div class="w-8 h-8 rounded-lg {{ $form->file_type == 'pdf' ? 'bg-red-100 text-red-500' : 'bg-blue-100 text-blue-600' }} flex items-center justify-center shrink-0"><i class="fa-solid {{ $form->file_type == 'pdf' ? 'fa-file-pdf' : 'fa-file-word' }}"></i></div>
-                                        <div class="flex flex-col truncate"><span class="text-sm font-bold text-slate-700 group-hover:text-rose-600 truncate form-title">{{ $form->title }}</span><span class="text-[10px] text-slate-400 font-medium">{{ $form->book->title ?? 'Umum' }}</span></div>
+                                        <div class="w-8 h-8 rounded-lg {{ $form->file_type == 'pdf' ? 'bg-red-100 text-red-500 dark:bg-red-950 dark:text-red-400' : 'bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400' }} flex items-center justify-center shrink-0"><i class="fa-solid {{ $form->file_type == 'pdf' ? 'fa-file-pdf' : 'fa-file-word' }}"></i></div>
+                                        <div class="flex flex-col truncate"><span class="text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-rose-600 truncate form-title">{{ $form->title }}</span><span class="text-[10px] text-slate-400 font-medium">{{ $form->book->title ?? 'Umum' }}</span></div>
                                     </div>
                                 </a>
                             @endforeach
@@ -253,18 +253,18 @@
 
             @if(isset($searchResults))
                 <!-- HASIL DEEP SEARCH -->
-                <div class="glass-panel rounded-3xl p-6 sm:p-8 md:p-12 border-t border-white/60">
-                    <h4 class="text-2xl sm:text-3xl font-bold mb-8 text-gray-900 border-b border-gray-200 pb-5 flex items-center"><i class="fa-solid fa-magnifying-glass me-3 text-amarin"></i> Hasil Deep Search: "{{ request('search') }}"</h4>
+                <div class="glass-panel rounded-3xl p-6 sm:p-8 md:p-12 border-t border-white/60 dark:border-slate-700">
+                    <h4 class="text-2xl sm:text-3xl font-bold mb-8 text-gray-900 dark:text-slate-100 border-b border-gray-200 dark:border-slate-700 pb-5 flex items-center"><i class="fa-solid fa-magnifying-glass me-3 text-amarin"></i> Hasil Deep Search: "{{ request('search') }}"</h4>
                     @if($searchResults->isEmpty())
-                        <div class="p-8 text-lg font-medium text-gray-500 bg-white/50 rounded-2xl text-center"><i class="fa-solid fa-triangle-exclamation text-3xl mb-3 block"></i>Tidak ada kecocokan dokumen.</div>
+                        <div class="p-8 text-lg font-medium text-gray-500 dark:text-slate-400 bg-white/50 dark:bg-slate-900/60 rounded-2xl text-center"><i class="fa-solid fa-triangle-exclamation text-3xl mb-3 block"></i>Tidak ada kecocokan dokumen.</div>
                     @else
                         <ul class="space-y-5">
                             @foreach($searchResults as $result)
                                 <li>
-                                    <a href="?read={{ $result->id }}&search={{ request('search') }}" class="block p-5 sm:p-6 bg-white/60 border border-white/50 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all group">
-                                        <h5 class="mb-2 text-xl font-bold text-amarin group-hover:text-blue-600 transition-colors">{{ $result->title }}</h5>
-                                        <p class="text-xs sm:text-sm text-gray-500 font-bold mb-3 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-folder-open"></i> {{ $result->part->title ?? 'Bab Umum' }}</p>
-                                        <div class="text-sm text-gray-600 font-medium bg-white/50 p-4 rounded-xl border border-slate-200/50 shadow-inner"><i class="fa-solid fa-quote-left text-amarin/30 text-lg float-left me-2"></i> {!! Str::limit(strip_tags($result->content), 180, '...') !!}</div>
+                                    <a href="?read={{ $result->id }}&search={{ request('search') }}" class="block p-5 sm:p-6 bg-white/60 dark:bg-slate-900/60 border border-white/50 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all group">
+                                        <h5 class="mb-2 text-xl font-bold text-amarin group-hover:text-blue-400 transition-colors">{{ $result->title }}</h5>
+                                        <p class="text-xs sm:text-sm text-gray-500 dark:text-slate-400 font-bold mb-3 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-folder-open"></i> {{ $result->part->title ?? 'Bab Umum' }}</p>
+                                        <div class="text-sm text-gray-600 dark:text-slate-300 font-medium bg-white/50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200/50 dark:border-slate-700 shadow-inner"><i class="fa-solid fa-quote-left text-amarin/30 text-lg float-left me-2"></i> {!! Str::limit(strip_tags($result->content), 180, '...') !!}</div>
                                     </a>
                                 </li>
                             @endforeach
@@ -274,49 +274,49 @@
 
             @elseif(isset($activeChapter))
                 <!-- CHAPTER VIEW -->
-                <div class="glass-panel rounded-3xl p-6 sm:p-10 md:p-14 border-t border-white/60 shadow-[0_10px_40px_-10px_rgba(14,165,233,0.1)] mb-10 relative">
-                    <button id="btn-show-all" class="hidden mb-8 text-sm font-bold text-white bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-3 rounded-2xl transition-all shadow-lg w-full sm:w-auto text-center"><i class="fa-solid fa-book-open me-2 text-amarin"></i> Tampilkan Seluruh Modul</button>
+                <div class="glass-panel rounded-3xl p-6 sm:p-10 md:p-14 border-t border-white/60 dark:border-slate-700 shadow-[0_10px_40px_-10px_rgba(14,165,233,0.1)] mb-10 relative">
+                    <button id="btn-show-all" class="hidden mb-8 text-sm font-bold text-white bg-gradient-to-r from-slate-800 to-slate-700 dark:from-slate-700 dark:to-slate-600 px-6 py-3 rounded-2xl transition-all shadow-lg w-full sm:w-auto text-center"><i class="fa-solid fa-book-open me-2 text-amarin"></i> Tampilkan Seluruh Modul</button>
                     <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-10">
-                        <div class="inline-flex flex-wrap items-center gap-2 px-4 py-2 bg-blue-50/50 rounded-xl border border-blue-100/50 text-xs sm:text-sm font-bold text-amarin">
+                        <div class="inline-flex flex-wrap items-center gap-2 px-4 py-2 bg-blue-50/50 dark:bg-slate-800/60 rounded-xl border border-blue-100/50 dark:border-slate-700 text-xs sm:text-sm font-bold text-amarin">
                             <span class="truncate max-w-[120px] sm:max-w-xs">{{ $activeBook->title }}</span><i class="fa-solid fa-chevron-right text-[0.6rem] opacity-50"></i><span class="truncate max-w-[150px] sm:max-w-xs">{{ $activeChapter->part->title }}</span>
                         </div>
-                        <div class="flex items-center gap-2 bg-white/60 p-2 rounded-2xl border border-white/50 shadow-sm">
-                            <div class="flex items-center gap-1 border-r border-slate-200 pr-2 mr-1">
-                                <button id="btn-tts-play" class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors flex items-center justify-center shadow-sm" title="Dengarkan Materi"><i class="fa-solid fa-play"></i></button>
-                                <button id="btn-tts-stop" class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-colors flex items-center justify-center shadow-sm hidden" title="Hentikan Suara"><i class="fa-solid fa-stop"></i></button>
+                        <div class="flex items-center gap-2 bg-white/60 dark:bg-slate-800/60 p-2 rounded-2xl border border-white/50 dark:border-slate-700 shadow-sm">
+                            <div class="flex items-center gap-1 border-r border-slate-200 dark:border-slate-700 pr-2 mr-1">
+                                <button id="btn-tts-play" class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-slate-700 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white transition-colors flex items-center justify-center shadow-sm" title="Dengarkan Materi"><i class="fa-solid fa-play"></i></button>
+                                <button id="btn-tts-stop" class="w-10 h-10 rounded-xl bg-rose-50 dark:bg-slate-700 text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white transition-colors flex items-center justify-center shadow-sm hidden" title="Hentikan Suara"><i class="fa-solid fa-stop"></i></button>
                                 <div id="tts-indicator" class="hidden items-center gap-1 mx-2"><span class="flex h-3 w-1 bg-blue-500 rounded-full animate-bounce"></span><span class="flex h-4 w-1 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></span><span class="flex h-3 w-1 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></span></div>
                             </div>
                             <div class="relative">
-                                <button id="btn-typo-settings" class="w-10 h-10 rounded-xl text-slate-600 hover:bg-white transition-colors flex items-center justify-center font-serif font-bold text-lg" title="Gaya Membaca">Aa</button>
-                                <div id="panel-typo-settings" class="absolute right-0 top-full mt-2 w-64 p-4 glass-panel rounded-2xl hidden shadow-xl border border-white/80 z-50">
+                                <button id="btn-typo-settings" class="w-10 h-10 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 transition-colors flex items-center justify-center font-serif font-bold text-lg" title="Gaya Membaca">Aa</button>
+                                <div id="panel-typo-settings" class="absolute right-0 top-full mt-2 w-64 p-4 glass-panel rounded-2xl hidden shadow-xl border border-white/80 dark:border-slate-700 z-50">
                                     <h6 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Pengaturan Teks</h6>
-                                    <div class="mb-4"><div class="flex justify-between text-xs font-bold text-slate-600 mb-2"><span>Ukuran Font</span> <span id="val-font-size">1.15rem</span></div><input type="range" id="slider-font-size" min="0.8" max="1.8" step="0.05" value="1.15" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer"></div>
-                                    <div><div class="flex justify-between text-xs font-bold text-slate-600 mb-2"><span>Spasi Baris</span> <span id="val-line-height">1.9</span></div><input type="range" id="slider-line-height" min="1.4" max="2.5" step="0.1" value="1.9" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer"></div>
+                                    <div class="mb-4"><div class="flex justify-between text-xs font-bold text-slate-600 dark:text-slate-300 mb-2"><span>Ukuran Font</span> <span id="val-font-size">1.15rem</span></div><input type="range" id="slider-font-size" min="0.8" max="1.8" step="0.05" value="1.15" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"></div>
+                                    <div><div class="flex justify-between text-xs font-bold text-slate-600 dark:text-slate-300 mb-2"><span>Spasi Baris</span> <span id="val-line-height">1.9</span></div><input type="range" id="slider-line-height" min="1.4" max="2.5" step="0.1" value="1.9" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div id="main-chapter-title" class="mb-10"><h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">{{ $activeChapter->title }}</h1></div>
+                    <div id="main-chapter-title" class="mb-10"><h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">{{ $activeChapter->title }}</h1></div>
                     <div id="reader-content">{!! $activeChapter->content !!}</div>
                 </div>
 
             @elseif(isset($activeForm))
                 <!-- FORM VIEW -->
-                <div class="glass-panel rounded-3xl p-6 md:p-10 lg:p-14 shadow-2xl border border-white/60 w-full mb-10">
-                    <div class="flex flex-col xl:flex-row justify-between items-center gap-6 mb-10 border-b border-slate-200 pb-8">
+                <div class="glass-panel rounded-3xl p-6 md:p-10 lg:p-14 shadow-2xl border border-white/60 dark:border-slate-700 w-full mb-10">
+                    <div class="flex flex-col xl:flex-row justify-between items-center gap-6 mb-10 border-b border-slate-200 dark:border-slate-700 pb-8">
                         <div class="flex items-center gap-5 w-full">
-                            <div class="w-20 h-20 rounded-2xl flex items-center justify-center shadow-inner shrink-0 {{ $activeForm->file_type == 'pdf' ? 'bg-red-100 text-red-600 border border-red-200' : 'bg-blue-100 text-blue-600 border border-blue-200' }}"><i class="fa-solid {{ $activeForm->file_type == 'pdf' ? 'fa-file-pdf' : 'fa-file-word' }} text-4xl"></i></div>
-                            <div class="flex-grow"><h1 class="text-3xl lg:text-4xl font-extrabold text-slate-900 leading-tight">{{ $activeForm->title }}</h1>
-                                <p class="text-sm text-slate-500 font-bold uppercase tracking-widest mt-2 flex items-center gap-2"><i class="fa-solid fa-tags"></i> Kategori: {{ $activeForm->category ?? 'Lainnya' }}</p>
+                            <div class="w-20 h-20 rounded-2xl flex items-center justify-center shadow-inner shrink-0 {{ $activeForm->file_type == 'pdf' ? 'bg-red-100 text-red-600 border border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-900' : 'bg-blue-100 text-blue-600 border border-blue-200 dark:bg-blue-950 dark:text-blue-400 dark:border-blue-900' }}"><i class="fa-solid {{ $activeForm->file_type == 'pdf' ? 'fa-file-pdf' : 'fa-file-word' }} text-4xl"></i></div>
+                            <div class="flex-grow"><h1 class="text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight">{{ $activeForm->title }}</h1>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest mt-2 flex items-center gap-2"><i class="fa-solid fa-tags"></i> Kategori: {{ $activeForm->category ?? 'Lainnya' }}</p>
                             </div>
                         </div>
                         <a href="{{ asset('uploads/forms/' . $activeForm->file_path) }}" download class="w-full xl:w-auto text-white bg-gradient-to-r from-cyan-500 to-blue-600 font-bold rounded-2xl text-base px-8 py-4 transition-all shadow-[0_10px_25px_-5px_rgba(37,99,235,0.4)] hover:-translate-y-1 hover:shadow-[0_15px_35px_-5px_rgba(37,99,235,0.5)] text-center flex items-center justify-center gap-3 whitespace-nowrap shrink-0"><i class="fa-solid fa-cloud-arrow-down text-xl"></i> Unduh File Asli</a>
                     </div>
 
                     @if($activeForm->file_type == 'pdf')
-                        <iframe src="{{ asset('uploads/forms/' . $activeForm->file_path) }}" class="w-full h-[85vh] rounded-2xl border-2 border-slate-200 shadow-inner bg-slate-50"></iframe>
+                        <iframe src="{{ asset('uploads/forms/' . $activeForm->file_path) }}" class="w-full h-[85vh] rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-inner bg-slate-50"></iframe>
                     @else
-                        <div class="bg-slate-100 p-2 sm:p-6 md:p-8 rounded-3xl border border-slate-200 shadow-inner w-full overflow-x-auto">
+                        <div class="bg-slate-100 dark:bg-slate-900 p-2 sm:p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-inner w-full overflow-x-auto">
                             <div id="word-preview-container" class="bg-white text-slate-900 p-8 sm:p-12 md:p-16 mx-auto rounded-xl shadow-[0_0_40px_rgba(0,0,0,0.1)] min-h-[800px] w-full relative">
                                 <div id="word-loading" class="absolute inset-0 bg-white flex flex-col items-center justify-center rounded-xl z-10 text-blue-500"><i class="fa-solid fa-circle-notch fa-spin text-6xl mb-6"></i><h3 class="font-bold text-2xl mb-2">Memproses Dokumen</h3><p class="text-slate-500 font-medium">Sedang merender Pratinjau Interaktif...</p></div>
                                 <div id="word-content" class="w-full text-base sm:text-lg"></div>
@@ -334,74 +334,75 @@
 
             @elseif(isset($activeBook) && $activeBook->pdf_file)
                 <div class="glass-panel rounded-3xl p-4 md:p-6 mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div class="flex items-center text-lg text-slate-800 font-bold w-full md:w-auto"><div class="w-12 h-12 bg-red-50 text-red-500 rounded-xl flex items-center justify-center me-4 shadow-sm border border-red-100"><i class="fa-solid fa-file-pdf text-2xl"></i></div><span class="truncate">{{ $activeBook->title }}</span></div>
+                    <div class="flex items-center text-lg text-slate-800 dark:text-slate-100 font-bold w-full md:w-auto"><div class="w-12 h-12 bg-red-50 dark:bg-red-950 text-red-500 dark:text-red-400 rounded-xl flex items-center justify-center me-4 shadow-sm border border-red-100 dark:border-red-900"><i class="fa-solid fa-file-pdf text-2xl"></i></div><span class="truncate">{{ $activeBook->title }}</span></div>
                     <a href="{{ asset('uploads/books/' . $activeBook->pdf_file) }}" target="_blank" class="w-full md:w-auto text-white bg-gradient-to-r from-red-500 to-rose-600 font-bold rounded-xl text-sm px-6 py-3 transition-all shadow-lg text-center whitespace-nowrap">Buka Layar Penuh <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i></a>
                 </div>
-                <iframe src="{{ asset('uploads/books/' . $activeBook->pdf_file) }}" class="w-full h-[80vh] rounded-3xl border border-white/50 shadow-xl glass-panel mb-10"></iframe>
+                <iframe src="{{ asset('uploads/books/' . $activeBook->pdf_file) }}" class="w-full h-[80vh] rounded-3xl border border-white/50 dark:border-slate-700 shadow-xl glass-panel mb-10"></iframe>
 
             @else
                 <!-- DASHBOARD HOMEPAGE -->
                 <div class="w-full max-w-7xl mx-auto mb-10">
 
-                    <div class="glass-panel rounded-[2rem] p-6 sm:p-10 mb-8 flex flex-col md:flex-row items-center gap-6 md:gap-10 border-t border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-cyan-300/40 to-transparent rounded-full blur-[50px] pointer-events-none"></div>
+                    <div class="glass-panel rounded-[2rem] p-6 sm:p-10 mb-8 flex flex-col md:flex-row items-center gap-6 md:gap-10 border-t border-white/60 dark:border-slate-700 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-cyan-300/40 dark:from-cyan-900/30 to-transparent rounded-full blur-[50px] pointer-events-none"></div>
                         <div class="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full sm:rounded-[2.5rem] flex items-center justify-center shadow-xl shadow-blue-500/30 shrink-0 relative z-10"><div class="absolute inset-0 bg-white/20 blur-md"></div><i class="fa-solid fa-ship text-white text-5xl sm:text-6xl relative z-10 drop-shadow-md"></i></div>
                         <div class="text-center md:text-left relative z-10">
-                            <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight drop-shadow-sm">Amarin Fleet <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">IMS</span></h1>
-                            <p class="text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed font-medium">Sistem digitalisasi prosedur operasional dan keselamatan kapal. Akses dokumen, panduan, dan formulir dengan efisien dan terpantau.</p>
+                            <!-- PERBAIKAN UTAMA WARNA TEKS BANNER DI DARK MODE -->
+                            <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-4 tracking-tight drop-shadow-sm">Amarin Fleet <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-cyan-400 dark:to-blue-400">IMS</span></h1>
+                            <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed font-medium">Sistem digitalisasi prosedur operasional dan keselamatan kapal. Akses dokumen, panduan, dan formulir dengan efisien dan terpantau.</p>
                         </div>
                     </div>
 
                     <!-- STATISTICS WIDGET -->
                     <div class="mb-8">
                         <div class="flex items-center gap-3 px-2 mb-4">
-                            <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 shadow-inner shrink-0"><i class="fa-solid fa-chart-simple text-sm"></i></div>
-                            <h2 class="text-xl font-extrabold text-slate-800 tracking-tight">Statistik Membaca Kru</h2>
+                            <div class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-950 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-inner shrink-0"><i class="fa-solid fa-chart-simple text-sm"></i></div>
+                            <h2 class="text-xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">Statistik Membaca Kru</h2>
                         </div>
 
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                             <div class="stat-card">
                                 <div class="flex items-center gap-3 mb-2">
-                                    <div class="stat-icon-wrapper bg-blue-100 text-blue-600"><i class="fa-regular fa-clock"></i></div>
-                                    <div><h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Waktu Baca</h4><h3 class="text-xl sm:text-2xl font-black text-slate-800" id="stat-time">14h 25m</h3></div>
+                                    <div class="stat-icon-wrapper bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400"><i class="fa-regular fa-clock"></i></div>
+                                    <div><h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Waktu Baca</h4><h3 class="text-xl sm:text-2xl font-black text-slate-800 dark:text-slate-100" id="stat-time">14h 25m</h3></div>
                                 </div>
                             </div>
                             <div class="stat-card">
                                 <div class="flex items-center gap-3 mb-2">
-                                    <div class="stat-icon-wrapper bg-cyan-100 text-cyan-600"><i class="fa-solid fa-file-lines"></i></div>
-                                    <div><h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Selesai</h4><h3 class="text-xl sm:text-2xl font-black text-slate-800"><span id="stat-completed">0</span> Modul</h3></div>
+                                    <div class="stat-icon-wrapper bg-cyan-100 dark:bg-cyan-950 text-cyan-600 dark:text-cyan-400"><i class="fa-solid fa-file-lines"></i></div>
+                                    <div><h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Selesai</h4><h3 class="text-xl sm:text-2xl font-black text-slate-800 dark:text-slate-100"><span id="stat-completed">0</span> Modul</h3></div>
                                 </div>
                             </div>
                             <div class="stat-card">
                                 <div class="flex items-center gap-3 mb-2">
-                                    <div class="stat-icon-wrapper bg-indigo-100 text-indigo-600"><i class="fa-regular fa-calendar-check"></i></div>
-                                    <div><h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Hari Baca</h4><h3 class="text-xl sm:text-2xl font-black text-slate-800" id="stat-days">42 Hari</h3></div>
+                                    <div class="stat-icon-wrapper bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400"><i class="fa-regular fa-calendar-check"></i></div>
+                                    <div><h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Hari Baca</h4><h3 class="text-xl sm:text-2xl font-black text-slate-800 dark:text-slate-100" id="stat-days">42 Hari</h3></div>
                                 </div>
                             </div>
                             <div class="stat-card">
                                 <div class="flex items-center gap-3 mb-2">
-                                    <div class="stat-icon-wrapper bg-orange-100 text-orange-500"><i class="fa-solid fa-fire"></i></div>
-                                    <div><h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Rekor Beruntun</h4><h3 class="text-xl sm:text-2xl font-black text-slate-800" id="stat-streak">5 Hari</h3></div>
+                                    <div class="stat-icon-wrapper bg-orange-100 dark:bg-orange-950 text-orange-500 dark:text-orange-400"><i class="fa-solid fa-fire"></i></div>
+                                    <div><h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Rekor Beruntun</h4><h3 class="text-xl sm:text-2xl font-black text-slate-800 dark:text-slate-100" id="stat-streak">5 Hari</h3></div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                            <div class="lg:col-span-2 glass-panel p-5 rounded-2xl border border-white/60 shadow-sm flex flex-col justify-between">
-                                <h4 class="text-sm font-bold text-slate-700 mb-4"><i class="fa-solid fa-calendar-days text-amarin me-2"></i>Aktivitas Membaca Tahunan</h4>
+                            <div class="lg:col-span-2 glass-panel p-5 rounded-2xl border border-white/60 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                                <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-4"><i class="fa-solid fa-calendar-days text-amarin me-2"></i>Aktivitas Membaca Tahunan</h4>
                                 <div id="heatmap-container" class="flex gap-1 overflow-x-auto custom-scrollbar pb-2"></div>
                                 <div class="flex justify-end items-center gap-2 mt-2 text-[9px] font-bold text-slate-400">
                                     <span>Sedikit</span>
                                     <div class="flex gap-1">
-                                        <div class="w-2.5 h-2.5 rounded-sm bg-slate-100"></div><div class="w-2.5 h-2.5 rounded-sm bg-cyan-200"></div><div class="w-2.5 h-2.5 rounded-sm bg-cyan-400"></div><div class="w-2.5 h-2.5 rounded-sm bg-blue-500"></div><div class="w-2.5 h-2.5 rounded-sm bg-blue-700"></div>
+                                        <div class="w-2.5 h-2.5 rounded-sm bg-slate-100 dark:bg-slate-800"></div><div class="w-2.5 h-2.5 rounded-sm bg-cyan-200"></div><div class="w-2.5 h-2.5 rounded-sm bg-cyan-400"></div><div class="w-2.5 h-2.5 rounded-sm bg-blue-500"></div><div class="w-2.5 h-2.5 rounded-sm bg-blue-700"></div>
                                     </div>
                                     <span>Banyak</span>
                                 </div>
                             </div>
 
-                            <div class="glass-panel p-5 rounded-2xl border border-white/60 shadow-sm flex flex-col justify-between">
-                                <h4 class="text-sm font-bold text-slate-700 mb-2"><i class="fa-solid fa-chart-column text-amarin me-2"></i>Tren Durasi 7 Hari</h4>
-                                <div id="trend-chart-container" class="flex items-end justify-between h-32 w-full pt-4 border-b border-slate-200"></div>
+                            <div class="glass-panel p-5 rounded-2xl border border-white/60 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                                <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-2"><i class="fa-solid fa-chart-column text-amarin me-2"></i>Tren Durasi 7 Hari</h4>
+                                <div id="trend-chart-container" class="flex items-end justify-between h-32 w-full pt-4 border-b border-slate-200 dark:border-slate-700"></div>
                             </div>
                         </div>
                     </div>
@@ -411,45 +412,45 @@
                         <!-- PUSTAKA & PROGRESS (KIRI) -->
                         <div class="lg:col-span-8 flex flex-col gap-6">
                             <div class="flex items-center gap-3 px-2">
-                                <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-amarin shadow-inner shrink-0"><i class="fa-solid fa-book-bookmark text-xl"></i></div>
-                                <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">Pustaka & Modul Materi</h2>
+                                <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-950 flex items-center justify-center text-amarin dark:text-blue-400 shadow-inner shrink-0"><i class="fa-solid fa-book-bookmark text-xl"></i></div>
+                                <h2 class="text-2xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">Pustaka & Modul Materi</h2>
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 @forelse($books as $book)
                                     @php $totalChapters = $book->parts->flatMap->chapters->count(); @endphp
-                                    <div class="glass-panel rounded-2xl p-5 border border-white/50 hover:shadow-xl transition-all duration-300 flex flex-col h-full group bg-white/40">
+                                    <div class="glass-panel rounded-2xl p-5 border border-white/50 dark:border-slate-700 hover:shadow-xl transition-all duration-300 flex flex-col h-full group bg-white/40 dark:bg-slate-900/50">
                                         <div class="flex gap-4 mb-4">
                                             @if($book->cover_image)
-                                                <img src="{{ asset('uploads/books/' . $book->cover_image) }}" class="w-24 h-32 object-cover rounded-xl shadow-md border border-white/50 shrink-0 group-hover:-translate-y-1 transition-transform">
+                                                <img src="{{ asset('uploads/books/' . $book->cover_image) }}" class="w-24 h-32 object-cover rounded-xl shadow-md border border-white/50 dark:border-slate-700 shrink-0 group-hover:-translate-y-1 transition-transform">
                                             @else
-                                                <div class="w-24 h-32 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex flex-col items-center justify-center shrink-0 border border-white/50 shadow-md group-hover:-translate-y-1 transition-transform"><i class="fa-solid fa-book text-slate-300 text-3xl mb-1"></i></div>
+                                                <div class="w-24 h-32 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex flex-col items-center justify-center shrink-0 border border-white/50 dark:border-slate-700 shadow-md group-hover:-translate-y-1 transition-transform"><i class="fa-solid fa-book text-slate-300 dark:text-slate-600 text-3xl mb-1"></i></div>
                                             @endif
 
                                             <div class="flex flex-col w-full">
-                                                <h3 class="text-lg font-bold text-slate-800 mb-2 leading-snug">{{ $book->title }}</h3>
+                                                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2 leading-snug">{{ $book->title }}</h3>
                                                 <div class="flex gap-1.5 mt-1">
-                                                    <span class="bg-blue-50 text-blue-700 text-[9px] font-bold px-2 py-1 rounded w-fit"><i class="fa-solid fa-folder-tree me-1"></i> {{ $book->parts->count() }} Bagian</span>
-                                                    <span class="bg-cyan-50 text-cyan-700 text-[9px] font-bold px-2 py-1 rounded w-fit"><i class="fa-solid fa-file-lines me-1"></i> {{ $totalChapters }} Bab</span>
+                                                    <span class="bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 text-[9px] font-bold px-2 py-1 rounded w-fit"><i class="fa-solid fa-folder-tree me-1"></i> {{ $book->parts->count() }} Bagian</span>
+                                                    <span class="bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 text-[9px] font-bold px-2 py-1 rounded w-fit"><i class="fa-solid fa-file-lines me-1"></i> {{ $totalChapters }} Bab</span>
                                                 </div>
 
                                                 <div class="mt-auto pt-3">
-                                                    <div class="flex justify-between text-[10px] font-bold text-slate-500 mb-1.5">
+                                                    <div class="flex justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5">
                                                         <span>Progres Kru</span>
                                                         <span class="text-amarin progress-percentage" data-book-id="{{ $book->id }}" data-total-chapters="{{ $totalChapters }}">0%</span>
                                                     </div>
-                                                    <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                                                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
                                                         <div class="bg-gradient-to-r from-cyan-400 to-blue-500 h-1.5 rounded-full progress-bar shadow-sm transition-all duration-1000 ease-out" data-book-id="{{ $book->id }}" style="width: 0%"></div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="mt-auto border-t border-slate-200/60 pt-4">
+                                        <div class="mt-auto border-t border-slate-200/60 dark:border-slate-800 pt-4">
                                             <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-2 px-1 flex items-center justify-between"><span>Isi Pustaka</span><i class="fa-solid fa-list-ul"></i></h4>
 
                                             <!-- FOLDER TREE (GRID DASHBOARD) -->
-                                            <div class="bg-white/60 border border-blue-100/50 rounded-xl shadow-sm mb-2 mt-3">
+                                            <div class="bg-white/60 dark:bg-slate-900/60 border border-blue-100/50 dark:border-slate-800 rounded-xl shadow-sm mb-2 mt-3">
                                                 <button type="button" class="accordion-btn w-full flex items-center justify-between p-3 focus:outline-none group" data-target="grid-book-{{ $book->id }}">
                                                     <div class="flex items-center gap-2 text-amarin font-extrabold text-xs tracking-widest uppercase">
                                                         <i class="fa-solid fa-folder-open group-hover:scale-110 transition-transform"></i>
@@ -458,14 +459,14 @@
                                                     <i class="fa-solid fa-chevron-down text-amarin text-xs transition-transform duration-300"></i>
                                                 </button>
 
-                                                <div id="grid-book-{{ $book->id }}" class="folder-content hidden p-3 pt-0 border-t border-slate-200/50 transition-all duration-300">
-                                                    <ul class="border-l-2 border-slate-200 ml-2 pl-4 mt-3 space-y-2">
+                                                <div id="grid-book-{{ $book->id }}" class="folder-content hidden p-3 pt-0 border-t border-slate-200/50 dark:border-slate-800 transition-all duration-300">
+                                                    <ul class="border-l-2 border-slate-200 dark:border-slate-700 ml-2 pl-4 mt-3 space-y-2">
                                                         @foreach($book->parts as $part)
                                                             <li class="relative group part-container">
-                                                                <div class="absolute -left-4 top-3 w-3 h-0.5 bg-slate-200"></div>
+                                                                <div class="absolute -left-4 top-3 w-3 h-0.5 bg-slate-200 dark:bg-slate-700"></div>
 
-                                                                <button type="button" class="part-accordion-btn flex items-center justify-between w-full px-2 py-1.5 rounded-lg transition-colors hover:bg-slate-50" data-target="grid-part-{{ $part->id }}">
-                                                                    <div class="flex items-center gap-2 text-sm font-bold truncate text-slate-500">
+                                                                <button type="button" class="part-accordion-btn flex items-center justify-between w-full px-2 py-1.5 rounded-lg transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50" data-target="grid-part-{{ $part->id }}">
+                                                                    <div class="flex items-center gap-2 text-sm font-bold truncate text-slate-500 dark:text-slate-400">
                                                                         <i class="fa-solid fa-caret-right text-[12px] w-3 text-center transition-transform"></i>
                                                                         <span class="truncate part-title">{{ $part->title }}</span>
                                                                     </div>
@@ -474,8 +475,8 @@
                                                                 <div id="grid-part-{{ $part->id }}" class="part-body hidden mt-1">
                                                                     <ul class="pl-5 space-y-1.5 py-1">
                                                                         @foreach($part->chapters as $chapter)
-                                                                            <li class="chapter-item flex items-center justify-between px-2 py-1.5 text-[0.85rem] rounded-lg transition-all hover:bg-slate-50">
-                                                                                <a href="?read={{ $chapter->id }}" onclick="recordProgress('{{ $book->id }}', '{{ $chapter->id }}')" class="flex items-center gap-2 flex-grow truncate text-slate-500 hover:text-amarin font-medium">
+                                                                            <li class="chapter-item flex items-center justify-between px-2 py-1.5 text-[0.85rem] rounded-lg transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                                                                <a href="?read={{ $chapter->id }}" onclick="recordProgress('{{ $book->id }}', '{{ $chapter->id }}')" class="flex items-center gap-2 flex-grow truncate text-slate-500 dark:text-slate-400 hover:text-amarin font-medium">
                                                                                     <i class="fa-solid fa-file-lines text-[10px] opacity-40"></i>
                                                                                     <span class="truncate chapter-title">{{ $chapter->title }}</span>
                                                                                 </a>
@@ -493,7 +494,7 @@
                                         </div>
                                     </div>
                                 @empty
-                                    <div class="col-span-full glass-panel p-8 text-center rounded-2xl border border-white/50"><p class="text-slate-500 text-sm">Belum ada buku yang diunggah.</p></div>
+                                    <div class="col-span-full glass-panel p-8 text-center rounded-2xl border border-white/50 dark:border-slate-700"><p class="text-slate-500 dark:text-slate-400 text-sm">Belum ada buku yang diunggah.</p></div>
                                 @endforelse
                             </div>
                         </div>
@@ -501,36 +502,36 @@
                         <!-- FORMULIR CEPAT & STATUS (KANAN) -->
                         <div class="lg:col-span-4 flex flex-col gap-6">
                             <div class="flex items-center gap-3 px-2">
-                                <div class="w-10 h-10 rounded-lg bg-rose-100 flex items-center justify-center text-rose-500 shadow-inner shrink-0"><i class="fa-solid fa-bolt text-xl"></i></div>
-                                <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">Formulir Cepat</h2>
+                                <div class="w-10 h-10 rounded-lg bg-rose-100 dark:bg-rose-950 flex items-center justify-center text-rose-500 dark:text-rose-400 shadow-inner shrink-0"><i class="fa-solid fa-bolt text-xl"></i></div>
+                                <h2 class="text-2xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">Formulir Cepat</h2>
                             </div>
 
-                            <div class="glass-panel rounded-3xl p-5 border border-white/60 shadow-sm bg-white/40 h-full">
+                            <div class="glass-panel rounded-3xl p-5 border border-white/60 dark:border-slate-700 shadow-sm bg-white/40 dark:bg-slate-900/50 h-full">
                                 @if(isset($allForms) && $allForms->count() > 0)
                                     <div class="space-y-3">
                                         @foreach($allForms->take(5) as $form)
-                                            <a href="?read_form={{ $form->id }}" class="bg-white/80 p-3.5 rounded-xl flex items-center gap-3 hover:shadow-md hover:-translate-y-1 transition-all border border-white/60 group">
-                                                <div class="w-10 h-10 rounded-lg {{ $form->file_type == 'pdf' ? 'bg-red-50 text-red-500 border border-red-100' : 'bg-blue-50 text-blue-600 border border-blue-100' }} flex items-center justify-center shrink-0 shadow-inner group-hover:scale-105 transition-transform"><i class="fa-solid {{ $form->file_type == 'pdf' ? 'fa-file-pdf' : 'fa-file-word' }} text-lg"></i></div>
+                                            <a href="?read_form={{ $form->id }}" class="bg-white/80 dark:bg-slate-800/80 p-3.5 rounded-xl flex items-center gap-3 hover:shadow-md hover:-translate-y-1 transition-all border border-white/60 dark:border-slate-700 group">
+                                                <div class="w-10 h-10 rounded-lg {{ $form->file_type == 'pdf' ? 'bg-red-50 text-red-500 border border-red-100 dark:bg-red-950 dark:text-red-400 dark:border-red-900' : 'bg-blue-50 text-blue-600 border border-blue-100 dark:bg-blue-950 dark:text-blue-400 dark:border-blue-900' }} flex items-center justify-center shrink-0 shadow-inner group-hover:scale-105 transition-transform"><i class="fa-solid {{ $form->file_type == 'pdf' ? 'fa-file-pdf' : 'fa-file-word' }} text-lg"></i></div>
                                                 <div class="truncate flex-grow">
-                                                    <h4 class="font-bold text-slate-800 text-xs truncate group-hover:text-amarin transition-colors">{{ $form->title }}</h4>
-                                                    <span class="text-[9px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded uppercase mt-1 inline-block"><i class="fa-solid fa-tag"></i> {{ $form->category ?? 'Lainnya' }}</span>
+                                                    <h4 class="font-bold text-slate-800 dark:text-slate-200 text-xs truncate group-hover:text-amarin transition-colors">{{ $form->title }}</h4>
+                                                    <span class="text-[9px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded uppercase mt-1 inline-block"><i class="fa-solid fa-tag"></i> {{ $form->category ?? 'Lainnya' }}</span>
                                                 </div>
                                             </a>
                                         @endforeach
                                     </div>
                                     @if($allForms->count() > 5)
-                                        <div class="text-center mt-4"><span class="text-[10px] text-slate-500 font-bold bg-white/50 px-3 py-1 rounded-full border border-white">Gunakan Sidebar untuk form lainnya</span></div>
+                                        <div class="text-center mt-4"><span class="text-[10px] text-slate-500 dark:text-slate-400 font-bold bg-white/50 dark:bg-slate-800 px-3 py-1 rounded-full border border-white dark:border-slate-700">Gunakan Sidebar untuk form lainnya</span></div>
                                     @endif
                                 @else
-                                    <div class="text-center py-10"><p class="text-slate-500 text-sm">Belum ada formulir.</p></div>
+                                    <div class="text-center py-10"><p class="text-slate-500 dark:text-slate-400 text-sm">Belum ada formulir.</p></div>
                                 @endif
                             </div>
 
-                            <div class="glass-panel rounded-2xl p-5 border border-white/60 shadow-sm relative overflow-hidden bg-white/40">
-                                <div class="absolute -right-4 -bottom-4 text-slate-200 opacity-50"><i class="fa-solid fa-server text-5xl"></i></div>
-                                <h4 class="text-sm font-extrabold text-slate-800 mb-3 flex items-center gap-2 relative z-10"><i class="fa-solid fa-signal text-green-500"></i> Server Amarin</h4>
+                            <div class="glass-panel rounded-2xl p-5 border border-white/60 dark:border-slate-700 shadow-sm relative overflow-hidden bg-white/40 dark:bg-slate-900/50">
+                                <div class="absolute -right-4 -bottom-4 text-slate-200 dark:text-slate-800 opacity-50"><i class="fa-solid fa-server text-5xl"></i></div>
+                                <h4 class="text-sm font-extrabold text-slate-800 dark:text-slate-100 mb-3 flex items-center gap-2 relative z-10"><i class="fa-solid fa-signal text-green-500"></i> Server Amarin</h4>
                                 <div class="space-y-3 relative z-10">
-                                    <div><div class="flex justify-between text-[10px] font-bold text-slate-500 mb-1"><span class="uppercase">Database Sync</span><span class="text-green-500">Connected</span></div><div class="w-full bg-slate-200 rounded-full h-1.5"><div class="bg-green-500 h-1.5 rounded-full shadow-[0_0_8px_#22c55e]" style="width: 100%"></div></div></div>
+                                    <div><div class="flex justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1"><span class="uppercase">Database Sync</span><span class="text-green-500">Connected</span></div><div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5"><div class="bg-green-500 h-1.5 rounded-full shadow-[0_0_8px_#22c55e]" style="width: 100%"></div></div></div>
                                 </div>
                             </div>
                         </div>
@@ -541,7 +542,7 @@
     </div>
 
     @if(isset($activeChapter))
-        <div id="ai-chat-panel" class="fixed bottom-24 right-6 w-80 sm:w-96 glass-panel border border-white shadow-2xl rounded-2xl hidden flex-col z-50 overflow-hidden transform transition-transform">
+        <div id="ai-chat-panel" class="fixed bottom-24 right-6 w-80 sm:w-96 glass-panel border border-white dark:border-slate-700 shadow-2xl rounded-2xl hidden flex-col z-50 overflow-hidden transform transition-transform">
             <div class="bg-gradient-to-r from-blue-600 to-cyan-500 p-4 text-white flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
@@ -550,22 +551,22 @@
                 <button onclick="toggleAI()" class="text-white hover:text-red-200"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <div id="ai-chat-messages" class="h-80 bg-slate-50 p-4 overflow-y-auto flex flex-col gap-3 text-sm">
+            <div id="ai-chat-messages" class="h-80 bg-slate-50 dark:bg-slate-900 p-4 overflow-y-auto flex flex-col gap-3 text-sm">
                 <div class="flex gap-2 w-5/6">
-                    <div class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-[10px]"></i></div>
-                    <div class="bg-white p-3 rounded-2xl rounded-tl-sm shadow-sm border border-slate-100 text-slate-700 leading-relaxed">
+                    <div class="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-[10px]"></i></div>
+                    <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tl-sm shadow-sm border border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-200 leading-relaxed">
                         Halo! Saya asisten AI Amarin. Apakah ada prosedur dari Bab <b>{{ $activeChapter->title }}</b> ini yang ingin saya rangkum atau jelaskan?
                     </div>
                 </div>
             </div>
 
-            <div class="p-3 bg-white border-t border-slate-100 flex items-center gap-2">
-                <input type="text" id="ai-input" class="w-full bg-slate-100 border-none rounded-xl text-sm focus:ring-amarin px-4 py-2" placeholder="Tanya sesuatu...">
+            <div class="p-3 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2">
+                <input type="text" id="ai-input" class="w-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white border-none rounded-xl text-sm focus:ring-amarin px-4 py-2 placeholder-slate-400" placeholder="Tanya sesuatu...">
                 <button onclick="sendAIMessage()" class="w-10 h-10 bg-amarin text-white rounded-xl shrink-0 hover:bg-blue-600 transition-colors shadow-md"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
 
-        <button onclick="toggleAI()" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-full shadow-[0_10px_25px_rgba(14,165,233,0.5)] hover:scale-110 transition-transform flex items-center justify-center text-2xl z-50 border-2 border-white">
+        <button onclick="toggleAI()" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-full shadow-[0_10px_25px_rgba(14,165,233,0.5)] hover:scale-110 transition-transform flex items-center justify-center text-2xl z-50 border-2 border-white dark:border-slate-700">
             <i class="fa-solid fa-sparkles"></i>
         </button>
     @endif
@@ -652,7 +653,7 @@
             chatBox.innerHTML += `<div class="flex gap-2 w-5/6 self-end ml-auto justify-end"><div class="bg-blue-600 p-3 rounded-2xl rounded-tr-sm shadow-sm text-white leading-relaxed">${msg}</div></div>`;
             input.value = ''; chatBox.scrollTop = chatBox.scrollHeight;
             setTimeout(() => {
-                chatBox.innerHTML += `<div class="flex gap-2 w-5/6"><div class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-[10px]"></i></div><div class="bg-white p-3 rounded-2xl rounded-tl-sm shadow-sm border border-slate-100 text-slate-700 leading-relaxed text-xs"><b>[Simulasi UI API]</b><br>Terkait pertanyaan Anda: "${msg}".<br><br>Ini adalah antarmuka AI Partner.</div></div>`;
+                chatBox.innerHTML += `<div class="flex gap-2 w-5/6"><div class="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-[10px]"></i></div><div class="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tl-sm shadow-sm border border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-200 leading-relaxed text-xs"><b>[Simulasi UI API]</b><br>Terkait pertanyaan Anda: "${msg}".<br><br>Ini adalah antarmuka AI Partner.</div></div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
             }, 1000);
         }
@@ -696,11 +697,11 @@
                     html += '<div class="flex flex-col gap-1">';
                     for(let d=0; d<days; d++) {
                         const intensity = Math.random() > 0.6 ? Math.floor(Math.random() * 4) + 1 : 0;
-                        let bg = 'bg-slate-100';
-                        if(intensity===1) bg = 'bg-cyan-200';
-                        else if(intensity===2) bg = 'bg-cyan-400';
-                        else if(intensity===3) bg = 'bg-blue-500';
-                        else if(intensity===4) bg = 'bg-blue-700';
+                        let bg = 'bg-slate-100 dark:bg-slate-800';
+                        if(intensity===1) bg = 'bg-cyan-200 dark:bg-cyan-900';
+                        else if(intensity===2) bg = 'bg-cyan-400 dark:bg-cyan-700';
+                        else if(intensity===3) bg = 'bg-blue-500 dark:bg-blue-600';
+                        else if(intensity===4) bg = 'bg-blue-700 dark:bg-blue-500';
                         html += `<div class="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-sm ${bg}"></div>`;
                     }
                     html += '</div>';
@@ -714,7 +715,7 @@
                 let html = '';
                 for(let i=0; i<7; i++) {
                     const height = Math.floor(Math.random() * 80) + 10;
-                    html += `<div class="flex flex-col items-center gap-2 flex-1 group"><div class="w-full bg-blue-50 rounded-t-xl h-24 relative overflow-visible flex items-end justify-center"><div class="w-full sm:w-4/5 bg-gradient-to-t from-blue-600 to-cyan-400 rounded-t-xl transition-all duration-700 hover:opacity-80 mx-auto" style="height: ${height}%"></div><div class="absolute bottom-[calc(100%+5px)] left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[9px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">${height}m</div></div><span class="text-[9px] font-bold text-slate-500">${days[i]}</span></div>`;
+                    html += `<div class="flex flex-col items-center gap-2 flex-1 group"><div class="w-full bg-blue-50 dark:bg-slate-800 rounded-t-xl h-24 relative overflow-visible flex items-end justify-center"><div class="w-full sm:w-4/5 bg-gradient-to-t from-blue-600 to-cyan-400 rounded-t-xl transition-all duration-700 hover:opacity-80 mx-auto" style="height: ${height}%"></div><div class="absolute bottom-[calc(100%+5px)] left-1/2 -translate-x-1/2 bg-slate-800 dark:bg-slate-700 text-white text-[9px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">${height}m</div></div><span class="text-[9px] font-bold text-slate-500 dark:text-slate-400">${days[i]}</span></div>`;
                 }
                 trendContainer.innerHTML = html;
             }
