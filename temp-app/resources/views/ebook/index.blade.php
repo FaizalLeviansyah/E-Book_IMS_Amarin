@@ -61,7 +61,7 @@
         .stat-icon-wrapper { @apply w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-lg sm:text-xl shrink-0 shadow-inner; }
     </style>
 </head>
-<body class="text-gray-800 dark:text-gray-200 transition-colors duration-300 antialiased overflow-x-hidden">
+<body class="text-gray-800 transition-colors duration-300 antialiased overflow-x-hidden">
 
     <div id="sepia-overlay"></div>
 
@@ -92,49 +92,53 @@
 
                 <!-- MEGA MENU SETTINGS -->
                 <div class="relative">
-                    <button id="dropdownDefaultButton" class="p-2.5 bg-white/50 dark:bg-slate-800/50 border border-white/40 hover:bg-white/80 rounded-2xl transition-all shadow-sm focus:ring-2 focus:ring-blue-200" type="button"><i class="fa-solid fa-sliders text-amarin"></i></button>
+                    <button id="dropdownDefaultButton" class="p-2.5 bg-white/50 border border-white/40 hover:bg-white/80 rounded-2xl transition-all shadow-sm focus:ring-2 focus:ring-blue-200" type="button"><i class="fa-solid fa-sliders text-amarin"></i></button>
 
-                    <div id="dropdownMenu" class="absolute right-0 top-full mt-3 z-50 hidden glass-panel rounded-[2rem] w-80 sm:w-96 p-6 shadow-2xl border border-white/80 dark:border-slate-700/80 origin-top-right transition-all">
-                        <div class="flex items-center gap-3 mb-5 border-b border-slate-200/50 dark:border-slate-700/50 pb-4">
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-slate-700 dark:to-slate-600 text-amarin dark:text-blue-400 flex items-center justify-center shrink-0 shadow-inner"><i class="fa-solid fa-palette text-lg"></i></div>
+                    <div id="dropdownMenu" class="absolute right-0 top-full mt-3 z-50 hidden glass-panel rounded-[2rem] w-80 sm:w-96 p-6 shadow-2xl border border-white/80 origin-top-right transition-all">
+                        <div class="flex items-center gap-3 mb-5 border-b border-slate-200/50 pb-4">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 text-amarin flex items-center justify-center shrink-0 shadow-inner"><i class="fa-solid fa-palette text-lg"></i></div>
                             <div>
-                                <h6 class="font-extrabold text-slate-800 dark:text-white tracking-tight text-base">Tampilan Global</h6>
+                                <h6 class="font-extrabold text-slate-800 tracking-tight text-base">Tampilan Global</h6>
                                 <p class="text-[10px] text-slate-500 font-medium uppercase tracking-widest mt-0.5">App Appearance</p>
                             </div>
                         </div>
 
                         <div class="space-y-6">
                             <div>
-                                <span class="text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3 block"><i class="fa-solid fa-circle-half-stroke me-1"></i> Tema Dasar</span>
+                                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 block"><i class="fa-solid fa-circle-half-stroke me-1"></i> Tema Dasar</span>
                                 <div class="grid grid-cols-3 gap-3">
                                     <button class="theme-btn flex flex-col items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all shadow-sm" data-theme="light">
                                         <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center shadow-inner"><i class="fa-solid fa-sun"></i></div>
-                                        <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Terang</span>
+                                        <span class="text-[10px] font-bold text-slate-600">Terang</span>
                                     </button>
                                     <button class="theme-btn flex flex-col items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all shadow-sm" data-theme="dark">
                                         <div class="w-8 h-8 rounded-full bg-slate-800 text-blue-400 border border-slate-600 flex items-center justify-center shadow-inner"><i class="fa-solid fa-moon"></i></div>
-                                        <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Gelap</span>
+                                        <span class="text-[10px] font-bold text-slate-600">Gelap</span>
                                     </button>
                                     <button class="theme-btn flex flex-col items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all shadow-sm" data-theme="auto">
-                                        <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center shadow-inner"><i class="fa-solid fa-desktop"></i></div>
-                                        <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Sistem</span>
+                                        <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center shadow-inner"><i class="fa-solid fa-desktop"></i></div>
+                                        <span class="text-[10px] font-bold text-slate-600">Sistem</span>
                                     </button>
                                 </div>
                             </div>
 
-                            <div class="bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-900/20 dark:to-orange-900/10 p-4 rounded-2xl border border-amber-100/50 dark:border-amber-900/30 shadow-sm">
+                            <div class="bg-gradient-to-br from-amber-50/80 to-orange-50/50 p-4 rounded-2xl border border-amber-100/50 shadow-sm">
                                 <div class="flex justify-between items-center mb-3">
-                                    <span class="text-xs font-bold text-amber-700 dark:text-amber-500 flex items-center gap-2"><i class="fa-solid fa-eye text-amber-500"></i> Proteksi Mata (Sepia)</span>
-                                    <span id="sliderValue" class="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/50 px-2 py-1 rounded-md shadow-inner">0%</span>
+                                    <span class="text-xs font-bold text-amber-700 flex items-center gap-2"><i class="fa-solid fa-eye text-amber-500"></i> Proteksi Mata (Sepia)</span>
+                                    <span id="sliderValue" class="text-[10px] font-bold text-amber-600 bg-amber-100 px-2 py-1 rounded-md shadow-inner">0%</span>
                                 </div>
-                                <input id="readSlider" type="range" min="0" max="0.4" step="0.05" value="0" class="w-full h-1.5 bg-amber-200 dark:bg-amber-900/50 rounded-lg appearance-none cursor-pointer accent-amber-500">
-                                <p class="text-[9px] text-amber-600/70 dark:text-amber-500/70 mt-3 font-medium leading-snug">Aktifkan filter cahaya biru untuk kenyamanan membaca dalam durasi lama di ruangan redup.</p>
+                                <input id="readSlider" type="range" min="0" max="0.4" step="0.05" value="0" class="w-full h-1.5 bg-amber-200 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                                <p class="text-[9px] text-amber-600/70 mt-3 font-medium leading-snug">Aktifkan filter cahaya biru untuk kenyamanan membaca dalam durasi lama di ruangan redup.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <a href="/admin" class="p-2.5 bg-gradient-to-tr from-cyan-500 to-blue-600 text-white rounded-2xl hover:shadow-lg transition-all"><i class="fa-solid fa-shield-halved px-1"></i></a>
+               @role('super-admin')
+                    <a href="/admin" class="p-2.5 bg-gradient-to-tr from-cyan-500 to-blue-600 text-white rounded-2xl hover:shadow-lg transition-all">
+                        <i class="fa-solid fa-shield-halved px-1"></i>
+                    </a>
+                @endrole
             </div>
         </div>
     </nav>
@@ -154,7 +158,7 @@
             <!-- LIST BUKU SIDEBAR -->
             <div class="space-y-3">
                 @foreach($books as $book)
-                <div class="book-group bg-white/40 dark:bg-slate-800/40 rounded-2xl border border-white/50 overflow-hidden transition-all hover:bg-white/60">
+                <div class="book-group bg-white/40 rounded-2xl border border-white/50 overflow-hidden transition-all hover:bg-white/60">
                     <button type="button" class="accordion-btn flex items-center justify-between w-full p-3.5 text-left" data-target="sidebar-book-{{ $book->id }}">
                         <div class="flex items-center gap-4">
                             @if($book->cover_image)
@@ -162,7 +166,7 @@
                             @else
                                 <div class="w-12 h-16 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-50 flex items-center justify-center shrink-0 border border-white/50"><i class="fa-solid fa-book text-amarin text-lg"></i></div>
                             @endif
-                            <div class="font-extrabold text-base text-gray-800 dark:text-gray-100 leading-tight book-title">{{ $book->title }}</div>
+                            <div class="font-extrabold text-base text-gray-800 leading-tight book-title">{{ $book->title }}</div>
                         </div>
                         <div class="w-8 h-8 rounded-full bg-white/50 flex items-center justify-center shrink-0 ms-2"><i class="fa-solid fa-chevron-down text-amarin text-xs transition-transform duration-300 {{ (isset($activeBook) && $activeBook->id == $book->id) ? 'rotate-180' : '' }}"></i></div>
                     </button>
@@ -174,16 +178,16 @@
 
                         <!-- FOLDER TREE SIDEBAR -->
                         <div class="mt-4 px-1">
-                            <ul class="border-l-2 border-slate-200 dark:border-slate-700 ml-2 pl-4 mt-3 space-y-2">
+                            <ul class="border-l-2 border-slate-200 ml-2 pl-4 mt-3 space-y-2">
                                 @foreach($book->parts as $part)
                                     @php $isPartActive = isset($activeChapter) && $activeChapter->part_id == $part->id; @endphp
                                     <li class="relative group part-container">
                                         <!-- Garis penghubung -->
-                                        <div class="absolute -left-4 top-3 w-3 h-0.5 bg-slate-200 dark:bg-slate-700"></div>
+                                        <div class="absolute -left-4 top-3 w-3 h-0.5 bg-slate-200"></div>
 
                                         <!-- Tombol Accordion Part -->
-                                        <button type="button" class="part-accordion-btn flex items-center justify-between w-full px-2 py-1.5 rounded-lg transition-colors {{ $isPartActive ? 'bg-blue-50 dark:bg-slate-800/80' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50' }}" data-target="sidebar-part-{{ $part->id }}">
-                                            <div class="flex items-center gap-2 text-sm font-bold truncate {{ $isPartActive ? 'text-amarin' : 'text-slate-500 dark:text-slate-400' }}">
+                                        <button type="button" class="part-accordion-btn flex items-center justify-between w-full px-2 py-1.5 rounded-lg transition-colors {{ $isPartActive ? 'bg-blue-50' : 'hover:bg-slate-50' }}" data-target="sidebar-part-{{ $part->id }}">
+                                            <div class="flex items-center gap-2 text-sm font-bold truncate {{ $isPartActive ? 'text-amarin' : 'text-slate-500' }}">
                                                 <i class="fa-solid fa-caret-{{ $isPartActive ? 'down' : 'right' }} text-[12px] w-3 text-center transition-transform"></i>
                                                 <span class="truncate part-title">{{ $part->title }}</span>
                                             </div>
@@ -193,7 +197,7 @@
                                         <div id="sidebar-part-{{ $part->id }}" class="part-body mt-1 {{ $isPartActive ? 'block active-part' : 'hidden' }}">
                                             <ul class="pl-5 space-y-1.5 py-1">
                                                 @foreach($part->chapters as $chapter)
-                                                    <li class="chapter-item flex items-center justify-between px-2 py-1.5 text-[0.85rem] rounded-lg transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                                    <li class="chapter-item flex items-center justify-between px-2 py-1.5 text-[0.85rem] rounded-lg transition-all hover:bg-slate-50">
                                                         <a href="?read={{ $chapter->id }}" onclick="recordProgress('{{ $book->id }}', '{{ $chapter->id }}')" class="flex items-center gap-2 flex-grow truncate {{ (isset($activeChapter) && $activeChapter->id == $chapter->id) ? 'text-amarin font-bold' : 'text-slate-500 hover:text-amarin font-medium' }}">
                                                             <i class="fa-solid fa-file-lines text-[10px] opacity-40"></i>
                                                             <span class="truncate chapter-title">{{ $chapter->title }}</span>
@@ -445,7 +449,7 @@
                                             <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-2 px-1 flex items-center justify-between"><span>Isi Pustaka</span><i class="fa-solid fa-list-ul"></i></h4>
 
                                             <!-- FOLDER TREE (GRID DASHBOARD) -->
-                                            <div class="bg-white/60 dark:bg-slate-800/60 border border-blue-100/50 dark:border-slate-700 rounded-xl shadow-sm mb-2 mt-3">
+                                            <div class="bg-white/60 border border-blue-100/50 rounded-xl shadow-sm mb-2 mt-3">
                                                 <button type="button" class="accordion-btn w-full flex items-center justify-between p-3 focus:outline-none group" data-target="grid-book-{{ $book->id }}">
                                                     <div class="flex items-center gap-2 text-amarin font-extrabold text-xs tracking-widest uppercase">
                                                         <i class="fa-solid fa-folder-open group-hover:scale-110 transition-transform"></i>
@@ -454,14 +458,14 @@
                                                     <i class="fa-solid fa-chevron-down text-amarin text-xs transition-transform duration-300"></i>
                                                 </button>
 
-                                                <div id="grid-book-{{ $book->id }}" class="folder-content hidden p-3 pt-0 border-t border-slate-200/50 dark:border-slate-700/50 transition-all duration-300">
-                                                    <ul class="border-l-2 border-slate-200 dark:border-slate-700 ml-2 pl-4 mt-3 space-y-2">
+                                                <div id="grid-book-{{ $book->id }}" class="folder-content hidden p-3 pt-0 border-t border-slate-200/50 transition-all duration-300">
+                                                    <ul class="border-l-2 border-slate-200 ml-2 pl-4 mt-3 space-y-2">
                                                         @foreach($book->parts as $part)
                                                             <li class="relative group part-container">
-                                                                <div class="absolute -left-4 top-3 w-3 h-0.5 bg-slate-200 dark:bg-slate-700"></div>
+                                                                <div class="absolute -left-4 top-3 w-3 h-0.5 bg-slate-200"></div>
 
-                                                                <button type="button" class="part-accordion-btn flex items-center justify-between w-full px-2 py-1.5 rounded-lg transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50" data-target="grid-part-{{ $part->id }}">
-                                                                    <div class="flex items-center gap-2 text-sm font-bold truncate text-slate-500 dark:text-slate-400">
+                                                                <button type="button" class="part-accordion-btn flex items-center justify-between w-full px-2 py-1.5 rounded-lg transition-colors hover:bg-slate-50" data-target="grid-part-{{ $part->id }}">
+                                                                    <div class="flex items-center gap-2 text-sm font-bold truncate text-slate-500">
                                                                         <i class="fa-solid fa-caret-right text-[12px] w-3 text-center transition-transform"></i>
                                                                         <span class="truncate part-title">{{ $part->title }}</span>
                                                                     </div>
@@ -470,7 +474,7 @@
                                                                 <div id="grid-part-{{ $part->id }}" class="part-body hidden mt-1">
                                                                     <ul class="pl-5 space-y-1.5 py-1">
                                                                         @foreach($part->chapters as $chapter)
-                                                                            <li class="chapter-item flex items-center justify-between px-2 py-1.5 text-[0.85rem] rounded-lg transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                                                            <li class="chapter-item flex items-center justify-between px-2 py-1.5 text-[0.85rem] rounded-lg transition-all hover:bg-slate-50">
                                                                                 <a href="?read={{ $chapter->id }}" onclick="recordProgress('{{ $book->id }}', '{{ $chapter->id }}')" class="flex items-center gap-2 flex-grow truncate text-slate-500 hover:text-amarin font-medium">
                                                                                     <i class="fa-solid fa-file-lines text-[10px] opacity-40"></i>
                                                                                     <span class="truncate chapter-title">{{ $chapter->title }}</span>
@@ -692,11 +696,11 @@
                     html += '<div class="flex flex-col gap-1">';
                     for(let d=0; d<days; d++) {
                         const intensity = Math.random() > 0.6 ? Math.floor(Math.random() * 4) + 1 : 0;
-                        let bg = 'bg-slate-100 dark:bg-slate-700/50';
-                        if(intensity===1) bg = 'bg-cyan-200 dark:bg-cyan-900/60';
-                        else if(intensity===2) bg = 'bg-cyan-400 dark:bg-cyan-700';
-                        else if(intensity===3) bg = 'bg-blue-500 dark:bg-blue-600';
-                        else if(intensity===4) bg = 'bg-blue-700 dark:bg-blue-400';
+                        let bg = 'bg-slate-100';
+                        if(intensity===1) bg = 'bg-cyan-200';
+                        else if(intensity===2) bg = 'bg-cyan-400';
+                        else if(intensity===3) bg = 'bg-blue-500';
+                        else if(intensity===4) bg = 'bg-blue-700';
                         html += `<div class="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-sm ${bg}"></div>`;
                     }
                     html += '</div>';
@@ -710,7 +714,7 @@
                 let html = '';
                 for(let i=0; i<7; i++) {
                     const height = Math.floor(Math.random() * 80) + 10;
-                    html += `<div class="flex flex-col items-center gap-2 flex-1 group"><div class="w-full bg-blue-50 dark:bg-slate-800 rounded-t-xl h-24 relative overflow-visible flex items-end justify-center"><div class="w-full sm:w-4/5 bg-gradient-to-t from-blue-600 to-cyan-400 rounded-t-xl transition-all duration-700 hover:opacity-80 mx-auto" style="height: ${height}%"></div><div class="absolute bottom-[calc(100%+5px)] left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[9px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">${height}m</div></div><span class="text-[9px] font-bold text-slate-500">${days[i]}</span></div>`;
+                    html += `<div class="flex flex-col items-center gap-2 flex-1 group"><div class="w-full bg-blue-50 rounded-t-xl h-24 relative overflow-visible flex items-end justify-center"><div class="w-full sm:w-4/5 bg-gradient-to-t from-blue-600 to-cyan-400 rounded-t-xl transition-all duration-700 hover:opacity-80 mx-auto" style="height: ${height}%"></div><div class="absolute bottom-[calc(100%+5px)] left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[9px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">${height}m</div></div><span class="text-[9px] font-bold text-slate-500">${days[i]}</span></div>`;
                 }
                 trendContainer.innerHTML = html;
             }

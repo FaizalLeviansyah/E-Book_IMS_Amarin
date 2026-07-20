@@ -6,11 +6,29 @@ use App\Models\Book;
 use App\Models\Chapter;
 use App\Models\Form;
 use Illuminate\Http\Request;
-
+use App\Models\Reader;
 class EbookController extends Controller
 {
     public function index(Request $request)
     {
+
+        // Logika Merekam IP & Device Pembaca
+        $ip = $request->ip();
+        $userAgent = $request->header('User-Agent');
+
+        // Deteksi sederhana jenis perangkat
+        $device = 'Desktop/Laptop';
+        if (preg_match('/mobile/i', $userAgent)) { $device = 'Mobile Device'; }
+        if (preg_match('/tablet/i', $userAgent)) { $device = 'Tablet'; }
+
+        Reader::updateOrCreate(
+            ['ip_address' => $ip],
+            [
+                'device_name' => $device,
+                'user_agent' => $userAgent,
+                'last_accessed_at' => now(),
+            ]
+        );
         // Ambil semua buku dan ambil semua form secara global
         $books = Book::with(['parts.chapters'])->get();
         $allForms = Form::with('book')->get();
