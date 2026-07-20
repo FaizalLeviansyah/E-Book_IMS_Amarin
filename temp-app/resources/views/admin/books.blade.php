@@ -1,71 +1,107 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h2 class="fw-bolder text-slate-800"><i class="fa-solid fa-book-open text-amarin me-2"></i> Pustaka Induk</h2>
-        <p class="text-muted">Kelola koleksi manual dan e-book utama.</p>
-    </div>
-    <button type="button" class="btn btn-amarin px-4 py-2" data-bs-toggle="modal" data-bs-target="#addBookModal">
-        <i class="fa-solid fa-plus me-2"></i> Tambah Buku
-    </button>
-</div>
-
-@if(session('success'))
-    <div class="alert alert-success glass-panel border-0 text-success fw-bold"><i class="fa-solid fa-check-circle me-2"></i>{{ session('success') }}</div>
-@endif
-
-<div class="row g-4">
-    @forelse($books as $book)
-    <div class="col-md-4 col-lg-3">
-        <div class="glass-panel h-100 d-flex flex-column overflow-hidden transition-all hover:shadow-md hover:-translate-y-1">
-            <div class="p-4 text-center border-bottom border-light flex-grow-1">
-                @if($book->cover_image)
-                    <img src="{{ asset('uploads/books/' . $book->cover_image) }}" class="img-fluid rounded-xl shadow-sm mb-3" style="max-height: 200px; object-fit: cover;">
-                @else
-                    <div class="bg-gradient-to-br from-slate-200 to-slate-100 rounded-xl d-flex align-items-center justify-content-center mb-3 mx-auto shadow-sm" style="width: 140px; height: 200px;">
-                        <i class="fa-solid fa-book fs-1 text-slate-400"></i>
-                    </div>
-                @endif
-                <h5 class="fw-bold text-dark mb-1">{{ $book->title }}</h5>
-                <small class="text-muted">{{ $book->parts->count() }} Bagian Tersedia</small>
-            </div>
-            <div class="p-3 bg-white/40 d-flex flex-column gap-2">
-                <a href="/admin/books/{{ $book->id }}/parts" class="btn btn-sm btn-amarin w-100"><i class="fa-solid fa-folder-tree"></i> Kelola Isi Bab</a>
-                <a href="/admin/books/{{ $book->id }}/forms" class="btn btn-sm btn-outline-primary w-100 bg-white mb-2 fw-bold text-amarin border-blue-200">
-                    <i class="fa-solid fa-file-contract"></i> Kelola Form Mentah
-                </a>
-                <form action="/admin/books/{{ $book->id }}" method="POST" onsubmit="return confirm('Hapus buku ini?');" class="mt-2">
-                    @csrf @method('DELETE')
-                    <button class="btn btn-sm btn-outline-danger border-0 w-100"><i class="fa-solid fa-trash"></i> Hapus Buku</button>
-                </form>
-            </div>w
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h2 class="fw-bolder text-slate-800 mb-1 d-flex align-items-center gap-2">
+                <i class="fa-solid fa-book-open text-amarin"></i> Pustaka Induk
+            </h2>
+            <p class="text-muted mb-0">Kelola koleksi manual dan e-book utama PT Amarin Ship Management.</p>
         </div>
+        <button class="btn btn-amarin px-4 py-2.5 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#addBookModal">
+            <i class="fa-solid fa-plus me-2"></i> Tambah Buku
+        </button>
     </div>
-    @empty
-    <div class="col-12 text-center py-5 glass-panel">
-        <i class="fa-solid fa-folder-open fs-1 text-muted mb-3"></i>
-        <p class="text-muted fw-bold">Belum ada buku yang ditambahkan.</p>
+
+    @if(session('success'))
+        <div class="alert alert-success glass-panel border-0 text-success fw-bold rounded-3 shadow-sm mb-4">
+            <i class="fa-solid fa-check-circle me-2"></i>{{ session('success') }}
+        </div>
+    @endif
+
+    <div class="row g-4">
+        @forelse($books as $book)
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <!-- CARD DESIGN ELEGANT -->
+            <div class="card h-100 border-0 rounded-4 shadow-sm bg-white/60 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:shadow-xl group overflow-hidden">
+                <div class="card-body p-4 d-flex flex-column align-items-center text-center relative z-10">
+
+                    <!-- Cover Area dengan Efek Zoom -->
+                    <div class="position-relative mb-4 w-100 d-flex justify-content-center">
+                        @if($book->cover_image)
+                            <img src="{{ asset('uploads/books/' . $book->cover_image) }}" class="rounded-3 shadow object-fit-cover transition-transform duration-500 group-hover:scale-105" style="width: 140px; height: 190px;" alt="Cover">
+                        @else
+                            <div class="rounded-3 shadow bg-gradient-to-br from-slate-100 to-slate-200 d-flex flex-column align-items-center justify-content-center border border-white transition-transform duration-500 group-hover:scale-105" style="width: 140px; height: 190px;">
+                                <i class="fa-solid fa-book text-slate-300 text-4xl mb-2"></i>
+                                <span class="text-[10px] fw-bold text-slate-400 text-uppercase tracking-widest">No Cover</span>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Title & Badge -->
+                    <h5 class="fw-bolder text-slate-800 mb-2 lh-sm">{{ $book->title }}</h5>
+                    <span class="badge bg-blue-50 text-blue-600 border border-blue-100 rounded-pill px-3 py-1.5 fw-bold mb-auto">
+                        {{ $book->parts->count() }} Bagian Tersedia
+                    </span>
+
+                    <!-- Action Buttons -->
+                    <div class="w-100 mt-4 pt-4 border-top border-slate-200/60 d-flex flex-column gap-2">
+                        <a href="/admin/books/{{ $book->id }}/parts" class="btn btn-amarin fw-bold w-100 rounded-3 py-2 shadow-sm hover:shadow-md transition-all">
+                            <i class="fa-solid fa-list-check me-2"></i> Kelola Isi Bab
+                        </a>
+
+                        <form action="/admin/books/{{ $book->id }}" method="POST" class="mt-2" onsubmit="return confirm('Yakin ingin menghapus seluruh buku ini beserta babnya secara permanen?');">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="btn btn-link text-danger text-decoration-none fw-bold w-100 text-sm hover:bg-red-50 rounded-3 transition-colors">
+                                <i class="fa-solid fa-trash-can me-1"></i> Hapus Buku
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @empty
+        <div class="col-12">
+            <div class="glass-panel p-5 text-center rounded-4 border border-dashed border-slate-300">
+                <i class="fa-solid fa-folder-open text-slate-300 text-5xl mb-3"></i>
+                <h5 class="fw-bold text-slate-600">Pustaka Masih Kosong</h5>
+                <p class="text-muted">Klik tombol "Tambah Buku" di atas untuk membuat dokumen IMS baru.</p>
+            </div>
+        </div>
+        @endforelse
     </div>
-    @endforelse
 </div>
 
+<!-- Modal Tambah Buku -->
 <div class="modal fade" id="addBookModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content glass-panel border-0">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-panel border-0 rounded-4 overflow-hidden">
             <form action="/admin/books" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="modal-header border-bottom border-light">
-                    <h5 class="modal-title fw-bold text-amarin"><i class="fa-solid fa-plus-circle me-2"></i> Tambah E-Book</h5>
+                <div class="modal-header border-bottom border-light bg-white/50 px-4 py-3">
+                    <h5 class="modal-title fw-bold text-amarin"><i class="fa-solid fa-book-medical me-2"></i> Tambah Buku Pustaka</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body p-4">
-                    <div class="mb-3"><label class="fw-bold text-slate-700 mb-1">Judul Buku</label><input type="text" class="form-control bg-white/50" name="title" required></div>
-                    <div class="mb-3"><label class="fw-bold text-slate-700 mb-1">Deskripsi Singkat</label><textarea class="form-control bg-white/50" name="description" rows="2"></textarea></div>
-                    <div class="mb-3"><label class="fw-bold text-slate-700 mb-1">Cover Image (Opsional)</label><input type="file" class="form-control bg-white/50" name="cover_image" accept="image/*"></div>
-                    <div class="mb-3"><label class="fw-bold text-slate-700 mb-1">File PDF Asli (Opsional)</label><input type="file" class="form-control bg-white/50" name="pdf_file" accept="application/pdf"></div>
+                <div class="modal-body p-4 bg-white/30">
+                    <div class="mb-3">
+                        <label class="fw-bold text-slate-700 mb-1 text-sm">Judul Buku</label>
+                        <input type="text" class="form-control bg-white/70" name="title" required placeholder="Masukkan judul buku...">
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold text-slate-700 mb-1 text-sm">Upload Cover (Opsional, JPG/PNG)</label>
+                        <input type="file" class="form-control bg-white/70" name="cover_image" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold text-slate-700 mb-1 text-sm">Upload File PDF (Opsional)</label>
+                        <input type="file" class="form-control bg-white/70" name="pdf_file" accept=".pdf">
+                        <small class="text-muted text-[10px]">Unggah versi PDF asli sebagai referensi cadangan pembaca.</small>
+                    </div>
                 </div>
-                <div class="modal-footer border-top border-light"><button type="submit" class="btn btn-amarin w-100">Simpan Buku Baru</button></div>
+                <div class="modal-footer border-top border-light bg-white/50 px-4 py-3">
+                    <button type="button" class="btn btn-light border shadow-sm" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-amarin px-4 shadow-sm"><i class="fa-solid fa-save me-2"></i> Simpan Buku</button>
+                </div>
             </form>
         </div>
     </div>
