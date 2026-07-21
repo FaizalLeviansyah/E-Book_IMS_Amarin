@@ -188,30 +188,43 @@
                                     <li class="relative group part-container">
                                         <div class="absolute -left-4 top-3 w-3 h-0.5 bg-slate-200 dark:bg-slate-700"></div>
 
+                                        <!-- TOMBOL DROPDOWN PART DITAMBAHKAN ICON PANAH AGAR KONSISTEN -->
                                         <button type="button" class="part-accordion-btn flex items-center justify-between w-full px-2 py-1.5 rounded-lg transition-colors {{ $isPartActive ? 'bg-blue-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50' }}" data-target="sidebar-part-{{ $part->id }}">
                                             <div class="flex items-center gap-2 text-sm font-bold truncate {{ $isPartActive ? 'text-amarin' : 'text-slate-500 dark:text-slate-400' }}">
                                                 <i class="fa-solid fa-caret-{{ $isPartActive ? 'down' : 'right' }} text-[12px] w-3 text-center transition-transform"></i>
                                                 <span class="truncate part-title">{{ $part->title }}</span>
+                                            </div>
+                                            <!-- Tombol panah kecil tambahan di sisi kanan part -->
+                                            <div class="w-6 h-6 rounded-full bg-white/60 dark:bg-slate-700 flex items-center justify-center shrink-0 ms-1">
+                                                <i class="fa-solid fa-chevron-{{ $isPartActive ? 'up' : 'down' }} text-[9px] text-amarin"></i>
                                             </div>
                                         </button>
 
                                         <div id="sidebar-part-{{ $part->id }}" class="part-body mt-1 {{ $isPartActive ? 'block active-part' : 'hidden' }}">
                                             <ul class="pl-5 space-y-1.5 py-1">
                                                 @foreach($part->chapters as $chapter)
-                                                    <li class="chapter-item flex items-center justify-between px-2 py-1.5 text-[0.85rem] rounded-lg transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                                                        <a href="?read={{ $chapter->id }}" onclick="recordProgress('{{ $book->id }}', '{{ $chapter->id }}')" class="flex items-center gap-2 flex-grow truncate {{ (isset($activeChapter) && $activeChapter->id == $chapter->id) ? 'text-amarin font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-amarin font-medium' }}">
-                                                            <i class="fa-solid fa-file-lines text-[10px] opacity-40"></i>
-                                                            <span class="truncate chapter-title">{{ $chapter->title }}</span>
-                                                        </a>
-                                                        <i class="fa-solid fa-check-circle text-green-500 text-[10px] hidden read-indicator" data-chapter-id="{{ $chapter->id }}"></i>
+                                                    @php $isChapterActive = isset($activeChapter) && $activeChapter->id == $chapter->id; @endphp
+                                                    <li class="chapter-item flex flex-col px-2 py-1.5 text-[0.85rem] rounded-lg transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                                        <div class="flex items-center justify-between w-full">
+                                                            <a href="?read={{ $chapter->id }}" onclick="recordProgress('{{ $book->id }}', '{{ $chapter->id }}')" class="flex items-center gap-2 flex-grow truncate {{ $isChapterActive ? 'text-amarin font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-amarin font-medium' }}">
+                                                                <i class="fa-solid fa-file-lines text-[10px] opacity-40"></i>
+                                                                <span class="truncate chapter-title">{{ $chapter->title }}</span>
+                                                            </a>
+                                                            <i class="fa-solid fa-check-circle text-green-500 text-[10px] hidden read-indicator" data-chapter-id="{{ $chapter->id }}"></i>
 
-                                                        @if(isset($activeChapter) && $activeChapter->id == $chapter->id)
-                                                            <button type="button" class="ms-2 p-1 focus:outline-none" onclick="toggleToc()"><i id="icon-toc-toggle" class="fa-solid fa-chevron-up text-[0.7rem] text-amarin bg-blue-50 dark:bg-slate-800 w-5 h-5 rounded-full flex items-center justify-center transition-transform duration-300 shadow-inner"></i></button>
+                                                            <!-- TOMBOL BUKA/TUTUP DROPDOWN DI SETIAP CHAPTER AKTIF -->
+                                                            @if($isChapterActive)
+                                                                <button type="button" class="ms-2 p-1.5 focus:outline-none rounded-full bg-blue-50 dark:bg-slate-700 shadow-inner hover:bg-blue-100 transition-colors" onclick="toggleToc()" title="Buka/Tutup Daftar Isi Bab">
+                                                                    <i id="icon-toc-toggle" class="fa-solid fa-chevron-up text-[9px] text-amarin w-4 h-4 flex items-center justify-center transition-transform duration-300"></i>
+                                                                </button>
+                                                            @endif
+                                                        </div>
+
+                                                        <!-- Daftar Isi / Sub-bagian Chapter -->
+                                                        @if($isChapterActive)
+                                                            <div id="dynamic-toc" class="mt-1 mb-2 space-y-1 border-l-2 border-amarin/20 ml-2 pl-2 relative block transition-all duration-300 overflow-hidden"></div>
                                                         @endif
                                                     </li>
-                                                    @if(isset($activeChapter) && $activeChapter->id == $chapter->id)
-                                                        <li class="pl-2"><div id="dynamic-toc" class="mt-1 mb-2 space-y-1 border-l-2 border-amarin/20 ml-2 relative block transition-all duration-300 overflow-hidden"></div></li>
-                                                    @endif
                                                 @endforeach
                                             </ul>
                                         </div>
@@ -347,7 +360,6 @@
                         <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-cyan-300/40 dark:from-cyan-900/30 to-transparent rounded-full blur-[50px] pointer-events-none"></div>
                         <div class="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full sm:rounded-[2.5rem] flex items-center justify-center shadow-xl shadow-blue-500/30 shrink-0 relative z-10"><div class="absolute inset-0 bg-white/20 blur-md"></div><i class="fa-solid fa-ship text-white text-5xl sm:text-6xl relative z-10 drop-shadow-md"></i></div>
                         <div class="text-center md:text-left relative z-10">
-                            <!-- PERBAIKAN UTAMA WARNA TEKS BANNER DI DARK MODE -->
                             <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-4 tracking-tight drop-shadow-sm">Amarin Fleet <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-cyan-400 dark:to-blue-400">IMS</span></h1>
                             <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed font-medium">Sistem digitalisasi prosedur operasional dan keselamatan kapal. Akses dokumen, panduan, dan formulir dengan efisien dan terpantau.</p>
                         </div>
@@ -572,6 +584,21 @@
     @endif
 
     <script>
+        // FUNGSI TOGGLE TOC (DAFTAR ISI) PADA CHAPTER AKTIF
+        function toggleToc() {
+            const tocContainer = document.getElementById('dynamic-toc');
+            const icon = document.getElementById('icon-toc-toggle');
+            if (tocContainer) {
+                if (tocContainer.style.maxHeight && tocContainer.style.maxHeight !== "0px") {
+                    tocContainer.style.maxHeight = "0px";
+                    if (icon) icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+                } else {
+                    tocContainer.style.maxHeight = tocContainer.scrollHeight + "px";
+                    if (icon) icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+                }
+            }
+        }
+
         // SCRIPT: THEME PICKER & SLIDERS
         const themeBtns = document.querySelectorAll('.theme-btn');
         function updateThemeUI(theme) {
@@ -785,14 +812,20 @@
                     const targetId = btn.getAttribute('data-target');
                     if(!targetId) return;
                     const targetBody = document.getElementById(targetId);
-                    const icon = btn.querySelector('.fa-caret-right, .fa-caret-down');
+                    const icon = btn.querySelector('.fa-chevron-down, .fa-chevron-up, .fa-caret-right, .fa-caret-down');
 
                     if (targetBody && targetBody.classList.contains('hidden')) {
                         targetBody.classList.remove('hidden'); targetBody.classList.add('block');
-                        if(icon) { icon.classList.replace('fa-caret-right', 'fa-caret-down'); }
+                        if(icon) {
+                            if(icon.classList.contains('fa-chevron-down')) icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+                            if(icon.classList.contains('fa-caret-right')) icon.classList.replace('fa-caret-right', 'fa-caret-down');
+                        }
                     } else if(targetBody) {
                         targetBody.classList.add('hidden'); targetBody.classList.remove('block');
-                        if(icon) { icon.classList.replace('fa-caret-down', 'fa-caret-right'); }
+                        if(icon) {
+                            if(icon.classList.contains('fa-chevron-up')) icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+                            if(icon.classList.contains('fa-caret-down')) icon.classList.replace('fa-caret-down', 'fa-caret-right');
+                        }
                     }
                 });
             });
@@ -852,9 +885,9 @@
                             if (level > 0 && !seenTexts.has(text)) {
                                 if (!foundNewSection) { validId++; currentSectionId = 'v-page-' + validId; foundNewSection = true; }
                                 seenTexts.add(text);
-                                let paddingClass = ''; let textClass = 'text-slate-600 hover:text-amarin'; let dotIndicator = '';
-                                if (level === 1) { paddingClass = 'pl-2 mt-4'; textClass = 'text-slate-900 font-extrabold uppercase text-[0.75rem] tracking-widest'; } else if (level === 2) { paddingClass = 'pl-3 mt-2'; textClass = 'text-slate-800 font-bold text-[0.85rem]'; } else if (level === 3) { paddingClass = 'pl-5 mt-1'; textClass = 'text-slate-700 font-semibold text-[0.85rem]'; } else { paddingClass = 'pl-8 relative'; textClass = 'text-slate-500 font-medium text-[0.85rem]'; dotIndicator = '<div class="absolute left-4 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-slate-300 group-hover:bg-amarin transition-colors"></div>'; }
-                                tocHTML += `<a href="#${currentSectionId}" class="toc-link block py-2 transition-all w-full truncate rounded-xl hover:bg-white/50 group ${paddingClass} ${textClass}" title="${text}">${dotIndicator} ${text}</a>`;
+                                let paddingClass = ''; let textClass = 'text-slate-600 dark:text-slate-300 hover:text-amarin'; let dotIndicator = '';
+                                if (level === 1) { paddingClass = 'pl-2 mt-4'; textClass = 'text-slate-900 dark:text-white font-extrabold uppercase text-[0.75rem] tracking-widest'; } else if (level === 2) { paddingClass = 'pl-3 mt-2'; textClass = 'text-slate-800 dark:text-slate-200 font-bold text-[0.85rem]'; } else if (level === 3) { paddingClass = 'pl-5 mt-1'; textClass = 'text-slate-700 dark:text-slate-300 font-semibold text-[0.85rem]'; } else { paddingClass = 'pl-8 relative'; textClass = 'text-slate-500 dark:text-slate-400 font-medium text-[0.85rem]'; dotIndicator = '<div class="absolute left-4 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600 group-hover:bg-amarin transition-colors"></div>'; }
+                                tocHTML += `<a href="#${currentSectionId}" class="toc-link block py-2 transition-all w-full truncate rounded-xl hover:bg-white/50 dark:hover:bg-slate-800/50 group ${paddingClass} ${textClass}" title="${text}">${dotIndicator} ${text}</a>`;
                             }
                         });
                     }
